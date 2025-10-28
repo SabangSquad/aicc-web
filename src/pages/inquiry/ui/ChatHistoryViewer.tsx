@@ -1,0 +1,64 @@
+import { cn } from '@/shared/lib/utils';
+import { Bot, User } from 'lucide-react';
+import type { ChatLogType, ChatMessage } from '../model/chatItem';
+
+interface ChatHistoryViewerProps {
+  logs: ChatLogType[];
+}
+
+export function ChatHistoryViewer({ logs }: ChatHistoryViewerProps) {
+  if (!logs || logs.length === 0) {
+    return <div className="p-4 text-center text-sm text-muted-foreground">챗봇/보이스봇 대화 내역이 없습니다.</div>;
+  }
+
+  return (
+    <div className="space-y-6 p-4">
+      {logs.map(log => (
+        <div key={log.logId}>
+          <div className="flex flex-col gap-3">
+            {log.messages.map(msg => (
+              <ChatMessageBubble key={msg.id} message={msg} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// 말풍선 UI 컴포넌트
+function ChatMessageBubble({ message }: { message: ChatMessage }) {
+  const isUser = message.role === 'user';
+  return (
+    <div className={cn('flex items-start gap-3', isUser ? 'justify-end' : 'justify-start')}>
+      {/* 봇 아이콘 */}
+      {!isUser && (
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Bot className="h-5 w-5" />
+        </div>
+      )}
+
+      {/* 말풍선 */}
+      <div
+        className={cn(
+          'max-w-[80%] rounded-lg p-3 text-sm',
+          isUser
+            ? 'rounded-br-none bg-blue-600 text-white' // 유저 말풍선
+            : 'rounded-bl-none bg-muted' // 봇 말풍선
+        )}
+      >
+        <p className="leading-relaxed">{message.message}</p>
+        <p className={cn('mt-1.5 text-xs', isUser ? 'text-blue-200' : 'text-muted-foreground')}>
+          {new Date(message.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+        </p>
+      </div>
+
+      {/* 유저 아이콘 */}
+      {isUser && (
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+          <User className="h-5 w-5" />
+        </div>
+      )}
+    </div>
+  );
+}
