@@ -9,11 +9,12 @@ import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
 import { cn } from '@/shared/lib/utils';
 
-import { items, InquiryType } from '../model/inquiryItem';
-import { StateBadge } from './StateBadge';
+import { items } from '@/shared/data/inquiryItem';
+import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
 import { CustomerInformation } from './CustomerInformation';
 import { AIAssist } from './AIAssist';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import { InquiryType } from '@/shared/types/inquiry';
 
 export function InquiryPage() {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryType | null>(null);

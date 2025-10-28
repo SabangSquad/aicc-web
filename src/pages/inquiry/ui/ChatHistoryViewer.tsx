@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 import { Bot, User } from 'lucide-react';
-import type { ChatLogType, ChatMessage } from '../model/chatItem';
+import type { ChatLogType, ChatMessage } from '@/shared/data/chatItem';
 
 interface ChatHistoryViewerProps {
   logs: ChatLogType[];

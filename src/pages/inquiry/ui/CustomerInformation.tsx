@@ -1,5 +1,5 @@
 import { GradeBadge } from '@/entities/customer';
-import { InquiryType } from '../model/inquiryItem';
+import { InquiryType } from '@/shared/types/inquiry';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
 const ValueDisplay = ({ value }: { value: string | null | undefined }) => {

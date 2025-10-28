@@ -2,9 +2,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 
-// 1. 데이터 소스 import
-import { items } from '../model/inquiryItem';
-import { getChatLogsByEmail } from '../model/chatItem';
+import { items } from '@/shared/data/inquiryItem';
+import { getChatLogsByEmail } from '@/shared/data/chatItem';
 
 // 2. UI 컴포넌트 import
 import { Separator } from '@/shared/ui/separator';
@@ -13,7 +12,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/u
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
 // 3. 재사용 컴포넌트 import
-import { StateBadge } from './StateBadge';
+import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
 import { CustomerInformation } from './CustomerInformation';
 import { AIAssist } from './AIAssist';
 import { PastInquiryList } from './PastInquiryList';

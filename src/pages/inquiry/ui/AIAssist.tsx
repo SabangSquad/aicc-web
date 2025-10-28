@@ -1,5 +1,5 @@
+import { InquiryType } from '@/shared/types/inquiry';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/shared/ui/item';
-import { InquiryType } from '../model/inquiryItem';
 
 export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
   return (
