@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { InquiryType } from '../model/inquiryItem';
-import { StateBadge } from './StateBadge'; // 기존 StateBadge 재사용
+import { StateBadge } from '@/entities/inquiry';
+import { InquiryType } from '@/shared/types/inquiry';
 
 interface PastInquiryListProps {
   inquiries: InquiryType[];
