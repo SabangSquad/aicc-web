@@ -16,7 +16,7 @@ export function PastInquiryList({ inquiries }: PastInquiryListProps) {
       {inquiries.map(inquiry => (
         <Link
           key={inquiry.id}
-          href={`/inquiry/${inquiry.id}`} // 해당 이력의 상세 페이지로 이동
+          href={`/inquiry/${inquiry.id}`}
           className="block rounded-lg border p-4 transition-all hover:bg-accent"
         >
           <div className="mb-1 flex items-center justify-between">

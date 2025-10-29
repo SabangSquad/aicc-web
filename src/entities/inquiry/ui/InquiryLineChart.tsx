@@ -1,26 +1,21 @@
 'use client';
 import { TrendingUp } from 'lucide-react';
-import { CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from 'recharts';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/shared/ui/chart';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/shared/ui/chart';
 import { items } from '@/shared/data/inquiryItem';
-
-const today = new Date();
-const thirtyDaysAgo = new Date(today);
-thirtyDaysAgo.setDate(today.getDate() - 30);
+import { categoryChartColorSet } from '@/shared/lib/category';
+import { thirtyDaysAgo } from '@/shared/lib/date';
 
 const recentItems = items.filter(item => new Date(item.createdAt) >= thirtyDaysAgo);
 
-const inquiryCountByDate = recentItems.reduce(
-  (acc, item) => {
-    const date = new Date(item.createdAt).toLocaleDateString('ko-KR', {
-      month: '2-digit',
-      day: '2-digit',
-    });
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  },
-  {} as Record<string, number>
-);
+const inquiryCountByDate = recentItems.reduce((acc: Record<string, number>, item) => {
+  const date = new Date(item.createdAt).toLocaleDateString('ko-KR', {
+    month: '2-digit',
+    day: '2-digit',
+  });
+  acc[date] = (acc[date] || 0) + 1;
+  return acc;
+}, {});
 
 const chartData: Array<{ date: string; count: number }> = [];
 for (let i = 0; i <= 30; i++) {
@@ -33,25 +28,18 @@ for (let i = 0; i <= 30; i++) {
   });
 }
 
-const chartConfig = {
-  count: {
-    label: '문의 수',
-    color: 'var(--chart-1)',
-  },
-} satisfies ChartConfig;
-
 export function InquiryLineChart() {
   const total = recentItems.length;
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">최근 문의 그래프</h2>
         <p className="mt-1 text-muted-foreground">최근 30일간 일별 문의 건수 추이입니다.</p>
       </div>
 
-      <ChartContainer config={chartConfig} className="h-[200px]">
-        <LineChart
+      <ChartContainer config={categoryChartColorSet} className="h-[200px]">
+        <AreaChart
           accessibilityLayer
           data={chartData}
           margin={{
@@ -65,17 +53,14 @@ export function InquiryLineChart() {
           <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} interval={4} />
           <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} width={25} />
           <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-          <Line
+          <Area
             type="monotone"
             dataKey="count"
-            stroke="var(--color-count)"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4 }}
-          >
-            <LabelList position="top" offset={8} className="fill-foreground" fontSize={9} />
-          </Line>
-        </LineChart>
+            stroke={categoryChartColorSet['전체'].color}
+            fill={categoryChartColorSet['전체'].color}
+            fillOpacity={0.25}
+          />
+        </AreaChart>
       </ChartContainer>
 
       <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">

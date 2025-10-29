@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Button } from '@/shared/ui/button';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
-import { cn } from '@/shared/lib/utils';
 
 import { items } from '@/shared/data/inquiryItem';
 import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
@@ -26,10 +25,7 @@ export function InquiryPage() {
     <button
       key={inquiry.id}
       onClick={() => setSelectedInquiry(inquiry)}
-      className={cn(
-        'flex w-full flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-        selectedInquiry?.id === inquiry.id && 'bg-muted'
-      )}
+      className={`flex w-full flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ${selectedInquiry?.id === inquiry.id && 'bg-muted'}`}
     >
       <div className="flex w-full items-center justify-between">
         <span className="font-semibold">{inquiry.title}</span>

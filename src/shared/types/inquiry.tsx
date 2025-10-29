@@ -1,6 +1,5 @@
-export type InquiryStatus = 'pending' | 'completed';
-export type InquiryGrade = '브론즈' | '실버' | '골드';
-export type InquiryCategory = '배송' | '결제' | '제품' | '기타';
+import { Category } from './category';
+import { MembershipLevel } from './membership';
 
 export interface InquiryType {
   id: string;
@@ -8,12 +7,12 @@ export interface InquiryType {
   email: string;
   title: string;
   content: string;
-  status: InquiryStatus;
+  status: 'pending' | 'completed';
   aiSummary: string;
   createdAt: string;
   phone: string;
-  category: InquiryCategory;
-  grade: InquiryGrade;
+  category: Category;
+  grade: MembershipLevel;
   joinedAt: string;
   birthday: string;
   points: string;
