@@ -5,11 +5,11 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
 import { items } from '@/shared/data/inquiryItem';
-import { Category } from '@/shared/types/category';
+import { Category, CategoryWithAll } from '@/shared/types/category';
 import { categoryChartColorSet } from '@/shared/lib/category';
 
 export function InquiryAreaSelectChart() {
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<CategoryWithAll[]>(['전체']);
   const [dateFilter, setDateFilter] = useState<'week' | 'all'>('week');
 
   const chartData = useMemo(() => {
@@ -56,9 +56,13 @@ export function InquiryAreaSelectChart() {
   };
 
   return (
-    <div className="w-full space-y-4">
-      {/* 날짜 선택 */}
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col">
+      <div className="mb-4">
+        <h2 className="text-2xl font-semibold tracking-tight">문의 추이 그래프</h2>
+        <p className="mt-1 text-muted-foreground">기간별 문의 건수를 카테고리별로 확인할 수 있습니다.</p>
+      </div>
+
+      <div className="flex items-center gap-4 mb-4">
         <label className="text-sm font-medium">날짜 선택</label>
         <Select value={dateFilter} onValueChange={(v: 'week' | 'all') => setDateFilter(v)}>
           <SelectTrigger className="w-[150px]">
@@ -72,7 +76,7 @@ export function InquiryAreaSelectChart() {
       </div>
 
       {/* 카테고리 선택 */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 flex-wrap mb-4">
         {Object.keys(categoryChartColorSet).map(cat => (
           <label key={cat} className="flex items-center gap-2 cursor-pointer">
             <Checkbox
@@ -93,13 +97,13 @@ export function InquiryAreaSelectChart() {
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent payload={undefined} />} />
 
-          <Area
+          {/* <Area
             type="monotone"
             dataKey="전체"
             stroke={categoryChartColorSet['전체'].color}
             fill={categoryChartColorSet['전체'].color}
             fillOpacity={0.3}
-          />
+          /> */}
 
           {selectedCategories.map(cat => (
             <Area

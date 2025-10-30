@@ -198,6 +198,9 @@ html {
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
+    --positive-color: #44a373;
+    --neutral-color: #f6a600;
+    --negative-color: #ec4b68;
   }
 
   .dark {
@@ -206,5 +209,8 @@ html {
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
+    --positive-color: #22a37a;
+    --neutral-color: #ea5c12;
+    --negative-color: #ec4b68;
   }
 }

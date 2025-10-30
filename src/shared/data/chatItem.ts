@@ -5,7 +5,6 @@ export interface ChatMessage {
   timestamp: string;
 }
 
-// 챗봇 대화 로그 타입 (고객 이메일과 매칭)
 export interface ChatLogType {
   logId: string;
   customerEmail: string; // 고객 식별자
@@ -18,7 +17,7 @@ export interface ChatLogType {
 export const mockChatLogs: ChatLogType[] = [
   {
     logId: 'cl-001',
-    customerEmail: 'chulsoo.kim@example.com', // q1, q16 고객
+    customerEmail: 'chulsoo.kim@example.com',
     channel: 'chatbot',
     createdAt: '2023-10-27T10:00:00Z',
     messages: [

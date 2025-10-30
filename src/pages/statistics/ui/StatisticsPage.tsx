@@ -1,10 +1,20 @@
-import { InquiryAreaSelectChart } from '@/entities/inquiry';
+import { InquiryAIChart, InquiryAreaSelectChart, InquiryEmotionChart } from '@/entities/inquiry';
+import { Separator } from '@/shared/ui/separator';
 
 export function StatisticsPage() {
   return (
-    <div className="p-4 px-8">
-      <h1 className="text-2xl font-bold">Statistics Page</h1>
+    <div className="mx-auto max-w-7xl p-6 lg:p-8 space-y-10">
       <InquiryAreaSelectChart />
+      <Separator />
+      <div className="flex flex-row gap-6 h-96">
+        <div className="flex-1">
+          <InquiryEmotionChart />
+        </div>
+        <Separator orientation="vertical" />
+        <div className="flex-1">
+          <InquiryAIChart />
+        </div>
+      </div>
     </div>
   );
 }

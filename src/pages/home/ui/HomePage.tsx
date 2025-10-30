@@ -16,10 +16,18 @@ export function HomePage() {
       </h1>
 
       <KPIAnalysis />
+      <Separator />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <InquiryTable />
-        <InquiryChart />
+      <div className="flex gap-8 h-96">
+        <div className="flex-1">
+          <InquiryTable />
+        </div>
+
+        <Separator orientation="vertical" />
+
+        <div className="flex-1">
+          <InquiryChart />
+        </div>
       </div>
 
       <Separator />

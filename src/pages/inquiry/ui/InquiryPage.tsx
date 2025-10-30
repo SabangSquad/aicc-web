@@ -39,7 +39,7 @@ export function InquiryPage() {
   );
 
   return (
-    <div className="h-[calc(100vh-4rem)] w-full overflow-hidden">
+    <div className="h-screen w-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px] ">
         <ResizablePanel defaultSize={30} minSize={25}>
           <div className="flex h-full flex-col">
