@@ -1,48 +1,16 @@
 'use client';
 import { Pie, PieChart } from 'recharts';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/shared/ui/chart';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/shared/ui/chart';
 import { items } from '@/shared/data/inquiryItem';
+import { categoryChartColorSet } from '@/shared/lib/category';
 
-const categoryCounts = items.reduce(
-  (acc, item) => {
-    acc[item.category] = (acc[item.category] || 0) + 1;
-    return acc;
-  },
-  {} as Record<string, number>
-);
+const categoryCounts = items.reduce((acc: Record<string, number>, item) => {
+  acc[item.category] = (acc[item.category] || 0) + 1;
+  return acc;
+}, {});
 
-const chartConfig: ChartConfig = {
-  count: {
-    label: '건수',
-  },
-  배송: {
-    label: '배송',
-    color: 'var(--chart-1)',
-  },
-  결제: {
-    label: '결제',
-    color: 'var(--chart-2)',
-  },
-  제품: {
-    label: '제품',
-    color: 'var(--chart-3)',
-  },
-  기타: {
-    label: '기타',
-    color: 'var(--chart-4)',
-  },
-} satisfies ChartConfig;
-
-const chartData = Object.entries(categoryCounts).map(([category, count], index) => {
-  const configKey = category as keyof typeof chartConfig;
-  const color = chartConfig[configKey]?.color || `var(--chart-${index + 1})`;
+const chartData = Object.entries(categoryCounts).map(([category, count]) => {
+  const color = categoryChartColorSet[category].color;
 
   return {
     category: category,
@@ -64,7 +32,7 @@ export function InquiryChart() {
       </div>
 
       <div className="flex-1 ">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
+        <ChartContainer config={categoryChartColorSet} className="mx-auto aspect-square max-h-[300px]">
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent nameKey="category" hideLabel />} />
             <Pie data={chartData} dataKey="count" nameKey="category" innerRadius={50} outerRadius={90} label />

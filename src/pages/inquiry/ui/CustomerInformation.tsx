@@ -2,9 +2,8 @@ import { GradeBadge } from '@/entities/customer';
 import { InquiryType } from '@/shared/types/inquiry';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
-const ValueDisplay = ({ value }: { value: string | null | undefined }) => {
-  const displayValue = value || 'N/A';
-  return <span className={!value ? 'text-muted-foreground italic' : ''}>{displayValue}</span>;
+const ValueDisplay = ({ value }: { value: string }) => {
+  return <span className={!value ? 'text-muted-foreground italic' : ''}>{value || 'N/A'}</span>;
 };
 
 export function CustomerInformation({ inquiry }: { inquiry: InquiryType }) {

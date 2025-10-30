@@ -5,13 +5,11 @@ import { ArrowLeft } from 'lucide-react';
 import { items } from '@/shared/data/inquiryItem';
 import { getChatLogsByEmail } from '@/shared/data/chatItem';
 
-// 2. UI 컴포넌트 import
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
-// 3. 재사용 컴포넌트 import
 import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
 import { CustomerInformation } from './CustomerInformation';
 import { AIAssist } from './AIAssist';

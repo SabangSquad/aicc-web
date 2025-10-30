@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { items } from '@/shared/data/inquiryItem';
-
 import { StateBadge } from './StateBadge';
 
 export function InquiryTable() {

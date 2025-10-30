@@ -1,19 +1,24 @@
-export type InquiryStatus = 'pending' | 'completed';
-export type InquiryGrade = '브론즈' | '실버' | '골드';
-export type InquiryCategory = '배송' | '결제' | '제품' | '기타';
+import { Category } from './category';
+import { MembershipLevel } from './membership';
 
 export interface InquiryType {
   id: string;
+  title: string;
+  category: Category;
+  status: 'pending' | 'completed';
+  content: string;
+  createdAt: string;
+  closed_at: string;
+  memo: string;
+  emotion: 'happy' | 'neutral' | 'sad';
+  aiSummary: string;
+
+  processedByAI: boolean;
+
   customerName: string;
   email: string;
-  title: string;
-  content: string;
-  status: InquiryStatus;
-  aiSummary: string;
-  createdAt: string;
   phone: string;
-  category: InquiryCategory;
-  grade: InquiryGrade;
+  grade: MembershipLevel;
   joinedAt: string;
   birthday: string;
   points: string;

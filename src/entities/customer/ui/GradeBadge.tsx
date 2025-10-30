@@ -1,26 +1,10 @@
 import { Badge } from '@/shared/ui/badge';
+import { MembershipLevel } from '@/shared/types/membership';
+import { membershipColors, membershipLabels } from '@/shared/lib/membership';
 
-export function GradeBadge({ grade }: { grade: '브론즈' | '실버' | '골드' }) {
-  let bgColor = '';
-  let textColor = '';
+export function GradeBadge({ grade }: { grade: MembershipLevel }) {
+  const colors = membershipColors[grade];
+  const label = membershipLabels[grade];
 
-  switch (grade) {
-    case '브론즈':
-      bgColor = 'bg-amber-100';
-      textColor = 'text-amber-800';
-      break;
-    case '실버':
-      bgColor = 'bg-gray-200';
-      textColor = 'text-gray-800';
-      break;
-    case '골드':
-      bgColor = 'bg-yellow-200';
-      textColor = 'text-yellow-800';
-      break;
-    default:
-      bgColor = 'bg-muted';
-      textColor = 'text-muted-foreground';
-  }
-
-  return <Badge className={` ${bgColor} ${textColor}`}>{grade}</Badge>;
+  return <Badge className={`${colors.bg} ${colors.text}`}>{label}</Badge>;
 }
