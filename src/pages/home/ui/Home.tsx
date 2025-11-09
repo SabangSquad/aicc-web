@@ -3,11 +3,13 @@ import { InquiryTable } from '@/entities/inquiry/ui/InquiryTable';
 import { KPIAnalysis } from '@/entities/inquiry/ui/KPIAnalysis';
 import { InquiryChart } from '@/entities/inquiry/ui/InquiryChart';
 import { InquiryLineChart } from '@/entities/inquiry/ui/InquiryLineChart';
+import { InquiryType } from '@/shared/types/inquiry';
 
-import { items } from '@/shared/data/inquiryItem';
-
-export function HomePage() {
-  const pending = items.filter(item => item.status === 'pending').length;
+export async function Home() {
+  const items: InquiryType[] = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases`)
+    .then(res => res.json())
+    .then(data => data.data);
+  const pending = items.filter(item => item.status === '대기').length;
   return (
     <div className="mx-auto max-w-7xl p-6 lg:p-8 space-y-10">
       <h1 className="text-3xl font-bold tracking-tight">
@@ -15,23 +17,23 @@ export function HomePage() {
         <span className="text-primary"> {pending}건</span>의 업무가 대기 중입니다.
       </h1>
 
-      <KPIAnalysis />
+      <KPIAnalysis items={items} />
       <Separator />
 
       <div className="flex gap-8 h-96">
         <div className="flex-1">
-          <InquiryTable />
+          <InquiryTable items={items} />
         </div>
 
         <Separator orientation="vertical" />
 
         <div className="flex-1">
-          <InquiryChart />
+          <InquiryChart items={items} />
         </div>
       </div>
 
       <Separator />
-      <InquiryLineChart />
+      <InquiryLineChart items={items} />
     </div>
   );
 }

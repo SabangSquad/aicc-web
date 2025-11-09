@@ -1,34 +1,34 @@
 import { cn } from '@/shared/lib/utils';
 import { Bot, User } from 'lucide-react';
-import type { ChatLogType, ChatMessage } from '@/shared/data/chatItem';
 
-interface ChatHistoryViewerProps {
-  logs: ChatLogType[];
-}
+type ChatLogType = {
+  message_id: number;
+  case_id: number;
+  occurred_at: string;
+  content: string;
+  speaker: '상담사' | '고객' | '보이스봇' | '챗봇';
+};
 
-export function ChatHistoryViewer({ logs }: ChatHistoryViewerProps) {
-  if (!logs || logs.length === 0) {
+export function ChatHistoryViewer({ chats }: { chats: ChatLogType[] }) {
+  if (!chats || chats.length === 0) {
     return <div className="p-4 text-center text-sm text-muted-foreground">챗봇/보이스봇 대화 내역이 없습니다.</div>;
   }
 
   return (
     <div className="space-y-6 p-4">
-      {logs.map(log => (
-        <div key={log.logId}>
-          <div className="flex flex-col gap-3">
-            {log.messages.map(msg => (
-              <ChatMessageBubble key={msg.id} message={msg} />
-            ))}
-          </div>
-        </div>
-      ))}
+      <div className="flex flex-col gap-3">
+        {chats.map(msg => (
+          <ChatMessageBubble key={msg.message_id} message={msg} />
+        ))}
+      </div>
     </div>
   );
 }
 
 // 말풍선 UI 컴포넌트
-function ChatMessageBubble({ message }: { message: ChatMessage }) {
-  const isUser = message.role === 'user';
+function ChatMessageBubble({ message }: { message: ChatLogType }) {
+  const isUser = message.speaker === '고객';
+
   return (
     <div className={cn('flex items-start gap-3', isUser ? 'justify-end' : 'justify-start')}>
       {/* 봇 아이콘 */}
@@ -47,9 +47,9 @@ function ChatMessageBubble({ message }: { message: ChatMessage }) {
             : 'rounded-bl-none bg-muted' // 봇 말풍선
         )}
       >
-        <p className="leading-relaxed">{message.message}</p>
+        <p className="leading-relaxed">{message.content}</p>
         <p className={cn('mt-1.5 text-xs', isUser ? 'text-blue-200' : 'text-muted-foreground')}>
-          {new Date(message.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+          {new Date(message.occurred_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
 

@@ -1,2 +1,2 @@
-import { StatisticsPage } from '@/pages/statistics';
-export default StatisticsPage;
+import { Statistics } from '@/pages/statistics';
+export default Statistics;

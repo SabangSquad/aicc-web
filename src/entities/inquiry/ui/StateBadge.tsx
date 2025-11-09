@@ -1,20 +1,34 @@
+import { InquiryStatus } from '@/shared/types/inquiry';
 import { Badge } from '@/shared/ui/badge';
-import { CheckCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock, MessageCircle } from 'lucide-react';
 
-export function StateBadge({ status }: { status: 'pending' | 'completed' }) {
-  return (
-    <Badge variant="secondary" className={`${status === 'pending' ? '' : 'bg-deep-green text-white'}`}>
-      {status === 'pending' ? (
-        <>
-          <Clock />
-          <span>답변대기</span>
-        </>
-      ) : (
-        <>
-          <CheckCircle />
-          <span>완료</span>
-        </>
-      )}
-    </Badge>
-  );
+export function StateBadge({ status }: { status: InquiryStatus }) {
+  if (status === '대기') {
+    return (
+      <Badge variant="secondary">
+        <Clock />
+        <span>답변대기</span>
+      </Badge>
+    );
+  }
+
+  if (status === '상담') {
+    return (
+      <Badge variant="secondary" className="bg-deep-green text-white">
+        <MessageCircle />
+        <span>상담중</span>
+      </Badge>
+    );
+  }
+
+  if (status === '종료') {
+    return (
+      <Badge variant="secondary" className="bg-red-500 text-white">
+        <CheckCircle />
+        <span>종료</span>
+      </Badge>
+    );
+  }
+
+  return null;
 }

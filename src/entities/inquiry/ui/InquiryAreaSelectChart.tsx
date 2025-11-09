@@ -15,7 +15,6 @@ export function InquiryAreaSelectChart() {
   const chartData = useMemo(() => {
     const now = new Date();
 
-    // ✅ 최근 7일 날짜 배열 생성
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(now);
       d.setDate(now.getDate() - (6 - i)); // 6일 전 ~ 오늘

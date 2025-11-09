@@ -2,19 +2,15 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 
-import { items } from '@/shared/data/inquiryItem';
-import { getChatLogsByEmail } from '@/shared/data/chatItem';
-
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
 import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
-import { CustomerInformation } from './CustomerInformation';
-import { AIAssist } from './AIAssist';
-import { PastInquiryList } from './PastInquiryList';
-import { ChatHistoryViewer } from './ChatHistoryViewer';
+import { CustomerInformation, AIAssist, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
+import { AIBadge } from '@/entities/ai';
+import { InquiryType } from '@/shared/types/inquiry';
 
 interface InquiryDetailPageProps {
   params: Promise<{
@@ -22,23 +18,28 @@ interface InquiryDetailPageProps {
   }>;
 }
 
-export async function InquiryDetailPage({ params }: InquiryDetailPageProps) {
+export async function InquiryDetail({ params }: InquiryDetailPageProps) {
   const { id } = await params;
 
-  // 1. 현재 문의 내역 찾기
-  const inquiry = items.find(item => item.id === id);
+  const inquiry: InquiryType | undefined = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases/`)
+    .then(res => res.json())
+    .then(data => data.data)
+    .then((cases: InquiryType[]) => cases.find(item => item.case_id === Number(id)));
 
   if (!inquiry) {
     notFound();
   }
 
-  // 2. 과거 상담 이력 찾기 (현재 문의 제외)
-  const pastInquiries = items
-    .filter(item => item.email === inquiry.email && item.id !== inquiry.id)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const pastInquiries: InquiryType[] = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/customers/${inquiry.customer_id}/cases`
+  )
+    .then(res => res.json())
+    .then(data => data.data);
+  const chatLogs = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cases/${id}/messages`).then(res => res.json());
 
-  // 3. 챗봇/보이스봇 이력 불러오기 (비동기)
-  const chatLogs = await getChatLogsByEmail(inquiry.email);
+  if (!inquiry) {
+    notFound();
+  }
 
   return (
     // max-w-7xl로 확장
@@ -57,14 +58,17 @@ export async function InquiryDetailPage({ params }: InquiryDetailPageProps) {
       <div className="border-b p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">{inquiry.title}</h1>
-          <StateBadge status={inquiry.status} />
+          <div className="flex items-center gap-2">
+            {/* <AIBadge status={inquiry.processedByAI} /> */}
+            <StateBadge status={inquiry.status} />
+          </div>
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{new Date(inquiry.createdAt).toLocaleString('ko-KR')}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</p>
       </div>
 
       {/* 2. 고객 정보 */}
       <div className="border-b p-6">
-        <CustomerInformation inquiry={inquiry} />
+        <CustomerInformation customerId={inquiry.customer_id} />
       </div>
 
       {/* 3. 3분할 탭 영역 */}
@@ -116,7 +120,7 @@ export async function InquiryDetailPage({ params }: InquiryDetailPageProps) {
                   <h3 className="font-semibold">챗봇/보이스봇 이력 ({chatLogs.length})</h3>
                 </div>
                 <ScrollArea className="h-0 flex-1">
-                  <ChatHistoryViewer logs={chatLogs} />
+                  <ChatHistoryViewer chats={chatLogs} />
                 </ScrollArea>
               </div>
             </ResizablePanel>

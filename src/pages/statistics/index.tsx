@@ -1,1 +1,1 @@
-export * from './ui/StatisticsPage';
+export { Statistics } from './ui/Statistics';

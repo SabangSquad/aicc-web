@@ -1,13 +1,13 @@
 'use client';
 import { CheckCircle, Clock, MessageSquare } from 'lucide-react';
 import { isToday } from '@/shared/lib/date';
-import { items } from '@/shared/data/inquiryItem';
 import { Separator } from '@/shared/ui/separator';
+import { InquiryType } from '@/shared/types/inquiry';
 
-export function KPIAnalysis() {
-  const pending = items.filter(item => item.status === 'pending').length;
-  const todayNew = items.filter(item => isToday(item.createdAt)).length;
-  const todayDone = items.filter(item => item.status === 'completed' && isToday(item.createdAt)).length;
+export function KPIAnalysis({ items }: { items: InquiryType[] }) {
+  const pending = items.filter(item => item.status === '대기').length;
+  const todayNew = items.filter(item => isToday(item.created_at)).length;
+  const todayDone = items.filter(item => item.status === '종료' && isToday(item.created_at)).length;
 
   return (
     <div className="flex gap-6 h-24">

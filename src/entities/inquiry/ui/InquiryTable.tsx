@@ -1,10 +1,10 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { items } from '@/shared/data/inquiryItem';
 import { StateBadge } from './StateBadge';
+import { InquiryType } from '@/shared/types/inquiry';
 
-export function InquiryTable() {
+export function InquiryTable({ items }: { items: InquiryType[] }) {
   const router = useRouter();
   return (
     <div className="lg:col-span-2 space-y-4">
@@ -23,13 +23,17 @@ export function InquiryTable() {
         </TableHeader>
         <TableBody>
           {items.map(item => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => router.push(`/inquiry/${item.id}`)}>
+            <TableRow
+              key={item.case_id}
+              className="cursor-pointer"
+              onClick={() => router.push(`/inquiry/${item.case_id}`)}
+            >
               <TableCell>
                 <StateBadge status={item.status} />
               </TableCell>
               <TableCell className="font-medium">{item.title}</TableCell>
-              <TableCell className="hidden md:table-cell">{item.customerName}</TableCell>
-              <TableCell className="text-right">{new Date(item.createdAt).toLocaleString('ko-kr')}</TableCell>
+              <TableCell className="hidden md:table-cell">{item.customer_id}</TableCell>
+              <TableCell className="text-right">{new Date(item.created_at).toLocaleString('ko-kr')}</TableCell>
             </TableRow>
           ))}
         </TableBody>

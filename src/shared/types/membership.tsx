@@ -1,1 +1,1 @@
-export type MembershipLevel = 'bronze' | 'silver' | 'gold';
+export type MembershipLevel = 'VIP' | 'GOLD' | 'VVIP' | 'BRONZE' | 'SILVER';

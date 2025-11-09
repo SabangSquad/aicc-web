@@ -17,13 +17,10 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
           <h3 className="mb-3 text-lg font-medium text-ai">AI 감정 분석</h3>
           <div className="bg-light-red p-4 rounded-lg text-black-primary">
             <div className="flex mb-2 font-bold text-lg ">
-              <span>🤬 화남</span>
+              <span>🤬 {inquiry.emotion}</span>
             </div>
             <div className="mt-4 flex flex-col gap-1 text-sm bg-white p-2 rounded-lg">
-              <span>분석</span>
-              <span className="text-black-secondary">
-                고객의 톤에서 약간의 불안감이 감지됩니다. 친근하고 안심시키는 톤으로 응답하세요.
-              </span>
+              <span>{inquiry.aiSummary}</span>
             </div>
           </div>
         </div>

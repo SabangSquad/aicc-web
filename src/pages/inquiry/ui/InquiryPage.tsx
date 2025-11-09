@@ -4,38 +4,43 @@ import Link from 'next/link';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
-import { Button } from '@/shared/ui/button';
 import { ScrollArea } from '@/shared/ui/scroll-area';
-import { Separator } from '@/shared/ui/separator';
+import { Input } from '@/shared/ui/input';
 
-import { items } from '@/shared/data/inquiryItem';
 import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
-import { CustomerInformation } from './CustomerInformation';
-import { AIAssist } from './AIAssist';
-import { SquareArrowOutUpRight } from 'lucide-react';
 import { InquiryType } from '@/shared/types/inquiry';
+import { RightPannel } from './RightPannel';
+// import { AIBadge } from '@/entities/ai';
 
-export function InquiryPage() {
+export function InquiryPage({ items }: { items: InquiryType[] }) {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryType | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const pendingInquiries = items.filter((inquiry: InquiryType) => inquiry.status === 'pending');
-  const completedInquiries = items.filter((inquiry: InquiryType) => inquiry.status === 'completed');
+  const filteredItems = items.filter(inquiry => inquiry.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const pendingInquiries = filteredItems.filter((inquiry: InquiryType) => inquiry.status === '대기');
+  const ongoingInquiries = filteredItems.filter((inquiry: InquiryType) => inquiry.status === '상담');
+  const completedInquiries = filteredItems.filter((inquiry: InquiryType) => inquiry.status === '종료');
 
   const renderInquiryItem = (inquiry: InquiryType) => (
-    <button
-      key={inquiry.id}
-      onClick={() => setSelectedInquiry(inquiry)}
-      className={`flex w-full flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ${selectedInquiry?.id === inquiry.id && 'bg-muted'}`}
+    <Link
+      key={inquiry.case_id}
+      href={`/inquiry/${inquiry.case_id}`}
+      onMouseEnter={() => setSelectedInquiry(inquiry)}
+      className={`flex w-full flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ${selectedInquiry?.case_id === inquiry.case_id && 'bg-muted'}`}
     >
       <div className="flex w-full items-center justify-between">
         <span className="font-semibold">{inquiry.title}</span>
-        <StateBadge status={inquiry.status} />
+        <div className="flex items-center gap-2">
+          {/* <AIBadge status={inquiry.processedByAI} /> */}
+          <StateBadge status={inquiry.status} />
+        </div>
       </div>
 
       <div className="text-xs font-medium">{inquiry.category}</div>
-      <div className="text-xs text-muted-foreground">{new Date(inquiry.createdAt).toLocaleString('ko-KR')}</div>
       <div className="line-clamp-2 text-xs text-muted-foreground">{inquiry.content}</div>
-    </button>
+      <div className="text-xs text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</div>
+    </Link>
   );
 
   return (
@@ -43,23 +48,34 @@ export function InquiryPage() {
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px] ">
         <ResizablePanel defaultSize={30} minSize={25}>
           <div className="flex h-full flex-col">
-            <Tabs defaultValue="all" className="flex-1 overflow-hidden">
+            <Tabs defaultValue="전체" className="flex-1 overflow-hidden">
               <div className="p-4">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="all">전체</TabsTrigger>
-                  <TabsTrigger value="pending">답변대기</TabsTrigger>
-                  <TabsTrigger value="completed">완료</TabsTrigger>
+                <Input
+                  type="search"
+                  placeholder="제목 또는 내용으로 검색..."
+                  className="mb-4"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="전체">전체</TabsTrigger>
+                  <TabsTrigger value="상담">상담</TabsTrigger>
+                  <TabsTrigger value="대기">답변대기</TabsTrigger>
+                  <TabsTrigger value="종료">완료</TabsTrigger>
                 </TabsList>
               </div>
 
               <ScrollArea className="h-0 flex-1 pb-4 px-4">
-                <TabsContent value="all">
-                  <div className="flex flex-col gap-2">{items.map(renderInquiryItem)}</div>
+                <TabsContent value="전체">
+                  <div className="flex flex-col gap-2">{filteredItems.map(renderInquiryItem)}</div>
                 </TabsContent>
-                <TabsContent value="pending">
+                <TabsContent value="상담">
+                  <div className="flex flex-col gap-2">{ongoingInquiries.map(renderInquiryItem)}</div>
+                </TabsContent>
+                <TabsContent value="대기">
                   <div className="flex flex-col gap-2">{pendingInquiries.map(renderInquiryItem)}</div>
                 </TabsContent>
-                <TabsContent value="completed">
+                <TabsContent value="종료">
                   <div className="flex flex-col gap-2">{completedInquiries.map(renderInquiryItem)}</div>
                 </TabsContent>
               </ScrollArea>
@@ -70,50 +86,7 @@ export function InquiryPage() {
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={70}>
-          <div className="flex h-full items-center justify-center">
-            {selectedInquiry ? (
-              <div className="flex h-full w-full flex-col">
-                <div className="border-b p-6">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold tracking-tight">{selectedInquiry.title}</h2>
-                    <StateBadge status={selectedInquiry.status} />
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {new Date(selectedInquiry.createdAt).toLocaleString('ko-KR')}
-                  </p>
-                </div>
-
-                <ScrollArea className="h-0 flex-1 px-6">
-                  <div className="space-y-8 py-6">
-                    <CustomerInformation inquiry={selectedInquiry} />
-                    <Separator />
-                    <AIAssist inquiry={selectedInquiry} />
-                    <Separator />
-
-                    <div>
-                      <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                      <div className="w-full rounded-md border p-4">
-                        <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
-                      </div>
-                    </div>
-                  </div>
-                </ScrollArea>
-
-                <div className="border-t px-6 py-4">
-                  <Button asChild>
-                    <Link href={`/inquiry/${selectedInquiry.id}`}>
-                      <SquareArrowOutUpRight />
-                      상세정보
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <p>왼쪽 목록에서 문의를 선택하세요.</p>
-              </div>
-            )}
-          </div>
+          <RightPannel selectedInquiry={selectedInquiry} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

@@ -46,7 +46,7 @@ export function InquiryAIChart() {
     <div className="flex flex-col pb-10">
       {/* 제목과 설명 */}
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold tracking-tight">AI 자동 처리율</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-ai">AI 자동 처리율</h2>
         <p className="mt-1 text-muted-foreground">
           최근 문의 내역 기준으로 날짜별 AI 답변 처리율을 확인할 수 있습니다.
         </p>
