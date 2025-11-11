@@ -10,12 +10,12 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
   const todayDone = items.filter(item => item.status === '종료' && isToday(item.created_at)).length;
 
   return (
-    <div className="flex gap-6 h-24">
+    <div className="flex h-24 gap-6">
       {/* 처리 대기 중 */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium">처리 대기 중</span>
-          <Clock className="h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col justify-center flex-1">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">답변 대기 중</span>
+          <Clock className="w-4 h-4 text-muted-foreground" />
         </div>
         <div className="text-2xl font-bold">{pending}건</div>
       </div>
@@ -23,10 +23,10 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
       <Separator orientation="vertical" />
 
       {/* 오늘 신규 접수 */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col justify-center flex-1">
+        <div className="flex items-center justify-between">
           <span className="text-sm font-medium">오늘 신규 접수</span>
-          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+          <MessageSquare className="w-4 h-4 text-muted-foreground" />
         </div>
         <div className="text-2xl font-bold">+{todayNew}건</div>
       </div>
@@ -34,10 +34,10 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
       <Separator orientation="vertical" />
 
       {/* 오늘 처리 완료 */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col justify-center flex-1">
+        <div className="flex items-center justify-between">
           <span className="text-sm font-medium">오늘 처리 완료</span>
-          <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          <CheckCircle className="w-4 h-4 text-muted-foreground" />
         </div>
         <div className="text-2xl font-bold">{todayDone}건</div>
       </div>

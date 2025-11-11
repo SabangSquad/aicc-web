@@ -1,10 +1,33 @@
+'use client';
 import { StateBadge } from '@/entities/inquiry';
 import { AIAssist, CustomerInformation } from '@/features/inquiry';
+import { Customer } from '@/shared/types/customer';
 import { InquiryType } from '@/shared/types/inquiry';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
+import { useEffect, useState } from 'react';
 
-export function RightPannel({ selectedInquiry }: { selectedInquiry: InquiryType | null }) {
+export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType | null }) {
+  const [customer, setCustomer] = useState<Customer | null>(null);
+
+  useEffect(() => {
+    if (selectedInquiry) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${selectedInquiry.customer_id}`)
+        .then(res => res.json())
+        .then(data => setCustomer(data))
+        .catch(() => setCustomer(null));
+    } else {
+      setCustomer(null);
+    }
+  }, [selectedInquiry]);
+
+  if (!customer) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">고객 정보를 불러오는 중...</p>
+      </div>
+    );
+  }
   return (
     <div className="flex h-full items-center justify-center">
       {selectedInquiry ? (
@@ -24,7 +47,7 @@ export function RightPannel({ selectedInquiry }: { selectedInquiry: InquiryType 
 
           <ScrollArea className="h-0 flex-1 px-6">
             <div className="space-y-8 py-6">
-              <CustomerInformation customerId={selectedInquiry.customer_id} />
+              <CustomerInformation customer={customer} />
               <Separator />
               <AIAssist inquiry={selectedInquiry} />
               <Separator />
@@ -32,7 +55,7 @@ export function RightPannel({ selectedInquiry }: { selectedInquiry: InquiryType 
               <div>
                 <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
                 <div className="w-full rounded-md border p-4">
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.title}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
                 </div>
               </div>
             </div>

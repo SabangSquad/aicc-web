@@ -1,1 +1,3 @@
-export type MembershipLevel = 'VIP' | 'GOLD' | 'VVIP' | 'BRONZE' | 'SILVER';
+import { MEMBERSHIP_LEVEL } from '../constant/membership';
+
+export type MembershipLevel = (typeof MEMBERSHIP_LEVEL)[number];

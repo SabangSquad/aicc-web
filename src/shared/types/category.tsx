@@ -1,5 +1,5 @@
-import { category } from '../constant/category';
+import { CATEGORY } from '../constant/category';
 
-export type Category = (typeof category)[number];
+export type Category = (typeof CATEGORY)[number];
 
 export type CategoryWithAll = Category | '전체';
