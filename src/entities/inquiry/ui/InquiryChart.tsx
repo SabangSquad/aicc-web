@@ -31,8 +31,8 @@ export function InquiryChart({ items }: { items: InquiryType[] }) {
         </p>
       </div>
 
-      <div className="flex-1 ">
-        <ChartContainer config={categoryChartColorSet} className="mx-auto aspect-square max-h-[300px]">
+      <div className="flex-1">
+        <ChartContainer config={categoryChartColorSet} className="mx-auto aspect-square max-h-[320px]">
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent nameKey="category" hideLabel />} />
             <Pie data={chartData} dataKey="count" nameKey="category" innerRadius={50} outerRadius={90} label />
