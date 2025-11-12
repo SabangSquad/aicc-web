@@ -20,7 +20,7 @@ interface InquiryDetailPageProps {
 export async function InquiryDetail({ params }: InquiryDetailPageProps) {
   const { id } = await params;
 
-  const inquiryRes = fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases/`);
+  const inquiryRes = fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases`);
 
   const [inquiry, customer, pastInquiries, chatLogs] = await Promise.all([
     inquiryRes.then(res => res.json()).then(data => data.data.find((item: InquiryType) => item.case_id === Number(id))),
@@ -56,7 +56,7 @@ export async function InquiryDetail({ params }: InquiryDetailPageProps) {
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={80} minSize={30}>
           <div className="flex flex-col h-full">
             <ScrollArea className="flex-1 h-0">
               <div className="p-6 space-y-8">
