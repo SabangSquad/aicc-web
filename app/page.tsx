@@ -1,2 +1,2 @@
-import { HomePage } from '@/pages/home';
-export default HomePage;
+import { Home } from '@/pages/home';
+export default Home;

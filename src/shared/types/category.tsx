@@ -1,3 +1,5 @@
-export type Category = '배송' | '결제' | '제품' | '기타';
+import { CATEGORY } from '../constant/category';
+
+export type Category = (typeof CATEGORY)[number];
 
 export type CategoryWithAll = Category | '전체';

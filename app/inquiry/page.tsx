@@ -1,2 +1,2 @@
-import { InquiryPage } from '@/pages/inquiry';
-export default InquiryPage;
+import { Inquiry } from '@/pages/inquiry';
+export default Inquiry;

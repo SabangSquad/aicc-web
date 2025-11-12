@@ -1,2 +1,1 @@
-export * from './ui/InquiryPage';
-export * from './ui/InquiryDetailPage';
+export { Inquiry } from './ui/Inquiry';
