@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
-import { StateBadge } from '@/entities/inquiry';
+import { InquiryAPI, StateBadge } from '@/entities/inquiry';
 import { CustomerInformation, AIAssist, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
 import { InquiryType } from '@/shared/types/inquiry';
 // import { AIBadge } from '@/entities/ai';
@@ -19,16 +19,17 @@ interface InquiryDetailPageProps {
 
 export async function InquiryDetail({ params }: InquiryDetailPageProps) {
   const { id } = await params;
+  const inquiry: InquiryType | undefined = (await InquiryAPI.getListByAgent(3)).find(
+    item => item.case_id === Number(id)
+  );
 
-  const inquiryRes = fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases/`);
-
-  const [inquiry, customer, pastInquiries, chatLogs] = await Promise.all([
-    inquiryRes.then(res => res.json()).then(data => data.data.find((item: InquiryType) => item.case_id === Number(id))),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${id}`).then(res => res.json()),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${id}/cases`)
-      .then(res => res.json())
-      .then(data => data.data),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/cases/${id}/messages`).then(res => res.json()),
+  if (!inquiry) {
+    return <div className="p-6">문의 내역을 찾을 수 없습니다.</div>;
+  }
+  const [customer, pastInquiries, chatLogs] = await Promise.all([
+    InquiryAPI.getCustomer(inquiry.customer_id),
+    InquiryAPI.getCustomerCases(inquiry.customer_id),
+    InquiryAPI.getMessages(id),
   ]);
 
   return (
@@ -56,7 +57,7 @@ export async function InquiryDetail({ params }: InquiryDetailPageProps) {
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={60} minSize={30}>
           <div className="flex flex-col h-full">
             <ScrollArea className="flex-1 h-0">
               <div className="p-6 space-y-8">
@@ -75,7 +76,7 @@ export async function InquiryDetail({ params }: InquiryDetailPageProps) {
 
         <ResizableHandle withHandle />
 
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={40} minSize={30}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel defaultSize={50} minSize={15}>
               <div className="flex flex-col h-full">

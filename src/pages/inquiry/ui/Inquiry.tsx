@@ -1,9 +1,8 @@
-import { InquiryType } from '@/shared/types/inquiry';
 import { InquiryPage } from './InquiryPage';
+import { InquiryAPI } from '@/entities/inquiry';
 
 export async function Inquiry() {
-  const items: InquiryType[] = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases`)
-    .then(res => res.json())
-    .then(data => data.data);
+  const items = await InquiryAPI.getListByAgent(3);
+
   return <InquiryPage items={items} />;
 }

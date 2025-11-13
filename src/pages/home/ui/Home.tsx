@@ -1,16 +1,11 @@
 import { Separator } from '@/shared/ui/separator';
-import { InquiryTable } from '@/entities/inquiry/ui/InquiryTable';
-import { KPIAnalysis } from '@/entities/inquiry/ui/KPIAnalysis';
-import { InquiryChart } from '@/entities/inquiry/ui/InquiryChart';
-import { InquiryLineChart } from '@/entities/inquiry/ui/InquiryLineChart';
-import { InquiryType } from '@/shared/types/inquiry';
+import { InquiryTable, KPIAnalysis, InquiryChart, InquiryLineChart } from '@/entities/inquiry';
+import { InquiryAPI } from '@/entities/inquiry/api/api';
 
 export async function Home() {
-  const items: InquiryType[] = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/agents/3/cases`)
-    .then(res => res.json())
-    .then(data => data.data);
-
+  const items = await InquiryAPI.getListByAgent(3);
   const pending = items.filter(item => item.status === '대기').length;
+
   return (
     <div className="p-6 mx-auto space-y-10 max-w-7xl lg:p-8">
       <h1 className="text-3xl font-bold tracking-tight">

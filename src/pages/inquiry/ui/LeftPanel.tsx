@@ -6,20 +6,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Input } from '@/shared/ui/input';
 import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
 import { InquiryType } from '@/shared/types/inquiry';
+import { useState } from 'react';
 
 export function LeftPanel({
   items,
   selectedInquiry,
   setSelectedInquiry,
-  searchTerm,
-  setSearchTerm,
 }: {
   items: InquiryType[];
   selectedInquiry: InquiryType | null;
   setSelectedInquiry: (inquiry: InquiryType) => void;
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
 }) {
+  const [searchTerm, setSearchTerm] = useState('');
   const filteredItems = items.filter(inquiry => inquiry.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const pendingInquiries = filteredItems.filter(inquiry => inquiry.status === '대기');

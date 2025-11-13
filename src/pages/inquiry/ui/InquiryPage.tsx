@@ -8,19 +8,12 @@ import { RightPanel } from './RightPanel';
 
 export function InquiryPage({ items }: { items: InquiryType[] }) {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryType | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <div className="w-full h-screen overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px]">
         <ResizablePanel defaultSize={30} minSize={25}>
-          <LeftPanel
-            items={items}
-            selectedInquiry={selectedInquiry}
-            setSelectedInquiry={setSelectedInquiry}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <LeftPanel items={items} selectedInquiry={selectedInquiry} setSelectedInquiry={setSelectedInquiry} />
         </ResizablePanel>
 
         <ResizableHandle withHandle />

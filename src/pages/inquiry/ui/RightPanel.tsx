@@ -1,33 +1,64 @@
 'use client';
-import { StateBadge } from '@/entities/inquiry';
+import { useEffect, useState } from 'react';
+import { InquiryAPI, StateBadge } from '@/entities/inquiry';
 import { AIAssist, CustomerInformation } from '@/features/inquiry';
 import { Customer } from '@/shared/types/customer';
 import { InquiryType } from '@/shared/types/inquiry';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
-import { useEffect, useState } from 'react';
+import { Textarea } from '@/shared/ui/textarea';
+import { Button } from '@/shared/ui/button';
 
 export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType | null }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [memo, setMemo] = useState('');
 
   useEffect(() => {
+    const fetchCustomer = async () => {
+      if (selectedInquiry) {
+        const data = await InquiryAPI.getCustomer(selectedInquiry.customer_id);
+        setCustomer(data);
+      }
+    };
+    fetchCustomer();
+
     if (selectedInquiry) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${selectedInquiry.customer_id}`)
-        .then(res => res.json())
-        .then(data => setCustomer(data))
-        .catch(() => setCustomer(null));
-    } else {
-      setCustomer(null);
+      setMemo(selectedInquiry.memo ?? '');
     }
   }, [selectedInquiry]);
+
+  const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMemo(e.target.value);
+  };
+
+  const handleSaveMemo = async () => {
+    if (!selectedInquiry) {
+      return;
+    }
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/inquiries/${selectedInquiry.case_id}/memo`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memo }),
+      });
+      if (!res.ok) {
+        throw new Error('메모 저장 실패');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (!customer) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">고객 정보를 불러오는 중...</p>
+        <div className="text-center text-muted-foreground">
+          <p>왼쪽 목록에서 문의를 선택하세요.</p>
+        </div>
       </div>
     );
   }
+
   return (
     <div className="flex h-full items-center justify-center">
       {selectedInquiry ? (
@@ -36,7 +67,6 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold tracking-tight">{selectedInquiry.title}</h2>
               <div className="flex items-center gap-2">
-                {/* <AIBadge status={selectedInquiry.processedByAI} /> */}
                 <StateBadge status={selectedInquiry.status} />
               </div>
             </div>
@@ -52,10 +82,23 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
               <AIAssist inquiry={selectedInquiry} />
               <Separator />
 
-              <div>
-                <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                <div className="w-full rounded-md border p-4">
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
+              <div className="flex flex-row gap-6">
+                <div className="flex-1">
+                  <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
+                  <div className="w-full rounded-md p-4 bg-muted/50">
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <h3 className="mb-3 text-lg font-medium">메모</h3>
+                  <Textarea
+                    value={memo}
+                    onChange={handleMemoChange}
+                    placeholder="메모를 입력하세요..."
+                    className="min-h-[120px] mb-2"
+                  />
+                  <Button onClick={handleSaveMemo}>저장</Button>
                 </div>
               </div>
             </div>

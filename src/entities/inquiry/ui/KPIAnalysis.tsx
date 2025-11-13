@@ -11,7 +11,6 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
 
   return (
     <div className="flex h-24 gap-6">
-      {/* 처리 대기 중 */}
       <div className="flex flex-col justify-center flex-1">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">답변 대기 중</span>
@@ -22,7 +21,6 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
 
       <Separator orientation="vertical" />
 
-      {/* 오늘 신규 접수 */}
       <div className="flex flex-col justify-center flex-1">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">오늘 신규 접수</span>
@@ -33,7 +31,6 @@ export function KPIAnalysis({ items }: { items: InquiryType[] }) {
 
       <Separator orientation="vertical" />
 
-      {/* 오늘 처리 완료 */}
       <div className="flex flex-col justify-center flex-1">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">오늘 처리 완료</span>

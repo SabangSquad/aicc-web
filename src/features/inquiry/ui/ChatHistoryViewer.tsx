@@ -1,32 +1,15 @@
-'use client';
-import { useEffect, useRef } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Bot, User } from 'lucide-react';
+import { Message } from '@/entities/inquiry';
 
-type ChatLogType = {
-  message_id: number;
-  case_id: number;
-  occurred_at: string;
-  content: string;
-  speaker: '상담사' | '고객' | '보이스봇' | '챗봇';
-};
-
-export function ChatHistoryViewer({ chats }: { chats: ChatLogType[] }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [chats]);
-
+export function ChatHistoryViewer({ chats }: { chats: Message[] }) {
   if (!chats || chats.length === 0) {
     return <div className="p-4 text-center text-sm text-muted-foreground">챗봇/보이스봇 대화 내역이 없습니다.</div>;
   }
 
   return (
-    <ScrollArea ref={containerRef} className="flex-1 h-0">
+    <ScrollArea className="flex-1 h-0">
       <div className="space-y-6 p-4">
         <div className="flex flex-col gap-3">
           {chats.map(msg => (
@@ -38,12 +21,11 @@ export function ChatHistoryViewer({ chats }: { chats: ChatLogType[] }) {
   );
 }
 
-function ChatMessageBubble({ message }: { message: ChatLogType }) {
+function ChatMessageBubble({ message }: { message: Message }) {
   const isUser = message.speaker === '고객';
 
   return (
     <div className={cn('flex items-start gap-3', isUser ? 'justify-end' : 'justify-start')}>
-      {/* 봇 아이콘 */}
       {!isUser && (
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Bot className="h-5 w-5" />

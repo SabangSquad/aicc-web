@@ -1,9 +1,24 @@
+'use client';
 import { emotionMap } from '@/shared/lib/emotion';
 import { InquiryType } from '@/shared/types/inquiry';
+import { Manual } from '@/shared/types/manual';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/shared/ui/item';
+import { ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
   const emo = emotionMap[inquiry.emotion];
+  const [manuals, setManuals] = useState<Manual[]>([]);
+
+  useEffect(() => {
+    const fetchManuals = async () => {
+      const manuals: Manual[] = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/manuals?category=${inquiry.category}`)
+        .then(res => res.json())
+        .then(data => data.data);
+      setManuals(manuals);
+    };
+    fetchManuals();
+  }, [inquiry.category]);
 
   return (
     <>
@@ -35,20 +50,40 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
         </div>
         <div className="flex-1">
           <h3 className="mb-3 text-lg font-medium text-ai">AI 답변 추천</h3>
-          <Item variant="muted" className="mb-4">
-            <ItemMedia>
-              <div className="p-2 bg-ai rounded-full">📦</div>
-            </ItemMedia>
-
-            <ItemContent>
-              <ItemTitle className="text-black-primary">
-                일반 배송: 2-3일, 당일 배송: 오후 6시 이전 주문시 가능, 제주/도서지역: 3-5일 추가 소요
-              </ItemTitle>
-              <ItemDescription>배송/정책</ItemDescription>
-            </ItemContent>
-          </Item>
+          {manuals.length === 0 && <p className="text-sm text-muted-foreground">추천 답변이 없습니다.</p>}
+          {manuals.slice(0, 3).map(manual => (
+            <ManualItem key={manual.manual_id} manual={manual} />
+          ))}
         </div>
       </div>
     </>
+  );
+}
+
+function ManualItem({ manual }: { manual: Manual }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <Item
+      variant="muted"
+      className="mb-4 cursor-pointer transition-all hover:shadow-lg duration-500"
+      onClick={() => setExpanded(!expanded)}
+    >
+      <ItemMedia>
+        <div className="p-2 bg-ai rounded-full">📦</div>
+      </ItemMedia>
+
+      <ItemContent>
+        <ItemTitle className={`text-black-primary ${expanded ? 'line-clamp-none' : 'line-clamp-2'}`}>
+          {manual.content}
+        </ItemTitle>
+        <ItemDescription className="flex items-center justify-between">
+          <span>
+            {manual.title} {'\u007C'} {manual.category}
+          </span>
+          <ChevronDown className={`transition-transform duration-500 ${expanded ? 'rotate-180' : ''}`} size={16} />
+        </ItemDescription>
+      </ItemContent>
+    </Item>
   );
 }
