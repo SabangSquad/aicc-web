@@ -1,11 +1,9 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
+import Link from 'next/link';
 import { StateBadge } from './StateBadge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { InquiryType } from '@/shared/types/inquiry';
 
 export function InquiryTable({ items }: { items: InquiryType[] }) {
-  const router = useRouter();
   return (
     <div className="space-y-4 lg:col-span-2">
       <div>
@@ -23,18 +21,16 @@ export function InquiryTable({ items }: { items: InquiryType[] }) {
         </TableHeader>
         <TableBody>
           {items.map(item => (
-            <TableRow
-              key={item.case_id}
-              className="cursor-pointer"
-              onClick={() => router.push(`/inquiry/${item.case_id}`)}
-            >
-              <TableCell>
-                <StateBadge status={item.status} />
-              </TableCell>
-              <TableCell className="font-medium">{item.title}</TableCell>
-              <TableCell className="hidden md:table-cell">{item.category}</TableCell>
-              <TableCell className="text-right">{new Date(item.created_at).toLocaleString('ko-kr')}</TableCell>
-            </TableRow>
+            <Link key={item.case_id} href={`/inquiry/${item.case_id}`} className="contents">
+              <TableRow className="cursor-pointer hover:bg-muted/50 transition">
+                <TableCell>
+                  <StateBadge status={item.status} />
+                </TableCell>
+                <TableCell className="font-medium">{item.title}</TableCell>
+                <TableCell className="hidden md:table-cell">{item.category}</TableCell>
+                <TableCell className="text-right">{new Date(item.created_at).toLocaleString('ko-kr')}</TableCell>
+              </TableRow>
+            </Link>
           ))}
         </TableBody>
       </Table>

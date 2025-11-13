@@ -6,6 +6,7 @@ export const membershipLabels: Record<MembershipLevel, string> = {
   GOLD: '골드',
   VIP: 'VIP',
   VVIP: 'VVIP',
+  FAMILY: '패밀리',
 };
 export const membershipColors: Record<MembershipLevel, { bg: string; text: string }> = {
   BRONZE: { bg: 'bg-amber-100', text: 'text-amber-800' },
@@ -13,4 +14,5 @@ export const membershipColors: Record<MembershipLevel, { bg: string; text: strin
   GOLD: { bg: 'bg-yellow-200', text: 'text-yellow-800' },
   VIP: { bg: 'bg-red-200', text: 'text-red-800' },
   VVIP: { bg: 'bg-purple-200', text: 'text-purple-800' },
+  FAMILY: { bg: 'bg-green-200', text: 'text-green-800' },
 };

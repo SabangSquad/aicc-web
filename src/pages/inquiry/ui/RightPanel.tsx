@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { StateBadge } from '@/entities/inquiry';
+import { InquiryAPI, StateBadge } from '@/entities/inquiry';
 import { AIAssist, CustomerInformation } from '@/features/inquiry';
 import { Customer } from '@/shared/types/customer';
 import { InquiryType } from '@/shared/types/inquiry';
@@ -16,15 +16,12 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
   useEffect(() => {
     const fetchCustomer = async () => {
       if (selectedInquiry) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customers/${selectedInquiry.customer_id}`)
-          .then(res => res.json())
-          .then(data => setCustomer(data))
-          .catch(() => setCustomer(null));
+        const data = await InquiryAPI.getCustomer(selectedInquiry.customer_id);
+        setCustomer(data);
       }
     };
     fetchCustomer();
 
-    // ✅ inquiry 바뀔 때 memo 초기화
     if (selectedInquiry) {
       setMemo(selectedInquiry.memo ?? '');
     }
