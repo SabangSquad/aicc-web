@@ -1,6 +1,7 @@
-import { Separator } from '@/shared/ui/separator';
 import { InquiryTable, KPIAnalysis, InquiryChart, InquiryLineChart } from '@/entities/inquiry';
 import { InquiryAPI } from '@/entities/inquiry/api/api';
+
+import { Separator } from '@/shared/ui/separator';
 
 export async function Home() {
   const items = await InquiryAPI.getListByAgent(3);

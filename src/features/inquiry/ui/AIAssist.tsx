@@ -1,5 +1,7 @@
 'use client';
 import { emotionMap } from '@/shared/lib/emotion';
+import { getEmotionDescription } from '@/shared/lib/emotionAnalytics';
+import { generateDummySummary } from '@/shared/lib/generate';
 import { InquiryType } from '@/shared/types/inquiry';
 import { Manual } from '@/shared/types/manual';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/shared/ui/item';
@@ -26,11 +28,7 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
         <h3 className="mb-3 text-lg font-medium text-ai">AI 상담 요약</h3>
         <Item variant="muted" className="mb-4">
           <ItemContent>
-            <ItemTitle className="text-black-primary">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur in illo velit voluptatem consectetur
-              ut ad reprehenderit veniam omnis distinctio et sequi, molestiae, quam dolore, nostrum minima tenetur
-              perspiciatis eveniet.
-            </ItemTitle>
+            <ItemTitle className="text-black-primary">{generateDummySummary(inquiry)}</ItemTitle>
           </ItemContent>
         </Item>
       </div>
@@ -38,14 +36,10 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
         <div className="flex-1">
           <h3 className="mb-3 text-lg font-medium text-ai">AI 감정 분석</h3>
           <div className="p-4 rounded-lg text-black-primary" style={{ backgroundColor: emo.color }}>
-            <div className="flex mb-2 font-bold text-lg">
+            <div className="flex mb-2 text-lg font-bold">
               {emo.emoji} {inquiry.emotion}
             </div>
-            <div className="text-sm bg-white p-2 rounded-lg">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, harum? Hic maiores sit eius cum!
-              Fugiat nam ea temporibus, fuga voluptatem molestias amet modi aliquam corporis sequi eligendi nobis
-              repudiandae!
-            </div>
+            <div className="p-2 text-sm bg-white rounded-lg">{getEmotionDescription(inquiry.emotion)}</div>
           </div>
         </div>
         <div className="flex-1">
@@ -66,11 +60,11 @@ function ManualItem({ manual }: { manual: Manual }) {
   return (
     <Item
       variant="muted"
-      className="mb-4 cursor-pointer transition-all hover:shadow-lg duration-500"
+      className="mb-4 transition-all duration-500 cursor-pointer hover:shadow-lg"
       onClick={() => setExpanded(!expanded)}
     >
       <ItemMedia>
-        <div className="p-2 bg-ai rounded-full">📦</div>
+        <div className="p-2 rounded-full bg-ai">📦</div>
       </ItemMedia>
 
       <ItemContent>
