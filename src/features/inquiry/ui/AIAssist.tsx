@@ -1,14 +1,22 @@
 'use client';
 import { emotionMap } from '@/shared/lib/emotion';
+import { Emotion } from '@/shared/types/emotion';
 import { InquiryType } from '@/shared/types/inquiry';
 import { Manual } from '@/shared/types/manual';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/shared/ui/item';
 import { ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface AIAssist {
+  ok: boolean;
+  case_id: number;
+  emotion: Emotion;
+  summary: string;
+  suggested_answer: string;
+}
 export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
-  const emo = emotionMap[inquiry.emotion];
   const [manuals, setManuals] = useState<Manual[]>([]);
+  const [aiAssist, setAIAssist] = useState<AIAssist | null>(null);
 
   useEffect(() => {
     const fetchManuals = async () => {
@@ -17,20 +25,27 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
         .then(data => data.data);
       setManuals(manuals);
     };
+    const fetchAIAssist = async () => {
+      const aiAssist: AIAssist = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/${inquiry.case_id}`, {
+        method: 'POST',
+      }).then(res => res.json());
+      setAIAssist(aiAssist);
+    };
+    fetchAIAssist();
     fetchManuals();
-  }, [inquiry.category]);
+  }, [inquiry.category, inquiry.case_id]);
 
+  if (!aiAssist) {
+    return <div>AI 상담 데이터를 불러오는 중...</div>;
+  }
+  const emo = emotionMap[aiAssist.emotion];
   return (
     <>
       <div>
         <h3 className="mb-3 text-lg font-medium text-ai">AI 상담 요약</h3>
         <Item variant="muted" className="mb-4">
           <ItemContent>
-            <ItemTitle className="text-black-primary">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur in illo velit voluptatem consectetur
-              ut ad reprehenderit veniam omnis distinctio et sequi, molestiae, quam dolore, nostrum minima tenetur
-              perspiciatis eveniet.
-            </ItemTitle>
+            <ItemTitle className="text-black-primary">{aiAssist.summary}</ItemTitle>
           </ItemContent>
         </Item>
       </div>
@@ -39,7 +54,7 @@ export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
           <h3 className="mb-3 text-lg font-medium text-ai">AI 감정 분석</h3>
           <div className="p-4 rounded-lg text-black-primary" style={{ backgroundColor: emo.color }}>
             <div className="flex mb-2 font-bold text-lg">
-              {emo.emoji} {inquiry.emotion}
+              {emo.emoji} {aiAssist.emotion}
             </div>
             <div className="text-sm bg-white p-2 rounded-lg">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, harum? Hic maiores sit eius cum!
