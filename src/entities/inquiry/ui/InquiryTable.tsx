@@ -20,7 +20,7 @@ export function InquiryTable({ items }: { items: InquiryType[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map(item => (
+          {items.slice(0, 8).map(item => (
             <Link key={item.case_id} href={`/inquiry/${item.case_id}`} className="contents">
               <TableRow className="cursor-pointer hover:bg-muted/50 transition">
                 <TableCell>

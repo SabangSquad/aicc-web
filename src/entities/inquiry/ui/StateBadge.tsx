@@ -29,6 +29,14 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
       </Badge>
     );
   }
+  if (status === 'AI자동해결') {
+    return (
+      <Badge variant="secondary" className="text-white bg-ai">
+        <CheckCircle />
+        <span>AI자동해결</span>
+      </Badge>
+    );
+  }
 
   return null;
 }
