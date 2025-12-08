@@ -23,6 +23,7 @@ export function LeftPanel({
   const pendingInquiries = filteredItems.filter(inquiry => inquiry.status === '대기');
   const ongoingInquiries = filteredItems.filter(inquiry => inquiry.status === '상담');
   const completedInquiries = filteredItems.filter(inquiry => inquiry.status === '종료');
+  const aiInquiries = filteredItems.filter(inquiry => inquiry.status === 'AI자동해결');
 
   const renderInquiryItem = (inquiry: InquiryType) => (
     <Link
@@ -55,11 +56,12 @@ export function LeftPanel({
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="전체">전체</TabsTrigger>
             <TabsTrigger value="상담">상담</TabsTrigger>
             <TabsTrigger value="대기">답변대기</TabsTrigger>
             <TabsTrigger value="종료">종료</TabsTrigger>
+            <TabsTrigger value="AI자동해결">AI자동해결</TabsTrigger>
           </TabsList>
         </div>
 
@@ -75,6 +77,9 @@ export function LeftPanel({
           </TabsContent>
           <TabsContent value="종료">
             <div className="flex flex-col gap-2">{completedInquiries.map(renderInquiryItem)}</div>
+          </TabsContent>
+          <TabsContent value="AI자동해결">
+            <div className="flex flex-col gap-2">{aiInquiries.map(renderInquiryItem)}</div>
           </TabsContent>
         </ScrollArea>
       </Tabs>
