@@ -1,7 +1,7 @@
 import { Category } from './category';
 import { Emotion } from './emotion';
 
-const InquiryStatus = ['대기', '상담', '종료'] as const;
+const InquiryStatus = ['대기', '상담', '종료', 'AI자동해결'] as const;
 
 export type InquiryStatus = (typeof InquiryStatus)[number];
 

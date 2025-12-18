@@ -4,7 +4,7 @@ import { ChartConfig } from '../ui/chart';
 const bases = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 const overallColor = 'var(--chart-5)';
 
-const getSoftColor = (base: string, idx: number) => `color-mix(in srgb, ${base} ${85 - idx * 3}%, white)`;
+const getSoftColor = (base: string, idx: number) => `color-mix(in srgb, ${base} ${85 - idx * 5}%, white)`;
 
 export const categoryChartColorSet: ChartConfig = {
   ...Object.fromEntries(
