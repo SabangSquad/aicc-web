@@ -11,6 +11,7 @@ import { CustomerInformation, AIAssist, PastInquiryList, ChatHistoryViewer } fro
 import { InquiryType } from '@/shared/types/inquiry';
 import { Manual } from '@/shared/types/manual';
 import { AIAssistType } from '@/shared/types/aiAssist';
+import { Textarea } from '@/shared/ui/textarea';
 
 interface InquiryDetailPageProps {
   params: Promise<{
@@ -37,7 +38,6 @@ export async function InquiryDetail({ params }: InquiryDetailPageProps) {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`, { method: 'POST' }),
   ]);
 
-  // 3. fetch 응답 파싱
   const manualsData = await manualsRes.json();
   const manuals: Manual[] = manualsData.data || manualsData;
   const aiAssistData: AIAssistType = await aiAssistRes.json();
@@ -74,10 +74,22 @@ export async function InquiryDetail({ params }: InquiryDetailPageProps) {
                 <AIAssist manuals={manuals} aiAssist={aiAssistData} />
 
                 <Separator />
-                <div>
-                  <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                  <div className="w-full p-4 border rounded-md bg-background">
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{inquiry.content}</p>
+                <div className="flex flex-row gap-6">
+                  <div className="flex-1">
+                    <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
+                    <div className="w-full rounded-md p-4 bg-muted/50">
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{inquiry.content}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="mb-3 text-lg font-medium">메모</h3>
+                    <Textarea
+                      value={inquiry.memo || ''}
+                      placeholder="메모를 입력하세요..."
+                      className="min-h-[120px] mb-2"
+                    />
+                    <Button>저장</Button>
                   </div>
                 </div>
               </div>

@@ -48,8 +48,12 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
       const itemDate = new Date(item.created_at);
       const diffDays = (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60 * 24);
 
-      if (dateFilter === 'week') return diffDays <= 7;
-      if (dateFilter === 'month') return diffDays <= 30;
+      if (dateFilter === 'week') {
+        return diffDays <= 7;
+      }
+      if (dateFilter === 'month') {
+        return diffDays <= 30;
+      }
       return true;
     });
 
@@ -124,7 +128,7 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
                     key={cat}
                     label={cat}
                     isSelected={selectedCategories.includes(cat)}
-                    color={categoryChartColorSet[cat].color}
+                    color={categoryChartColorSet[cat].color ?? '#000000'}
                     onClick={() => handleCategoryToggle(cat)}
                   />
                 ))}
@@ -156,7 +160,7 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
           <YAxis tickLine={false} axisLine={false} tickMargin={10} width={30} />
 
           <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
-          <ChartLegend content={<ChartLegendContent />} />
+          <ChartLegend content={<ChartLegendContent payload={undefined} />} />
 
           {selectedCategories.map(cat => (
             <Area

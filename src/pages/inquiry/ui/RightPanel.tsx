@@ -85,6 +85,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
     }
 
     setMemo(selectedInquiry.memo ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedInquiry]);
 
   const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -119,7 +120,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
     );
   }
 
-  const isDataReady = !isLoading && customer && aiAssist;
+  const isDataReady = !isLoading && customer && aiAssist && selectedInquiry.case_id === aiAssist?.case_id;
 
   return (
     <div className="flex h-full items-center justify-center">
@@ -138,39 +139,37 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
         </div>
 
         <ScrollArea className="h-0 flex-1 px-6">
-          {
-            isLoading && !customer ? (
-              <RightPanelSkeleton />
-            ) : isDataReady ? (
-              // 데이터 로딩 완료 시 실제 콘텐츠 표시
-              <div className="space-y-8 py-6">
-                <CustomerInformation customer={customer} />
-                <Separator />
-                <AIAssist manuals={manuals} aiAssist={aiAssist} />
-                <Separator />
+          {!isDataReady ? (
+            <RightPanelSkeleton />
+          ) : (
+            // 데이터 로딩 완료 시 실제 콘텐츠 표시
+            <div className="space-y-8 py-6">
+              <CustomerInformation customer={customer} />
+              <Separator />
+              <AIAssist manuals={manuals} aiAssist={aiAssist} />
+              <Separator />
 
-                <div className="flex flex-row gap-6">
-                  <div className="flex-1">
-                    <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                    <div className="w-full rounded-md p-4 bg-muted/50">
-                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex-1">
-                    <h3 className="mb-3 text-lg font-medium">메모</h3>
-                    <Textarea
-                      value={memo}
-                      onChange={handleMemoChange}
-                      placeholder="메모를 입력하세요..."
-                      className="min-h-[120px] mb-2"
-                    />
-                    <Button onClick={handleSaveMemo}>저장</Button>
+              <div className="flex flex-row gap-6">
+                <div className="flex-1">
+                  <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
+                  <div className="w-full rounded-md p-4 bg-muted/50">
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedInquiry.content}</p>
                   </div>
                 </div>
+
+                <div className="flex-1">
+                  <h3 className="mb-3 text-lg font-medium">메모</h3>
+                  <Textarea
+                    value={memo}
+                    onChange={handleMemoChange}
+                    placeholder="메모를 입력하세요..."
+                    className="min-h-[120px] mb-2"
+                  />
+                  <Button onClick={handleSaveMemo}>저장</Button>
+                </div>
               </div>
-            ) : null /* 로딩이 끝났는데 데이터가 없는 경우 (에러 등) */
-          }
+            </div>
+          )}
         </ScrollArea>
       </div>
     </div>
