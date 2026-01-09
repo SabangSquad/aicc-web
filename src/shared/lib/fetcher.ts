@@ -1,7 +1,5 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export async function fetcher<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}/bff/${path}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
     headers: {
       'Content-Type': 'application/json',
       ...(options?.headers || {}),
