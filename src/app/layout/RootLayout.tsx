@@ -9,9 +9,7 @@ export function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
-        <main>{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
@@ -36,5 +34,5 @@ export function LandingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">{children}</div>;
+  return <>{children}</>;
 }
