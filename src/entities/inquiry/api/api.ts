@@ -12,12 +12,12 @@ export type Message = {
 
 export const InquiryAPI = {
   getListByAgent: (agentId: number) =>
-    fetcher<{ data: InquiryType[] }>(`/agents/${agentId}/cases`, { method: 'GET' }).then(res => res.data),
+    fetcher<{ data: InquiryType[] }>(`/agents/${agentId}/cases`, { method: 'GET' }).then(res => res.data || []),
 
   getCustomer: (customerId: number | string) => fetcher<Customer>(`/customers/${customerId}`, { method: 'GET' }),
 
   getCustomerCases: (customerId: number | string) =>
-    fetcher<{ data: InquiryType[] }>(`/customers/${customerId}/cases`, { method: 'GET' }).then(res => res.data),
+    fetcher<{ data: InquiryType[] }>(`/customers/${customerId}/cases`, { method: 'GET' }).then(res => res.data || []),
 
   getMessages: (caseId: number | string) => fetcher<Message[]>(`/cases/${caseId}/messages`, { method: 'GET' }),
 };
