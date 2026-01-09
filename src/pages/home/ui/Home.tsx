@@ -3,6 +3,10 @@ import { InquiryTable, KPIAnalysis, InquiryChart, InquiryLineChart, InquiryAPI }
 
 export async function Home() {
   const items = await InquiryAPI.getListByAgent(3);
+
+  if (!items) {
+    return null;
+  }
   const pending = items.filter(item => item.status === '대기').length;
 
   return (
