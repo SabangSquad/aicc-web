@@ -22,7 +22,7 @@ export const sidebarGroups: MenuGroup[] = [
     id: 'main',
     label: '메인',
     items: [
-      { title: '홈', url: '/', icon: Home },
+      { title: '홈', url: '/home', icon: Home },
       { title: '통계', url: '/statistics', icon: ChartNoAxesCombined },
       { title: '문의내역', url: '/inquiry', icon: ClipboardList },
     ],

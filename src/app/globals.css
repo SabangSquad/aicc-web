@@ -41,6 +41,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    opacity: 0.6;
   }
   .bg-ai {
     background: var(--gradient-ai);
