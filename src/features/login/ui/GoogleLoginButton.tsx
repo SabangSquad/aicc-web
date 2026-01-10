@@ -4,7 +4,7 @@ import { Button } from '@/shared/ui/button';
 export function GoogleLoginButton() {
   const handleLogin = () => {
     // This triggers a full page navigation, which is required for OAuth
-    window.location.href = 'https://aicc-web.duckdns.org/api/auth/google';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
   return (
     <Button variant="outline" className="w-full h-11 relative cursor-pointer" onClick={handleLogin}>
