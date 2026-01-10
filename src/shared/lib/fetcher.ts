@@ -4,6 +4,7 @@ export async function fetcher<T>(path: string, options?: RequestInit): Promise<T
       'Content-Type': 'application/json',
       ...(options?.headers || {}),
     },
+    credentials: 'include',
     ...options,
   });
 
