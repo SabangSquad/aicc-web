@@ -1,4 +1,3 @@
-'use client';
 import { CheckCircle, Clock, MessageSquare } from 'lucide-react';
 import { isToday } from '@/shared/lib/date';
 import { Separator } from '@/shared/ui/separator';

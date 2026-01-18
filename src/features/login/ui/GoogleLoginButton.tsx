@@ -3,9 +3,9 @@ import { Button } from '@/shared/ui/button';
 
 export function GoogleLoginButton() {
   const handleLogin = () => {
-    // This triggers a full page navigation, which is required for OAuth
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
+
   return (
     <Button variant="outline" className="w-full h-11 relative cursor-pointer" onClick={handleLogin}>
       <svg className="mr-2 h-5 w-5 absolute left-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

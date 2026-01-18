@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/shared/ui/chart';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
-import { Category } from '@/shared/types/category'; // CategoryWithAll 제거
+import { Category } from '@/shared/types/category';
 import { categoryChartColorSet } from '@/shared/lib/category';
 import { InquiryType } from '@/shared/types/inquiry';
 import { categoryGroups } from '@/shared/constant/category';

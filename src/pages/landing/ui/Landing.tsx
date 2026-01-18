@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { Bot, ArrowRight, CheckCircle2, Clock, PhoneOff, Store, Calendar } from 'lucide-react';
+import { ArrowRight, Clock, PhoneOff, Store, Calendar } from 'lucide-react';
+import { BotIcon } from '@/shared/icon/BotIcon';
 
 export const Landing = () => {
   return (
@@ -11,26 +12,10 @@ export const Landing = () => {
           <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-zinc-900">
             <span className="text-ai text-2xl">AICC</span>
           </div>
-          <nav className="hidden md:flex gap-8">
-            {['서비스 소개', '이용 방법', '요금 안내'].map(item => (
-              <Link
-                key={item}
-                href="#"
-                className="text-sm font-semibold text-zinc-600 hover:opacity-70 transition-opacity"
-              >
-                {item}
-              </Link>
-            ))}
-          </nav>
           <div className="flex items-center gap-3">
             <Link href="/login">
-              <Button variant="ghost" className=" cursor-pointer text-zinc-600 font-semibold hidden sm:inline-flex">
-                로그인
-              </Button>
-            </Link>
-            <Link href="/login">
               <Button className="cursor-pointer bg-ai rounded-md px-5 text-white font-bold border-0 hover:opacity-100 transition-opacity">
-                시작하기
+                로그인
               </Button>
             </Link>
           </div>
@@ -64,7 +49,7 @@ export const Landing = () => {
             <div className="bg-white rounded-2xl shadow-2xl border border-zinc-200 p-4 relative z-10">
               <div className="flex items-center gap-2 mb-4 border-b pb-4">
                 <div className="w-10 h-10 bg-ai rounded-full flex items-center justify-center opacity-100">
-                  <Bot className="w-5 h-5 text-white" />
+                  <BotIcon className="w-5 h-5 text-white" />
                 </div>
                 <p className="text-xs text-zinc-400 font-bold">실시간 응대 현황</p>
               </div>
@@ -84,15 +69,15 @@ export const Landing = () => {
               </div>
             </div>
 
-            <div className="absolute -bottom-10 -right-10 bg-white p-4 rounded-xl shadow-xl border border-zinc-100 flex items-center gap-3 z-20">
+            {/* <div className="absolute -bottom-10 -right-10 bg-white p-4 rounded-xl shadow-xl border border-zinc-100 flex items-center gap-3 z-20">
               <div className="bg-green-100 p-2 rounded-lg">
                 <CheckCircle2 className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <p className="text-xs text-zinc-400 font-bold">미응대 제로</p>
+                <p className="text-xs text-zinc-400 ">미응대 제로</p>
                 <p className="text-lg font-black">답변율 100%</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -123,7 +108,7 @@ export const Landing = () => {
               key={i}
               className="p-8 rounded-2xl bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-shadow group"
             >
-              <item.icon className="w-10 h-10 mb-6 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
+              <item.icon className="w-10 h-10 mb-6 text-zinc-400 group-hover:text-fuchsia-400 transition-colors" />
               <h3 className="text-xl font-bold mb-3">{item.title}</h3>
               <p className="text-zinc-500 leading-relaxed font-medium">{item.desc}</p>
             </div>
@@ -142,7 +127,7 @@ export const Landing = () => {
             <Link href="/login">
               <Button
                 size="lg"
-                className="bg-ai h-16 px-12 rounded-lg text-white text-xl font-bold border-0 hover:opacity-100 shadow-xl transition-all"
+                className="cursor-pointer bg-ai h-16 px-12 rounded-lg text-white text-xl font-bold border-0 hover:opacity-100 shadow-xl transition-all"
               >
                 무료로 써보기
               </Button>

@@ -1,6 +1,7 @@
 import '../globals.css';
 import { SidebarProvider } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/widgets/sidebar/ui/Sidebar';
+import { ReactQueryProvider } from '../provider/ReactQueryProvider';
 
 export function RootLayout({
   children,
@@ -9,7 +10,9 @@ export function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+      </body>
     </html>
   );
 }

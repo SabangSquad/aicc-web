@@ -19,7 +19,7 @@ export function InquiryEmotionChart({ items }: { items: InquiryType[] }) {
 
     items.forEach(item => {
       const date = new Date(item.created_at);
-      const dayIndex = date.getDay(); // 0(일요일) ~ 6(토요일) 반환
+      const dayIndex = date.getDay();
       const emotion = item.emotion;
 
       if (initialData[dayIndex][emotion] !== undefined) {
@@ -30,8 +30,6 @@ export function InquiryEmotionChart({ items }: { items: InquiryType[] }) {
     return initialData;
   };
 
-  const data = aggregateEmotionsByDay(items);
-
   return (
     <div className="flex flex-col">
       <div className="mb-4">
@@ -40,7 +38,7 @@ export function InquiryEmotionChart({ items }: { items: InquiryType[] }) {
       </div>
 
       <ChartContainer config={chartConfig} className="h-[300px] w-full">
-        <BarChart accessibilityLayer data={data}>
+        <BarChart accessibilityLayer data={aggregateEmotionsByDay(items)}>
           <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
           <Bar dataKey="기쁨" stackId="emotion" fill="var(--laugh-color)" />
           <Bar dataKey="평온" stackId="emotion" fill="var(--smile-color)" />

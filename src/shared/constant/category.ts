@@ -1,5 +1,3 @@
-// @/shared/constant/category.ts
-
 export const CATEGORY = [
   '취소',
   '교환',

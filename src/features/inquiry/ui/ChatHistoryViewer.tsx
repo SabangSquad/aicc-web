@@ -1,23 +1,31 @@
+'use client';
 import { cn } from '@/shared/lib/utils';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Bot, User } from 'lucide-react';
 import { Message } from '@/entities/inquiry';
+import { useCaseMessages } from '@/entities/inquiry/hooks/useInquiryQuery';
 
-export function ChatHistoryViewer({ chats }: { chats: Message[] }) {
-  if (!chats || chats.length === 0) {
+export function ChatHistoryViewer({ caseId }: { caseId: number | string }) {
+  const { data: chatLogs } = useCaseMessages(caseId);
+  if (!chatLogs || chatLogs.length === 0) {
     return <div className="p-4 text-center text-sm text-muted-foreground">챗봇/보이스봇 대화 내역이 없습니다.</div>;
   }
 
   return (
-    <ScrollArea className="flex-1 h-0">
-      <div className="space-y-6 p-4">
-        <div className="flex flex-col gap-3">
-          {chats.map(msg => (
-            <ChatMessageBubble key={msg.message_id} message={msg} />
-          ))}
-        </div>
+    <div className="flex flex-col h-full">
+      <div className="flex-shrink-0 p-4">
+        <h3 className="font-semibold">챗봇/보이스봇 이력 ({chatLogs.length})</h3>
       </div>
-    </ScrollArea>
+      <ScrollArea className="flex-1 h-0">
+        <div className="space-y-6 p-4">
+          <div className="flex flex-col gap-3">
+            {chatLogs.map(msg => (
+              <ChatMessageBubble key={msg.message_id} message={msg} />
+            ))}
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
 

@@ -1,4 +1,3 @@
-// import { InquiryAreaSelectChart } from '@/entities/inquiry';
 import { InquiryAPI, InquiryEmotionChart, InquiryAreaSelectChart } from '@/entities/inquiry';
 import { Separator } from '@/shared/ui/separator';
 
@@ -14,7 +13,6 @@ export async function Statistics() {
           <InquiryEmotionChart items={items} />
         </div>
         <Separator orientation="vertical" />
-        <div className="flex-1">{/* <InquiryAIChart /> */}</div>
       </div>
     </div>
   );

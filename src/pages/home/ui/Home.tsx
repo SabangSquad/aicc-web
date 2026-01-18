@@ -1,9 +1,8 @@
-import { Separator } from '@/shared/ui/separator';
 import { InquiryTable, KPIAnalysis, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
+import { Separator } from '@/shared/ui/separator';
 
 export async function Home() {
   const items = await InquiryAPI.getListByAgent(3);
-
   const pending = items.filter(item => item.status === '대기').length;
 
   return (

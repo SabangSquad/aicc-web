@@ -1,12 +1,11 @@
+'use client';
 import { GradeBadge } from '@/entities/customer';
-import { Customer } from '@/shared/types/customer';
+import { useCustomerInfo } from '@/entities/inquiry/hooks/useInquiryQuery';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
-const ValueDisplay = ({ value }: { value: string | number }) => {
-  return <span className={!value ? 'text-muted-foreground italic' : ''}>{value || 'N/A'}</span>;
-};
+export function CustomerInformation({ customerId }: { customerId: number }) {
+  const { data: customer } = useCustomerInfo(customerId);
 
-export function CustomerInformation({ customer }: { customer: Customer }) {
   const getInitials = (name: string) => {
     return name ? name.substring(0, 1).toUpperCase() : 'U';
   };
@@ -43,3 +42,7 @@ export function CustomerInformation({ customer }: { customer: Customer }) {
     </div>
   );
 }
+
+const ValueDisplay = ({ value }: { value: string | number }) => {
+  return <span className={!value ? 'text-muted-foreground italic' : ''}>{value || 'N/A'}</span>;
+};

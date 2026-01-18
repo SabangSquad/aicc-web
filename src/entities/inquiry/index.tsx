@@ -4,6 +4,5 @@ export * from './ui/InquiryLineChart';
 export * from './ui/InquiryTable';
 export * from './ui/KPIAnalysis';
 export * from './ui/InquiryEmotionChart';
-export * from './ui/InquiryAIChart';
 export * from './ui/InquiryAreaSelectChart';
 export * from './api/api';

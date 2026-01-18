@@ -1,5 +1,4 @@
 'use client';
-
 import Link from 'next/link';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';

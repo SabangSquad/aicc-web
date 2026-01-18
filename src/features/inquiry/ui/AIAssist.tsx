@@ -1,21 +1,22 @@
 'use client';
+import { ChevronDown } from 'lucide-react';
 import { emotionMap } from '@/shared/lib/emotion';
 import { Manual } from '@/shared/types/manual';
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/shared/ui/item';
-import { AIAssistType } from '@/shared/types/aiAssist';
-import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { useManuals } from '@/entities/manual/hooks/useManualQuery';
+import { useAIAssist } from '@/entities/ai/hooks/useAIQuery';
+import { InquiryType } from '@/shared/types/inquiry';
 
-interface AiAssistProps {
-  aiAssist: AIAssistType;
-  manuals: Manual[];
-}
-export function AIAssist({ aiAssist, manuals }: AiAssistProps) {
-  const emo = emotionMap[aiAssist.emotion];
+export function AIAssist({ inquiry }: { inquiry: InquiryType }) {
+  const { data: manuals } = useManuals(inquiry?.category || '');
+  // const { data: aiAssist } = useAIAssist(inquiry?.case_id || 0);
+  // const emo = emotionMap[aiAssist.emotion];
+
   return (
     <>
       <div>
-        <h3 className="mb-3 text-lg font-medium text-ai">AI 상담 요약</h3>
+        {/* <h3 className="mb-3 text-lg font-medium text-ai">AI 상담 요약</h3>
         <Item variant="muted" className="mb-4">
           <ItemContent>
             <ItemTitle className="text-black-primary">{aiAssist.summary}</ItemTitle>
@@ -38,7 +39,7 @@ export function AIAssist({ aiAssist, manuals }: AiAssistProps) {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex-1">
           <h3 className="mb-3 text-lg font-medium text-ai">AI 답변 추천</h3>
           {manuals.length === 0 && <p className="text-sm text-muted-foreground">추천 답변이 없습니다.</p>}

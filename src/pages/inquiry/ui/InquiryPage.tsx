@@ -1,10 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { InquiryType } from '@/shared/types/inquiry';
 
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
+import { RightPanelSkeleton } from './Skeleton';
 
 export function InquiryPage({ items }: { items: InquiryType[] }) {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryType | null>(null);
@@ -19,7 +20,9 @@ export function InquiryPage({ items }: { items: InquiryType[] }) {
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={70}>
-          <RightPanel selectedInquiry={selectedInquiry} />
+          <Suspense fallback={<RightPanelSkeleton />}>
+            <RightPanel selectedInquiry={selectedInquiry} />
+          </Suspense>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
