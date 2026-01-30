@@ -6,7 +6,7 @@ export async function Home() {
   const pending = items.filter(item => item.status === '대기').length;
 
   return (
-    <div className="p-6 mx-auto space-y-10 max-w-7xl lg:p-8">
+    <div className="space-y-10">
       <h1 className="text-3xl font-bold tracking-tight">
         안녕하세요, 사장님!
         <span className="text-primary"> {pending}건</span>의 업무가 대기 중입니다.

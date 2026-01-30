@@ -5,7 +5,7 @@ export async function Statistics() {
   const items = await InquiryAPI.getListByAgent(3);
 
   return (
-    <div className="p-6 mx-auto space-y-10 max-w-7xl lg:p-8">
+    <div className="space-y-10 ">
       <InquiryAreaSelectChart items={items} />
       <Separator />
       <div className="flex flex-row gap-6 h-96">

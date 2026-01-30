@@ -23,73 +23,71 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
 
   return (
     <Suspense fallback={<div className="p-6">로딩 중...</div>}>
-      <div className="p-6 mx-auto max-w-7xl lg:p-8">
-        <Button asChild variant="outline" className="ml-6">
-          <Link href="/inquiry">
-            <ArrowLeft />
-            목록으로 돌아가기
-          </Link>
-        </Button>
+      <Button asChild variant="outline" className="ml-6">
+        <Link href="/inquiry">
+          <ArrowLeft />
+          목록으로 돌아가기
+        </Link>
+      </Button>
 
-        {/* ... 상단 헤더 영역 ... */}
-        <div className="p-6 border-b">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold tracking-tight">{inquiry.title}</h1>
-            <div className="flex items-center gap-2">
-              <StateBadge status={inquiry.status} />
-            </div>
+      {/* ... 상단 헤더 영역 ... */}
+      <div className="p-6 border-b">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight">{inquiry.title}</h1>
+          <div className="flex items-center gap-2">
+            <StateBadge status={inquiry.status} />
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</p>
         </div>
+        <p className="mt-1 text-sm text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</p>
+      </div>
 
-        <div className="p-6 border-b">
-          <CustomerInformation customerId={inquiry.customer_id} />
-        </div>
+      <div className="p-6 border-b">
+        <CustomerInformation customerId={inquiry.customer_id} />
+      </div>
 
-        <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
-          <ResizablePanel defaultSize={60} minSize={30}>
-            <div className="flex flex-col h-full">
-              <ScrollArea className="flex-1 h-0">
-                <div className="p-6 space-y-8">
-                  <AIAssist inquiry={inquiry} />
+      <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
+        <ResizablePanel defaultSize={60} minSize={30}>
+          <div className="flex flex-col h-full">
+            <ScrollArea className="flex-1 h-0">
+              <div className="p-6 space-y-8">
+                <AIAssist inquiry={inquiry} />
 
-                  <Separator />
-                  <div className="flex flex-row gap-6">
-                    <div className="flex-1">
-                      <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                      <div className="w-full rounded-md p-4 bg-muted/50">
-                        <p className="text-sm whitespace-pre-wrap leading-relaxed">{inquiry.content}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex-1">
-                      <h3 className="mb-3 text-lg font-medium">메모</h3>
-                      <Textarea value={inquiry.memo || ''} placeholder="메모를 입력하세요..." className="min-h-[120px] mb-2" />
-                      <Button>저장</Button>
+                <Separator />
+                <div className="flex flex-row gap-6">
+                  <div className="flex-1">
+                    <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
+                    <div className="w-full rounded-md p-4 bg-muted/50">
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{inquiry.content}</p>
                     </div>
                   </div>
+
+                  <div className="flex-1">
+                    <h3 className="mb-3 text-lg font-medium">메모</h3>
+                    <Textarea value={inquiry.memo || ''} placeholder="메모를 입력하세요..." className="min-h-[120px] mb-2" />
+                    <Button>저장</Button>
+                  </div>
                 </div>
-              </ScrollArea>
-            </div>
-          </ResizablePanel>
+              </div>
+            </ScrollArea>
+          </div>
+        </ResizablePanel>
 
-          <ResizableHandle withHandle />
+        <ResizableHandle withHandle />
 
-          <ResizablePanel defaultSize={40} minSize={30}>
-            <ResizablePanelGroup direction="vertical" className="h-full">
-              <ResizablePanel defaultSize={50} minSize={15}>
-                <PastInquiryList customerId={inquiry.customer_id} />
-              </ResizablePanel>
+        <ResizablePanel defaultSize={40} minSize={30}>
+          <ResizablePanelGroup direction="vertical" className="h-full">
+            <ResizablePanel defaultSize={50} minSize={15}>
+              <PastInquiryList customerId={inquiry.customer_id} />
+            </ResizablePanel>
 
-              <ResizableHandle withHandle />
+            <ResizableHandle withHandle />
 
-              <ResizablePanel defaultSize={50} minSize={15}>
-                <ChatHistoryViewer caseId={inquiry.case_id} />
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
+            <ResizablePanel defaultSize={50} minSize={15}>
+              <ChatHistoryViewer caseId={inquiry.case_id} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </Suspense>
   );
 }

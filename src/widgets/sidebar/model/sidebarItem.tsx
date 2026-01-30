@@ -1,5 +1,4 @@
-// src/model/sidebarGroups.tsx
-import { Home, ChartNoAxesCombined, ClipboardList } from 'lucide-react';
+import { Home, ChartNoAxesCombined, ClipboardList, Bot } from 'lucide-react';
 import React from 'react';
 
 export type MenuItem = {
@@ -24,7 +23,14 @@ export const sidebarGroups: MenuGroup[] = [
     items: [
       { title: '홈', url: '/home', icon: Home },
       { title: '통계', url: '/statistics', icon: ChartNoAxesCombined },
+    ],
+  },
+  {
+    id: 'management',
+    label: '채팅',
+    items: [
       { title: '문의내역', url: '/inquiry', icon: ClipboardList },
+      { title: '챗봇 지식 노트', url: '/knowledge', icon: Bot },
     ],
   },
   // 예시로 다른 그룹 추가 가능

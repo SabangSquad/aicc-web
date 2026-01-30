@@ -14,9 +14,7 @@ export const Landing = () => {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/login">
-              <Button className="cursor-pointer bg-ai rounded-md px-5 text-white font-bold border-0 hover:opacity-100 transition-opacity">
-                로그인
-              </Button>
+              <Button className="cursor-pointer bg-ai rounded-md px-5 text-white font-bold border-0 hover:opacity-100 transition-opacity">로그인</Button>
             </Link>
           </div>
         </div>
@@ -104,10 +102,7 @@ export const Landing = () => {
               desc: '영업 시간, 주차, 메뉴 추천... 같은 대답 반복하지 마세요. AI가 완벽하게 대처합니다.',
             },
           ].map((item, i) => (
-            <div
-              key={i}
-              className="p-8 rounded-2xl bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-shadow group"
-            >
+            <div key={i} className="p-8 rounded-2xl bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-shadow group">
               <item.icon className="w-10 h-10 mb-6 text-zinc-400 group-hover:text-fuchsia-400 transition-colors" />
               <h3 className="text-xl font-bold mb-3">{item.title}</h3>
               <p className="text-zinc-500 leading-relaxed font-medium">{item.desc}</p>

@@ -1,5 +1,4 @@
 import '../globals.css';
-import { SidebarProvider } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/widgets/sidebar/ui/Sidebar';
 import { ReactQueryProvider } from '../provider/ReactQueryProvider';
 
@@ -23,12 +22,12 @@ export function ServiceLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
+    <div className="group/layout">
       <AppSidebar />
-      <div className="flex flex-1 flex-col">
-        <main>{children}</main>
-      </div>
-    </SidebarProvider>
+      <main className="ml-64 flex-1 overflow-y-auto px-10 py-12 text-slate-900 transition-all duration-300 ease-in-out group-has-[aside.w-20]/layout:ml-20 selection:bg-emerald-100">
+        {children}
+      </main>
+    </div>
   );
 }
 
