@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { AlertTriangle, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
-import { Badge } from '@/shared/ui/badge';
-import { Separator } from '@/shared/ui/separator';
 import { InquiryType } from '@/shared/types/inquiry';
 import { isToday } from '@/shared/lib/date';
 
@@ -17,12 +14,12 @@ export function AISolution({ items }: AIInquirySolutionProps) {
     const total = items.length;
     const pending = items.filter(i => i.status === '대기');
     const urgent = pending.filter(i => !isToday(i.created_at)); // 오늘 생성되지 않은 대기 건 (지연)
-    const emotions = items.filter(i => i.emotion === 'negative' || i.emotion === 'angry'); // 부정 감정
+    const emotions = items.filter(i => i.emotion === '화남' || i.emotion === '짜증'); // 부정 감정
 
     // 가장 많은 카테고리 찾기
     const categories = items.reduce(
       (acc, item) => {
-        const catName = item.category.name || '기타'; // category 구조에 따라 수정 필요
+        const catName = item.category || '기타'; // category 구조에 따라 수정 필요
         acc[catName] = (acc[catName] || 0) + 1;
         return acc;
       },
@@ -77,7 +74,7 @@ export function AISolution({ items }: AIInquirySolutionProps) {
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-amber-500" />
               <span className="text-muted-foreground">
-                <span className="font-medium text-foreground">'{analysis.topCategoryName}'</span> 관련 문의 급증 ({analysis.topCategoryCount}건)
+                <span className="font-medium text-foreground">{analysis.topCategoryName}</span> 관련 문의 급증 ({analysis.topCategoryCount}건)
               </span>
             </div>
             {analysis.negativeCount > 0 && (
