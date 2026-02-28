@@ -33,8 +33,7 @@ export function InquiryChart({ items }: { items: InquiryType[] }) {
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">문의 카테고리 현황</h2>
         <p className="mt-1 text-muted-foreground">
-          총 {totalInquiries}건의 문의 ({new Date().toLocaleDateString('ko-KR')})
-          <span className="text-xs ml-2">(상위 6개 항목)</span>
+          총 {totalInquiries}건의 문의 ({new Date().toLocaleDateString('ko-KR')})<span className="text-xs ml-2">(상위 6개 항목)</span>
         </p>
       </div>
 

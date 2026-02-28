@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,9 +32,6 @@ export function AppSidebar() {
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ai text-white shadow-md">
           <Sparkles size={20} fill="currentColor" />
         </div>
-        {!isCollapsed && (
-          <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">AICC</span>
-        )}
       </div>
 
       <nav className="flex flex-col gap-8">

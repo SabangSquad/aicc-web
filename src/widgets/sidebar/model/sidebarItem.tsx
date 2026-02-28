@@ -1,4 +1,4 @@
-import { Home, ChartNoAxesCombined, ClipboardList, Bot } from 'lucide-react';
+import { Home, ChartNoAxesCombined, ClipboardList, Store, FileText } from 'lucide-react';
 import React from 'react';
 
 export type MenuItem = {
@@ -30,7 +30,8 @@ export const sidebarGroups: MenuGroup[] = [
     label: '채팅',
     items: [
       { title: '문의내역', url: '/inquiry', icon: ClipboardList },
-      { title: '챗봇 지식 노트', url: '/knowledge', icon: Bot },
+      { title: '업장 기본 정보', url: '/store-info', icon: Store },
+      { title: '이용약관 및 정책 관리', url: '/policies', icon: FileText },
     ],
   },
   // 예시로 다른 그룹 추가 가능

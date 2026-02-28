@@ -10,8 +10,7 @@ export type Message = {
   speaker: '상담사' | '고객' | '보이스봇' | '챗봇';
 };
 export const InquiryAPI = {
-  getListByAgent: (agentId: number) =>
-    fetcher<{ data: InquiryType[] }>(`/agents/${agentId}/cases`, { method: 'GET' }).then(res => res.data || []),
+  getListByAgent: (agentId: number) => fetcher<{ data: InquiryType[] }>(`/agents/${agentId}/cases`, { method: 'GET' }).then(res => res.data || []),
 
   getCustomer: (customerId: number | string) => fetcher<Customer>(`/customers/${customerId}`, { method: 'GET' }),
 

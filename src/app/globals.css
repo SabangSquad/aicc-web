@@ -1,19 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: 'Inter';
-  font-style: normal;
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/PretendardVariable.woff2') format('woff2');
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap')
-    format('woff2');
 }
 @theme {
-  --font-Inter: 'Inter', sans-serif;
+  --font-sans: Pretendard, Inter, sans-serif;
   --gradient-ai: linear-gradient(90deg, #ac55f2 0%, #e8499f 40%, #ff6b6b 100%);
   --color-light-green: #dbfbeb;
   --color-light-blue: #dfedfe;
@@ -47,10 +44,6 @@
     background: var(--gradient-ai);
     opacity: 0.6;
   }
-}
-
-html {
-  font-family: var(--font-Inter);
 }
 
 @theme inline {

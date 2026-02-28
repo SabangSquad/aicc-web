@@ -54,13 +54,7 @@ export function InquiryLineChart({ items }: { items: InquiryType[] }) {
           <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} interval={4} />
           <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} width={25} />
           <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-          <Area
-            type="monotone"
-            dataKey="count"
-            stroke={categoryChartColorSet['전체'].color}
-            fill={categoryChartColorSet['전체'].color}
-            fillOpacity={0.25}
-          />
+          <Area type="monotone" dataKey="count" stroke={categoryChartColorSet['전체'].color} fill={categoryChartColorSet['전체'].color} fillOpacity={0.25} />
         </AreaChart>
       </ChartContainer>
     </div>

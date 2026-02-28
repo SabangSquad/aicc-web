@@ -178,25 +178,13 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
   );
 }
 
-function CategoryChip({
-  label,
-  isSelected,
-  color,
-  onClick,
-}: {
-  label: string;
-  isSelected: boolean;
-  color: string;
-  onClick: () => void;
-}) {
+function CategoryChip({ label, isSelected, color, onClick }: { label: string; isSelected: boolean; color: string; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
       className={cn(
         'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border',
-        isSelected
-          ? 'text-white shadow-sm'
-          : 'bg-white text-muted-foreground hover:bg-muted/50 border-transparent hover:border-border'
+        isSelected ? 'text-white shadow-sm' : 'bg-white text-muted-foreground hover:bg-muted/50 border-transparent hover:border-border'
       )}
       style={{
         backgroundColor: isSelected ? color : undefined,
@@ -206,13 +194,7 @@ function CategoryChip({
       {isSelected && (
         <span className="mr-1.5 bg-white/20 rounded-full p-0.5">
           <svg width="8" height="6" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1 4L3.5 6.5L9 1"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       )}
