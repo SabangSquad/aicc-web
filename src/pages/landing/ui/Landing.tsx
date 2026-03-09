@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import Grainient from '@/shared/ui/Grainient';
 import ScrollVelocity from '@/shared/ui/ScrollVelocity';
+import Link from 'next/link';
 
 export function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -65,9 +66,9 @@ export function Landing() {
               </a>
             ))}
           </div>
-          <button className="px-5 py-2.5 rounded-full bg-white text-indigo-950 font-bold text-sm transition-all shadow-lg">
+          <Link href="/login" className="px-5 py-2.5 rounded-full bg-white text-indigo-950 font-bold text-sm transition-all shadow-lg">
             로그인 <ChevronRight size={16} className="inline-block" />
-          </button>
+          </Link>
         </div>
       </nav>
 
@@ -88,9 +89,12 @@ export function Landing() {
           </h1>
 
           <div className="flex flex-col sm:flex-row gap-5">
-            <button className="cursor-pointer px-10 py-2 rounded-full bg-white text-zinc-800 text-lg transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2">
+            <Link
+              href="/login"
+              className="cursor-pointer px-10 py-2 rounded-full bg-white text-zinc-800 text-lg transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2"
+            >
               시작하기
-            </button>
+            </Link>
             <button className="cursor-pointer px-10 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all text-lg">
               자세히 알아보기
             </button>

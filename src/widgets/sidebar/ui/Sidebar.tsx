@@ -1,13 +1,16 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ChevronsLeft, ChevronsRight, LogOut } from 'lucide-react';
 import { sidebarGroups, MenuItem } from '../model/sidebarItem';
 
 export function AppSidebar() {
+  const router = useRouter();
   const pathname = usePathname() ?? '/';
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const userName = '홍길동';
 
   const isActive = (url: string) => {
     if (url === '/') {
@@ -16,58 +19,84 @@ export function AppSidebar() {
     return pathname === url || pathname.startsWith(url + '/');
   };
 
+  const handleLogout = () => {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      router.push('/');
+    }
+  };
+
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 border-r border-slate-200 bg-white px-4 py-8 transition-all duration-300 ease-in-out shadow-sm
-        ${isCollapsed ? 'w-20' : 'w-64'}`}
+      className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-200 bg-white py-8 transition-all duration-300 ease-in-out shadow-sm
+        ${isCollapsed ? 'w-20 px-4' : 'w-64 px-4'}`}
     >
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute top-10 -right-3 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-md hover:text-slate-900 hover:scale-110 transition-all"
-      >
-        {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-      </button>
+      <div className={`mb-10 flex shrink-0 items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-2`}>
+        {!isCollapsed && (
+          <div className="flex flex-col overflow-hidden pr-2">
+            <span className="text-xs font-medium text-slate-500">환영합니다,</span>
+            <span className="text-lg font-bold text-slate-900 truncate">{userName}님 👋</span>
+          </div>
+        )}
 
-      <div className={`mb-10 flex items-center gap-3 px-2 ${isCollapsed ? 'justify-center' : ''}`}>
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ai text-white shadow-md">
-          <Sparkles size={20} fill="currentColor" />
-        </div>
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="flex shrink-0 items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
+        >
+          {isCollapsed ? <ChevronsRight size={20} /> : <ChevronsLeft size={20} />}
+        </button>
       </div>
 
-      <nav className="flex flex-col gap-8">
-        {sidebarGroups.map(group => (
-          <div key={group.id} className="flex flex-col gap-2">
-            {!isCollapsed && group.label && <p className="px-4 text-[11px] font-bold tracking-[0.15em] text-slate-400 uppercase">{group.label}</p>}
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <nav className="flex flex-col gap-8">
+          {sidebarGroups.map(group => (
+            <div key={group.id} className="flex flex-col gap-2">
+              {!isCollapsed && group.label && <p className="px-4 text-[11px] font-medium tracking-[0.15em] text-slate-400 uppercase">{group.label}</p>}
 
-            <div className="flex flex-col gap-1">
-              {group.items.map((item: MenuItem) => {
-                const Icon = item.icon;
-                const active = isActive(item.url);
+              <div className="flex flex-col gap-1">
+                {group.items.map((item: MenuItem) => {
+                  const Icon = item.icon;
+                  const active = isActive(item.url);
 
-                return (
-                  <Link
-                    key={item.title}
-                    href={item.url}
-                    title={isCollapsed ? item.title : ''}
-                    className={`
-                      group relative flex items-center gap-3 rounded-xl transition-all duration-200
-                      ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'}
-                      ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
-                    `}
-                  >
-                    <Icon
-                      size={20}
-                      className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? 'text-white' : 'text-slate-400'}`}
-                    />
+                  return (
+                    <Link
+                      key={item.title}
+                      href={item.url}
+                      title={isCollapsed ? item.title : ''}
+                      className={`
+                        group relative flex items-center gap-3 rounded-xl transition-all duration-200
+                        ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'}
+                        ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                      `}
+                    >
+                      <Icon
+                        size={20}
+                        className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? 'text-white' : 'text-slate-400'}`}
+                      />
 
-                    {!isCollapsed && <span className={`text-sm truncate ${active ? 'font-semibold' : 'font-medium'}`}>{item.title}</span>}
-                  </Link>
-                );
-              })}
+                      {!isCollapsed && <span className={`text-sm truncate`}>{item.title}</span>}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
-      </nav>
+          ))}
+        </nav>
+      </div>
+
+      <div className="mt-auto shrink-0 pt-4">
+        <button
+          onClick={handleLogout}
+          title={isCollapsed ? '로그아웃' : ''}
+          className={`
+            group flex w-full items-center gap-3 rounded-xl transition-all duration-200 cursor-pointer
+            ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'}
+            text-slate-500 hover:bg-red-50 hover:text-red-600
+          `}
+        >
+          <LogOut size={20} className="shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
+          {!isCollapsed && <span className="text-sm font-medium truncate">로그아웃</span>}
+        </button>
+      </div>
     </aside>
   );
 }
