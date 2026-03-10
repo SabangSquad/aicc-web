@@ -5,8 +5,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
-import { Separator } from '@/shared/ui/separator';
-import { Store, MapPin, Phone, Clock, Info, Save, CheckCircle2, Building2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export function StoreInfoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,169 +29,141 @@ export function StoreInfoPage() {
   };
 
   return (
-    <div className="space-y-10 pb-20">
+    /* max-w-4xl을 지우고 w-full로 화면 전체를 사용하도록 변경 */
+    <div className="w-full space-y-16 pb-24 pt-8 px-6 md:px-10 lg:px-16">
       {/* 헤더 섹션 */}
-      <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">업장 기본 정보 관리</h1>
-        <p className="text-slate-500 text-lg">고객과 AI 상담사가 참고할 매장의 핵심 정보를 관리합니다.</p>
+      <div>
+        <h1 className="text-[32px] sm:text-[36px] font-bold tracking-tight text-slate-900 mb-3">업장 기본 정보</h1>
+        <p className="text-[17px] font-medium text-slate-500">고객과 AI 상담사가 참고할 매장의 핵심 정보를 관리합니다.</p>
       </div>
 
-      <Separator />
+      <hr className="border-t-2 border-slate-100" />
 
       {/* 기본 정보 섹션 */}
-      <div className="flex gap-12">
-        <div className="w-64 shrink-0">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-primary" />
-            매장 프로필
-          </h2>
-          <p className="text-sm text-slate-500 mt-2">매장의 이름과 업종 등 가장 기본적인 정보를 설정합니다.</p>
+      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
+        <div className="xl:w-80 shrink-0">
+          <h2 className="text-[22px] font-bold text-slate-900">매장 프로필</h2>
+          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">매장의 이름과 업종 등 가장 기본적인 정보를 설정합니다.</p>
         </div>
 
-        <div className="flex-1 grid grid-cols-2 gap-x-8 gap-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-slate-600 font-medium">
+        {/* 화면이 넓어지면(lg 이상) 2단 그리드로 배치 */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
+          <div className="space-y-3">
+            <Label htmlFor="name" className="text-[15px] font-semibold text-slate-700">
               매장명
             </Label>
-            <div className="relative">
-              <Store className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="pl-10 h-11 focus-visible:ring-primary"
-              />
-            </div>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+            />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="category" className="text-slate-600 font-medium">
+          <div className="space-y-3">
+            <Label htmlFor="category" className="text-[15px] font-semibold text-slate-700">
               업종
             </Label>
-            <div className="relative">
-              <Info className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <Input
-                id="category"
-                value={formData.category}
-                onChange={e => setFormData({ ...formData, category: e.target.value })}
-                className="pl-10 h-11 focus-visible:ring-primary"
-              />
-            </div>
+            <Input
+              id="category"
+              value={formData.category}
+              onChange={e => setFormData({ ...formData, category: e.target.value })}
+              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+            />
           </div>
         </div>
       </div>
 
-      <Separator />
+      <hr className="border-t-2 border-slate-100" />
 
       {/* 연락처 및 위치 섹션 */}
-      <div className="flex gap-12">
-        <div className="w-64 shrink-0">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            연락처 및 위치
-          </h2>
-          <p className="text-sm text-slate-500 mt-2">고객이 찾아오거나 문의할 수 있는 정보를 입력합니다.</p>
+      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
+        <div className="xl:w-80 shrink-0">
+          <h2 className="text-[22px] font-bold text-slate-900">연락처 및 위치</h2>
+          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">고객이 찾아오거나 문의할 수 있는 정보를 입력합니다.</p>
         </div>
 
-        <div className="flex-1 space-y-6">
-          <div className="grid grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-slate-600 font-medium">
-                대표 전화번호
-              </Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  className="pl-10 h-11 focus-visible:ring-primary"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="hours" className="text-slate-600 font-medium">
-                영업 시간
-              </Label>
-              <div className="relative">
-                <Clock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                <Input
-                  id="hours"
-                  value={formData.hours}
-                  onChange={e => setFormData({ ...formData, hours: e.target.value })}
-                  className="pl-10 h-11 focus-visible:ring-primary"
-                />
-              </div>
-            </div>
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
+          <div className="space-y-3">
+            <Label htmlFor="phone" className="text-[15px] font-semibold text-slate-700">
+              대표 전화번호
+            </Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={e => setFormData({ ...formData, phone: e.target.value })}
+              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+            />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="address" className="text-slate-600 font-medium">
+          <div className="space-y-3">
+            <Label htmlFor="hours" className="text-[15px] font-semibold text-slate-700">
+              영업 시간
+            </Label>
+            <Input
+              id="hours"
+              value={formData.hours}
+              onChange={e => setFormData({ ...formData, hours: e.target.value })}
+              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+            />
+          </div>
+
+          {/* 주소는 길어질 수 있으므로 전체 너비(col-span-1 lg:col-span-2) 사용 */}
+          <div className="space-y-3 lg:col-span-2">
+            <Label htmlFor="address" className="text-[15px] font-semibold text-slate-700">
               매장 주소
             </Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <Input
-                id="address"
-                value={formData.address}
-                onChange={e => setFormData({ ...formData, address: e.target.value })}
-                className="pl-10 h-11 focus-visible:ring-primary"
-              />
-            </div>
+            <Input
+              id="address"
+              value={formData.address}
+              onChange={e => setFormData({ ...formData, address: e.target.value })}
+              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none w-full"
+            />
           </div>
         </div>
       </div>
 
-      <Separator />
+      <hr className="border-t-2 border-slate-100" />
 
       {/* 상세 설명 섹션 */}
-      <div className="flex gap-12">
-        <div className="w-64 shrink-0">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            매장 소개
-          </h2>
-          <p className="text-sm text-slate-500 mt-2">AI 상담사가 고객에게 매장을 소개할 때 사용하는 문구입니다.</p>
+      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
+        <div className="xl:w-80 shrink-0">
+          <h2 className="text-[22px] font-bold text-slate-900">매장 소개</h2>
+          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">AI 상담사가 고객에게 매장을 소개할 때 사용하는 문구입니다.</p>
         </div>
 
-        <div className="flex-1 space-y-2">
-          <Label htmlFor="description" className="text-slate-600 font-medium">
-            상세 설명
-          </Label>
-          <Textarea
-            id="description"
-            value={formData.description}
-            onChange={e => setFormData({ ...formData, description: e.target.value })}
-            className="min-h-[150px] p-4 text-base focus-visible:ring-primary"
-          />
-          <div className="flex items-start gap-2 mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-emerald-800">
-              <strong>Tip:</strong> 매장의 특징이나 주차 정보, 시그니처 메뉴 등을 상세히 적어주시면 AI가 더 풍부하게 응대할 수 있습니다.
+        <div className="flex-1 space-y-4">
+          <div className="space-y-3">
+            <Label htmlFor="description" className="text-[15px] font-semibold text-slate-700">
+              상세 설명
+            </Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              className="min-h-[160px] bg-slate-100 border-transparent rounded-2xl p-5 text-[17px] text-slate-900 leading-relaxed focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none resize-none w-full"
+            />
+          </div>
+
+          <div className="flex items-start gap-3 mt-2 p-5 bg-blue-50/50 rounded-2xl w-full">
+            <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+            <p className="text-[14px] font-medium text-slate-600 leading-relaxed">
+              <strong className="text-blue-600 mr-1">Tip.</strong>
+              매장의 특징이나 주차 정보, 시그니처 메뉴 등을 상세히 적어주시면 AI가 더 풍부하게 응대할 수 있습니다.
             </p>
           </div>
         </div>
       </div>
 
-      <Separator />
-
-      {/* 하단 버튼 */}
-      <div className="flex justify-end items-center gap-4">
-        <p className="text-sm text-slate-400">마지막 업데이트: 2024년 2월 13일</p>
+      {/* 하단 저장 영역 */}
+      <div className="pt-8 flex flex-col-reverse sm:flex-row justify-between items-center gap-6">
+        <p className="text-[14px] font-medium text-slate-400">마지막 업데이트: 2024년 2월 13일</p>
         <Button
           onClick={handleSave}
           disabled={isSubmitting}
-          className="bg-primary hover:bg-primary/90 text-white px-10 h-12 text-lg font-semibold gap-2 shadow-lg shadow-primary/20"
+          className="w-full sm:w-auto h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-10 text-[17px] font-bold transition-all shadow-none"
         >
-          {isSubmitting ? (
-            '저장 중...'
-          ) : (
-            <>
-              <Save className="w-5 h-5" />
-              업장 정보 저장하기
-            </>
-          )}
+          {isSubmitting ? '저장 중...' : '저장하기'}
         </Button>
       </div>
     </div>

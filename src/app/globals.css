@@ -1,4 +1,5 @@
 @import 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css';
+@import 'https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -11,6 +12,7 @@ body,
 }
 
 @theme {
+  --font-outfit: 'Outfit', 'Pretendard', sans-serif;
   --gradient-ai: linear-gradient(90deg, #ac55f2 0%, #e8499f 40%, #ff6b6b 100%);
   --color-light-green: #dbfbeb;
   --color-light-blue: #dfedfe;

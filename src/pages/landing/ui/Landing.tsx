@@ -4,6 +4,7 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import Grainient from '@/shared/ui/Grainient';
 import ScrollVelocity from '@/shared/ui/ScrollVelocity';
 import Link from 'next/link';
+import { Logo } from '@/shared/ui/logo';
 
 export function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -56,7 +57,7 @@ export function Landing() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BriefyLogo />
+            <Logo />
           </div>
           <div className="hidden md:flex gap-10 text-sm font-medium">
             {['서비스 소개', '주요 기능', '도입 사례', '가격 안내'].map(item => (
@@ -156,14 +157,5 @@ const FeatureCard = ({ span, num, title, desc }: { span: string; num: string; ti
         <p className="text-white/60 text-base leading-relaxed font-light">{desc}</p>
       </div>
     </div>
-  </div>
-);
-
-const BriefyLogo = () => (
-  <div className="flex items-center gap-3 group cursor-pointer">
-    <span className="text-2xl font-black tracking-tighter">
-      <span className="text-white">BRIEF</span>
-      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#FF00E5] filter">Y</span>
-    </span>
   </div>
 );

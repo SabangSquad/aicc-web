@@ -2,6 +2,7 @@
 import { Check } from 'lucide-react';
 import { GoogleLoginButton } from '@/features/login';
 import Link from 'next/link';
+import { Logo } from '@/shared/ui/logo';
 
 export const Login = () => {
   return (
@@ -11,8 +12,8 @@ export const Login = () => {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-pink-300/40 rounded-full blur-[120px]" />
 
         <div className="relative z-10">
-          <Link href="/" className="text-2xl font-black tracking-tighter text-white">
-            AICC
+          <Link href="/" className="flex items-center gap-2 mb-20">
+            <Logo />
           </Link>
         </div>
 
