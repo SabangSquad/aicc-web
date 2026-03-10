@@ -1,6 +1,7 @@
 import '../globals.css';
 import { AppSidebar } from '@/widgets/sidebar/ui/Sidebar';
 import { ReactQueryProvider } from '../provider/ReactQueryProvider';
+import { outfit, pretendard } from '../font';
 
 export function RootLayout({
   children,
@@ -8,8 +9,8 @@ export function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>
+    <html lang="ko" className={`${pretendard.variable} ${outfit.variable}`}>
+      <body className="font-pretendard antialiased">
         <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
