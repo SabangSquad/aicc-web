@@ -1,19 +1,17 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Send, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const ChatInterface = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: '밝은 모노톤으로 변경되었습니다. 화면이 훨씬 넓고 깨끗해 보이네요! 🕊️', isAi: true },
-    { id: 2, text: '눈부시지 않고 딱 적당하게 밝아서 좋아요.', isAi: false },
-  ]);
+  const [messages, setMessages] = useState([{ id: 1, text: '안녕하세요! "가게이름" 챗봇 입니다. 문의사항이 있으신가요?', isAi: true }]);
 
   const [inputValue, setInputValue] = useState('');
+
   const [isTyping, setIsTyping] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState('');
 
   const latestUserMsgRef = useRef<HTMLDivElement>(null);
-
   const latestUserMsgId = [...messages].reverse().find(m => !m.isAi)?.id;
 
   useEffect(() => {
@@ -24,33 +22,77 @@ export const ChatInterface = () => {
       });
     }
   }, [messages.length, isTyping]);
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) {
-      return;
-    }
-
-    const userMessage = {
-      id: Date.now(),
-      text: inputValue,
-      isAi: false,
-    };
-
+    const userMessage = { id: Date.now(), text: inputValue, isAi: false };
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
+    setThinkingStep(''); // 초기 메시지 설정
 
-    setTimeout(() => {
-      const aiMessage = {
-        id: Date.now() + 1,
-        text: '네, 확인했습니다! AI가 이런 식으로 생각하는 시간을 가지고 답변을 달아줍니다. 지금처럼 유저의 메시지가 상단에 고정되고, 제 답변이 아래로 길게 스트리밍 되더라도 화면 아래만 쳐다볼 필요 없이 편안하게 위에서 아래로 글을 읽어내려가실 수 있습니다. 이것이 바로 AI 챗봇 UX의 핵심입니다! 😊',
-        isAi: true,
-      };
-      setMessages(prev => [...prev, aiMessage]);
+    try {
+      const response = await fetch('http://localhost:8080/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: inputValue }),
+      });
+
+      // 1. 서버 응답이 정상(200-299)이 아닌 경우 처리
+      if (!response.ok) {
+        throw new Error(`서버 에러: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder('utf-8');
+
+      if (!reader) return;
+
+      while (true) {
+        try {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunkString = decoder.decode(value);
+          const lines = chunkString.split('\n').filter(line => line.trim() !== '');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = JSON.parse(line.replace('data: ', ''));
+
+              if (data.type === 'thinking') {
+                setThinkingStep(data.message);
+              } else if (data.type === 'MESSAGE') {
+                const aiMessage = {
+                  id: Date.now(),
+                  text: data.answer,
+                  isAi: true,
+                };
+                setMessages(prev => [...prev, aiMessage]);
+              } else if (data.type === 'error') {
+                setMessages(prev => [
+                  ...prev,
+                  {
+                    id: Date.now(),
+                    text: '응답 처리 중 오류가 발생했습니다.',
+                    isAi: true,
+                  },
+                ]);
+              }
+            }
+          }
+        } catch (readError) {
+          console.error('스트림 읽기 오류:', readError);
+          break;
+        }
+      }
+    } catch (error) {
+      console.error('API Error:', error);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+      setThinkingStep('');
+    }
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -60,24 +102,21 @@ export const ChatInterface = () => {
 
   return (
     <>
-      {/* 3. pb-[50vh] 추가: 유저 메시지가 최상단까지 올라갈 수 있도록 강제로 여백(빈 공간)을 만듭니다. */}
-      <section className="flex-1 overflow-y-auto p-6 pb-[50vh] space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <section className="flex-1 overflow-y-auto p-6 pb-[50vh] space-y-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {messages.map(msg => {
           const isLatestUser = msg.id === latestUserMsgId;
 
           return (
             <motion.div
               key={msg.id}
-              // 가장 최근 유저 메시지인 경우에만 ref를 달아줍니다.
               ref={isLatestUser ? latestUserMsgRef : null}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              // 4. scroll-mt-6: 상단으로 스크롤될 때 헤더에 딱 붙지 않고 24px(1.5rem) 여백을 줍니다.
               className={`flex scroll-mt-6 ${msg.isAi ? 'justify-start' : 'justify-end'}`}
             >
               <div
-                className={`px-5 py-3.5 max-w-[80%] rounded-2xl border ${
+                className={`px-5 py-3 max-w-[80%] rounded-2xl border ${
                   msg.isAi
                     ? 'bg-white/60 border-white/80 text-zinc-700 rounded-tl-sm backdrop-blur-md shadow-sm'
                     : 'bg-zinc-800 border-zinc-700 text-white rounded-tr-sm font-medium shadow-md'
@@ -89,28 +128,33 @@ export const ChatInterface = () => {
           );
         })}
 
-        {/* AI 타이핑 인디케이터 */}
         {isTyping && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             className="flex justify-start scroll-mt-6"
           >
-            <div className="px-5 py-4 max-w-[80%] bg-white/60 border border-white/80 rounded-2xl rounded-tl-sm backdrop-blur-md shadow-sm flex items-center gap-1.5 h-[52px]">
-              {[0, 1, 2].map(index => (
-                <motion.div
-                  key={index}
-                  className="w-2 h-2 bg-zinc-400 rounded-full"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{
-                    duration: 0.6,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: index * 0.15,
-                  }}
-                />
-              ))}
+            <div className="px-5 py-3.5 max-w-[80%]  flex items-center gap-3">
+              {/* 빙글빙글 도는 로딩 아이콘 */}
+              <Loader2 size={16} className="text-zinc-400 animate-spin" />
+
+              {/* 상태 텍스트가 바뀔 때마다 부드럽게 애니메이션 처리 */}
+              <div className="overflow-hidden h-[20px] flex items-center">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={thinkingStep}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-[14px] text-zinc-500 font-medium tracking-tight whitespace-nowrap"
+                  >
+                    {thinkingStep}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
         )}
