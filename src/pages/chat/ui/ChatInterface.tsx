@@ -1,7 +1,6 @@
 'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Smile } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const ChatInterface = () => {
@@ -13,16 +12,12 @@ export const ChatInterface = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  // 1. 가장 최근 '유저 메시지'를 추적하기 위한 Ref
   const latestUserMsgRef = useRef<HTMLDivElement>(null);
 
-  // 현재 배열에서 가장 마지막에 있는 유저 메시지의 ID를 찾습니다.
   const latestUserMsgId = [...messages].reverse().find(m => !m.isAi)?.id;
 
-  // 2. 메시지가 추가되거나 타이핑이 시작될 때 스크롤 위치 조정
   useEffect(() => {
     if (latestUserMsgRef.current) {
-      // 가장 최근 유저 메시지를 화면 상단(start)으로 부드럽게 끌어올립니다.
       latestUserMsgRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -31,7 +26,9 @@ export const ChatInterface = () => {
   }, [messages.length, isTyping]);
 
   const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim()) {
+      return;
+    }
 
     const userMessage = {
       id: Date.now(),
@@ -46,7 +43,6 @@ export const ChatInterface = () => {
     setTimeout(() => {
       const aiMessage = {
         id: Date.now() + 1,
-        // AI의 답변이 길어지는 상황을 가정해 텍스트를 늘렸습니다.
         text: '네, 확인했습니다! AI가 이런 식으로 생각하는 시간을 가지고 답변을 달아줍니다. 지금처럼 유저의 메시지가 상단에 고정되고, 제 답변이 아래로 길게 스트리밍 되더라도 화면 아래만 쳐다볼 필요 없이 편안하게 위에서 아래로 글을 읽어내려가실 수 있습니다. 이것이 바로 AI 챗봇 UX의 핵심입니다! 😊',
         isAi: true,
       };
@@ -123,9 +119,6 @@ export const ChatInterface = () => {
       {/* 입력창 */}
       <footer className="p-6">
         <div className="relative flex items-center bg-white/50 border border-white/80 backdrop-blur-xl rounded-2xl p-2 transition-all focus-within:border-zinc-300 focus-within:bg-white/80 shadow-sm">
-          <button className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
-            <Paperclip size={20} />
-          </button>
           <input
             type="text"
             value={inputValue}
@@ -134,9 +127,6 @@ export const ChatInterface = () => {
             placeholder="메시지를 입력하세요..."
             className="flex-1 bg-transparent border-none px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50"
           />
-          <button className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors mr-1">
-            <Smile size={20} />
-          </button>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleSendMessage}

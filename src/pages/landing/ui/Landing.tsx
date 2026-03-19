@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import Grainient from '@/shared/ui/Grainient';
 import ScrollVelocity from '@/shared/ui/ScrollVelocity';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ export function Landing() {
           ${
             isScrolled
               ? 'mt-6 mx-6 md:mx-60 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]'
-              : 'bg-transparent border-b border-white/5'
+              : 'bg-transparent border-b border-transparent'
           }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -75,28 +75,25 @@ export function Landing() {
 
       <main className="relative z-10">
         <section className="flex flex-col items-center h-screen justify-center px-6 pt-10 text-center gap-6 ">
-          <div>
-            <span className="inline-flex items-center gap-2 text-xs uppercase bg-white/10 px-4 py-2 rounded-full tracking-widest text-white font-semibold mb-2 backdrop-blur-sm border border-white/10">
-              <Sparkles fill={'currentColor'} size={16} className="text-white animate-pulse" />
-              혁신적인 상담 자동화
-            </span>
-          </div>
-          <h1 className="text-5xl font-black leading-tight ">
-            <span className="[text-shadow:_0_4px_30px_rgb(0_0_0_/_80%)]">멈추지 않는 상담,</span>
+          <h1 className="text-5xl font-black leading-tight">
+            <span className="[text-shadow:_0_4px_30px_rgb(0_0_0_/_80%)]">멈추지 않는 상담</span>
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-indigo-200 to-purple-300 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)] ">
-              AI가 완성합니다.
+              AI가 완성합니다
             </span>
           </h1>
-
+          <p className="text-white/60 max-w-2xl mx-auto font-light">
+            단순 반복 문의는 줄이고, 고객 만족도는 높이고 <br className="hidden md:block" />
+            혼자서도 여유롭게 매장을 운영할 수 있는 스마트한 방법을 경험해 보세요
+          </p>
           <div className="flex flex-col sm:flex-row gap-5">
             <Link
               href="/login"
-              className="cursor-pointer px-10 py-2 rounded-full bg-white text-zinc-800 text-lg transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2"
+              className="cursor-pointer px-8 py-2 rounded-lg bg-white text-zinc-800 font-semibold text-lg transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2"
             >
               시작하기
             </Link>
-            <button className="cursor-pointer px-10 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all text-lg">
+            <button className="cursor-pointer px-8 py-2 rounded-lg bg-white/10 backdrop-blur-md border font-semibold border-white/20 shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:bg-white/20 transition-all text-lg">
               자세히 알아보기
             </button>
           </div>
@@ -104,7 +101,7 @@ export function Landing() {
 
         <div className="relative w-full py-10 pointer-events-none select-none overflow-hidden">
           <ScrollVelocity
-            texts={['상담의 새로운 기준', '멈추지 않는 대화의 시작']}
+            texts={['상담 자동화', '멈추지 않는 대화']}
             velocity={15}
             className="text-8xl md:text-[12rem] font-bold tracking-tighter opacity-[0.15] text-white mix-blend-overlay"
           />
@@ -152,7 +149,7 @@ const FeatureCard = ({ span, num, title, desc }: { span: string; num: string; ti
   >
     <div className="relative z-10 h-full flex flex-col justify-between">
       <div>
-        <span className="text-white/40 font-mono text-md tracking-widest border-b border-white/10 pb-1 mb-16 inline-block">{num}</span>
+        <span className="text-white/40 font-mono text-md tracking-widest  pb-1 mb-16 inline-block">{num}</span>
         <h3 className="text-3xl font-bold tracking-tight mb-4 text-white">{title}</h3>
         <p className="text-white/60 text-base leading-relaxed font-light">{desc}</p>
       </div>

@@ -11,7 +11,6 @@ interface AIInquirySolutionProps {
 export function AISolution({ items }: AIInquirySolutionProps) {
   // 간단한 데이터 분석 로직 (AI 시뮬레이션)
   const analysis = useMemo(() => {
-    const total = items.length;
     const pending = items.filter(i => i.status === '대기');
     const urgent = pending.filter(i => !isToday(i.created_at)); // 오늘 생성되지 않은 대기 건 (지연)
     const emotions = items.filter(i => i.emotion === '화남' || i.emotion === '짜증'); // 부정 감정

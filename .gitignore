@@ -43,3 +43,11 @@ next-env.d.ts
 .github/workflows/ci.yml
 Dockerfile
 GEMINI.md
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npx playwright test --ui ",
+    "codegen": "npx playwright codegen http://localhost:3000"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@types/node": "^20",
