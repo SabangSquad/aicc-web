@@ -10,7 +10,7 @@ export async function ChatPage({ params }: { params: Promise<{ id: number }> }) 
       <div className="absolute top-[5%] left-[15%] w-[40vw] h-[40vw] bg-white rounded-full blur-[100px]" />
       <div className="absolute bottom-[5%] right-[15%] w-[45vw] h-[45vw] bg-zinc-200/50 rounded-full blur-[120px]" />
       <div className="w-full max-w-5xl h-[100vh] md:h-[85vh] flex rounded-3xl bg-white/40 backdrop-blur-2xl  shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden z-10">
-        <ChatSidebar />
+        {/* <ChatSidebar /> */}
 
         <main className="flex-1 flex flex-col relative">
           <header className="h-16 flex items-center justify-between px-6 bg-white/30 border-b border-white/60">

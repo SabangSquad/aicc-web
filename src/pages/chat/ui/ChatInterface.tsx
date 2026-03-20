@@ -1,13 +1,19 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, Clock, MapPin, Star, HelpCircle, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const QUICK_PROMPTS = [
+  { id: 1, icon: <Clock size={18} />, text: '오늘 영업 시간 알려줘' },
+  { id: 2, icon: <MapPin size={18} />, text: '여기 어떻게 찾아가?' },
+  { id: 3, icon: <Star size={18} />, text: '제일 잘나가는 메뉴 추천해봐' },
+  { id: 4, icon: <HelpCircle size={18} />, text: '주차 공간 넉넉해?' },
+];
 
 export const ChatInterface = () => {
   const [messages, setMessages] = useState([{ id: 1, text: '안녕하세요! "가게이름" 챗봇 입니다. 문의사항이 있으신가요?', isAi: true }]);
 
   const [inputValue, setInputValue] = useState('');
-
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
 
@@ -22,12 +28,19 @@ export const ChatInterface = () => {
       });
     }
   }, [messages.length, isTyping]);
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
 
-    const userMessage = { id: Date.now(), text: inputValue, isAi: false };
+  const handleSendMessage = async (textToSend?: string) => {
+    const messageContent = textToSend || inputValue;
+
+    if (!messageContent.trim()) return;
+
+    const userMessage = { id: Date.now(), text: messageContent, isAi: false };
     setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
+
+    if (!textToSend) {
+      setInputValue('');
+    }
+
     setIsTyping(true);
     setThinkingStep(''); // 초기 메시지 설정
 
@@ -35,10 +48,9 @@ export const ChatInterface = () => {
       const response = await fetch('http://localhost:8080/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: inputValue }),
+        body: JSON.stringify({ message: messageContent }),
       });
 
-      // 1. 서버 응답이 정상(200-299)이 아닌 경우 처리
       if (!response.ok) {
         throw new Error(`서버 에러: ${response.status}`);
       }
@@ -48,6 +60,7 @@ export const ChatInterface = () => {
 
       if (!reader) return;
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         try {
           const { done, value } = await reader.read();
@@ -93,6 +106,7 @@ export const ChatInterface = () => {
       setThinkingStep('');
     }
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -127,31 +141,51 @@ export const ChatInterface = () => {
             </motion.div>
           );
         })}
+        {messages.length === 1 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 w-full max-w-[340px]">
+            <p className="text-[13px] text-zinc-500 font-medium mb-3 px-2">클릭하면 바로 물어볼 수 있어요</p>
+
+            <div className="flex flex-col gap-2 w-full">
+              {QUICK_PROMPTS.map(prompt => (
+                <motion.button
+                  whileHover={{ scale: 1.01, backgroundColor: '#fafafa' }}
+                  whileTap={{ scale: 0.98 }}
+                  key={prompt.id}
+                  onClick={() => handleSendMessage(prompt.text)}
+                  className="cursor-pointer flex items-center justify-between px-4 py-3 bg-white border border-zinc-100 rounded-2xl transition-all shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] text-left w-full group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="text-zinc-800">{prompt.icon}</div>
+                    <span className="text-[14.5px] text-zinc-700 font-medium">{prompt.text}</span>
+                  </div>
+                  <ArrowUpRight size={16} className="text-zinc-300 group-hover:text-zinc-400 transition-colors" />
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {isTyping && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="flex justify-start scroll-mt-6"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex justify-start px-2"
           >
-            <div className="px-5 py-3.5 max-w-[80%]  flex items-center gap-3">
-              {/* 빙글빙글 도는 로딩 아이콘 */}
+            <div className="flex items-center gap-2.5 py-2">
               <Loader2 size={16} className="text-zinc-400 animate-spin" />
-
-              {/* 상태 텍스트가 바뀔 때마다 부드럽게 애니메이션 처리 */}
-              <div className="overflow-hidden h-[20px] flex items-center">
+              <div className="relative overflow-hidden h-5 flex items-center">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={thinkingStep}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    exit={{ opacity: 0, y: -5 }}
                     transition={{ duration: 0.2 }}
-                    className="text-[14px] text-zinc-500 font-medium tracking-tight whitespace-nowrap"
+                    className="text-[14px] text-zinc-400 font-medium tracking-tight whitespace-nowrap leading-none"
                   >
-                    {thinkingStep}
+                    {thinkingStep || '생각 중...'}
                   </motion.span>
                 </AnimatePresence>
               </div>
@@ -173,7 +207,7 @@ export const ChatInterface = () => {
           />
           <motion.button
             whileTap={{ scale: 0.9 }}
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isTyping}
             className="bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white p-2.5 rounded-xl transition-all shadow-sm"
           >
