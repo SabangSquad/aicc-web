@@ -1,9 +1,11 @@
 import { AIEmotionSolution, AISolution } from '@/entities/ai';
-import { InquiryTable, KPIAnalysis, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
+import { InquiryTable, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
+import { DUMMY_INQUIRIES } from '@/entities/inquiry/data';
 import { Separator } from '@/shared/ui/separator';
 
 export async function Home() {
-  const items = await InquiryAPI.getListByAgent(3);
+  // const items = await InquiryAPI.getListByAgent(3);
+  const items = DUMMY_INQUIRIES;
   const pending = items.filter(item => item.status === '대기').length;
 
   return (
@@ -13,22 +15,21 @@ export async function Home() {
           안녕하세요, 사장님!
           <span className="text-primary"> {pending}건</span>의 업무가 대기 중입니다.
         </h1>
-        <KPIAnalysis items={items} />
       </div>
 
-      <Separator />
-
-      <div className="flex gap-8 h-60">
+      <div className="flex gap-8 h-96">
         <AISolution items={items} />
+
         <Separator orientation="vertical" />
-        <AIEmotionSolution items={items} />
+
+        <div className="flex-1">
+          <AIEmotionSolution items={items} />
+        </div>
       </div>
       <Separator />
 
       <div className="flex gap-8 h-96">
-        <div className="flex-1">
-          <InquiryTable items={items} />
-        </div>
+        <InquiryTable items={items} />
 
         <Separator orientation="vertical" />
 

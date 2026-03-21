@@ -1,8 +1,10 @@
 import { InquiryAPI, InquiryEmotionChart, InquiryAreaSelectChart } from '@/entities/inquiry';
+import { DUMMY_INQUIRIES } from '@/entities/inquiry/data';
 import { Separator } from '@/shared/ui/separator';
 
 export async function Statistics() {
-  const items = await InquiryAPI.getListByAgent(3);
+  // const items = await InquiryAPI.getListByAgent(3);
+  const items = DUMMY_INQUIRIES;
 
   return (
     <div className="space-y-10 ">

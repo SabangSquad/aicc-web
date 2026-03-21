@@ -31,7 +31,7 @@ export const CATEGORY = [
   '포인트',
 ] as const;
 
-export type Category = (typeof CATEGORY)[number];
+type Category = (typeof CATEGORY)[number];
 
 export const categoryGroups: Record<string, Category[]> = {
   '주문 관련': ['주문', '주문확인', '결제수단', '신용카드', '무통장입금', '포인트', '할인쿠폰'],
