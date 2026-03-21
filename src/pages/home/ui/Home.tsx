@@ -17,15 +17,14 @@ export async function Home() {
         </h1>
       </div>
 
-      <div className="flex gap-8 h-96">
-        <AISolution items={items} />
-
+      <AISolution />
+      {/* <div className="flex gap-8 h-96">
         <Separator orientation="vertical" />
 
-        <div className="flex-1">
+        <div className="flex-">
           <AIEmotionSolution items={items} />
         </div>
-      </div>
+      </div> */}
       <Separator />
 
       <div className="flex gap-8 h-96">

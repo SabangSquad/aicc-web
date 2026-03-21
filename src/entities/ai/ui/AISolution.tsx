@@ -1,89 +1,96 @@
-import { useMemo } from 'react';
-import { AlertTriangle, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { InquiryType } from '@/shared/types/inquiry';
-import { isToday } from '@/shared/lib/date';
-
-interface AIInquirySolutionProps {
-  items: InquiryType[];
-}
-
-export function AISolution({ items }: AIInquirySolutionProps) {
-  // 간단한 데이터 분석 로직 (AI 시뮬레이션)
-  const analysis = useMemo(() => {
-    const pending = items.filter(i => i.status === '대기');
-    const urgent = pending.filter(i => !isToday(i.created_at)); // 오늘 생성되지 않은 대기 건 (지연)
-    const emotions = items.filter(i => i.emotion === '화남' || i.emotion === '짜증'); // 부정 감정
-
-    // 가장 많은 카테고리 찾기
-    const categories = items.reduce(
-      (acc, item) => {
-        const catName = item.category || '기타'; // category 구조에 따라 수정 필요
-        acc[catName] = (acc[catName] || 0) + 1;
-        return acc;
+export function AISolution() {
+  const dummyData = {
+    type: '이커머스',
+    status: '위험',
+    headline: '오배송 사고로 인해 VIP 고객 불만이 급증하고 있습니다!',
+    trends: [
+      {
+        id: 1,
+        title: '이슈 점유율',
+        content: '배송 문의가 평소보다 120% 많아요. 특정 지역 배송 지연이 의심됩니다.',
       },
-      {} as Record<string, number>
-    );
-
-    const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
-
-    return {
-      pendingCount: pending.length,
-      urgentCount: urgent.length,
-      negativeCount: emotions.length,
-      topCategoryName: topCategory ? topCategory[0] : '없음',
-      topCategoryCount: topCategory ? topCategory[1] : 0,
-    };
-  }, [items]);
+      {
+        id: 2,
+        title: '감정 리스크',
+        content: "반품 건에서 '화남' 감정이 연속 발생 중입니다. 대응 속도를 높여주세요.",
+      },
+      {
+        id: 3,
+        title: '운영 패턴',
+        content: '오전 10시~11시 사이에 문의가 쏠립니다. 이때 집중 대응을 권장합니다.',
+      },
+    ],
+    // 💡 AI가 제안하는 구체적인 솔루션 데이터 추가
+    solutions: [
+      {
+        priority: '긴급',
+        title: '오배송 다발 품목 이중 검수',
+        content: '최근 화이트 셔츠/치마 혼동이 많습니다. 출고 전 바코드 대조를 1회 더 진행하세요.',
+      },
+      {
+        priority: '긴급',
+        title: '배송 지연 공지 상단 배치',
+        content: '특정 터미널 지연 이슈를 쇼핑몰 메인 공지에 띄워 단순 문의 유입을 차단하세요.',
+      },
+      {
+        priority: '보통',
+        title: 'VIP 전용 선환불 프로세스',
+        content: 'VIP 고객 반품은 물건 회수 전 선환불을 진행하여 이탈 리스크를 관리하세요.',
+      },
+    ],
+    cheerUp: '포장이 정성스럽다는 칭찬이 오늘만 3번 들어왔어요. 사장님, 기운 내세요!',
+  };
 
   return (
     <div className="flex-1">
-      <div className="pb-3">
-        <h2 className="text-2xl  text-ai font-semibold tracking-tight">AI Insight & Solution</h2>
-        <p className="mt-1 text-sm text-muted-foreground">현재 접수된 문의 데이터를 분석하여 최적의 해결책을 제안합니다.</p>
+      {/* 헤더 섹션 */}
+      <div className="pb-4">
+        <h2 className="text-2xl font-semibold tracking-tight">AI Insight</h2>
+        <p className="mt-1 text-[14px] text-muted-foreground">최근 상담 데이터 20건을 AI가 분석한 결과입니다.</p>
       </div>
 
-      <div className="grid gap-4">
-        {analysis.urgentCount > 0 ? (
-          <div className="flex items-start gap-4 rounded-lg border border-red-100 bg-red-50 p-3 dark:border-red-900/50 dark:bg-red-900/20">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-red-600" />
-            <div className="grid gap-1">
-              <p className="text-sm font-medium text-red-900 dark:text-red-200">답변 지연 리스크 감지</p>
-              <p className="text-xs text-red-700 dark:text-red-300">
-                24시간 이상 답변 대기 중인 건이 <span className="font-bold">{analysis.urgentCount}건</span> 있습니다. 고객 만족도 하락이 우려됩니다.
-              </p>
-              <Button size="sm" variant="outline" className="mt-2 h-7 w-fit border-red-200 text-red-700 hover:bg-red-100 hover:text-red-900">
-                지연 건 우선 처리하기 <ArrowRight className="ml-1 h-3 w-3" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 rounded-lg border border-green-100 bg-green-50 p-3 dark:border-green-900/50 dark:bg-green-900/20">
-            <CheckCircle2 className="h-5 w-5 text-green-600" />
-            <p className="text-sm font-medium text-green-800 dark:text-green-200">현재 지연 중인 문의가 없습니다. 훌륭해요!</p>
-          </div>
-        )}
-
-        {/* 2. 트렌드 분석 및 제안 */}
-        <div className="grid gap-3">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-violet-900 dark:text-violet-100">주요 트렌드 분석</h4>
-          </div>
-          <div className="grid gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-amber-500" />
-              <span className="text-muted-foreground">
-                <span className="font-medium text-foreground">{analysis.topCategoryName}</span> 관련 문의 급증 ({analysis.topCategoryCount}건)
-              </span>
-            </div>
-            {analysis.negativeCount > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-red-500" />
-                <span className="text-muted-foreground">
-                  부정 감정(불만/화남) 문의 비율 <span className="font-medium text-red-600">{((analysis.negativeCount / items.length) * 100).toFixed(1)}%</span>
-                </span>
+      {/* 1. 운영 상태 요약 */}
+      <div className="pb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="bg-red-50 text-red-600 text-[12px] font-bold px-1.5 py-0.5 rounded border border-red-100">운영 상태: {dummyData.status}</span>
+          <span className="text-red-500 text-[12px] font-bold">즉시 대응 필요</span>
+        </div>
+        <h3 className="text-[20px] font-black leading-tight text-zinc-800 mb-2 tracking-tight">{dummyData.headline}</h3>
+      </div>
+      <div className="flex flex-row gap-6 py-5">
+        <div className="">
+          <h4 className="text-[13px] font-bold text-zinc-400 mb-4 uppercase tracking-wider">주요 운영 트렌드</h4>
+          <div className="space-y-4">
+            {dummyData.trends.map(trend => (
+              <div key={trend.id} className="flex gap-3">
+                <span className="text-[14px] font-black text-zinc-200 mt-0.5">{trend.id}</span>
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-[15px] font-bold text-zinc-800 leading-tight">{trend.title}</p>
+                  <p className="text-[13px] font-medium text-zinc-500 leading-snug">{trend.content}</p>
+                </div>
               </div>
-            )}
+            ))}
+          </div>
+        </div>
+
+        <div className="">
+          <h4 className="text-[13px] font-bold text-zinc-400 mb-4 uppercase tracking-wider">AI 권장 솔루션</h4>
+          <div className="grid grid-cols-1 gap-2">
+            {dummyData.solutions.map((sol, idx) => (
+              <div key={idx} className="p-4 bg-zinc-50 rounded-xl border border-zinc-100 group hover:border-zinc-300 transition-colors">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span
+                    className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
+                      sol.priority === '긴급' ? 'bg-red-100 text-red-700' : 'bg-zinc-200 text-zinc-700'
+                    }`}
+                  >
+                    {sol.priority}
+                  </span>
+                  <p className="text-[14px] font-bold text-zinc-900">{sol.title}</p>
+                </div>
+                <p className="text-[13px] font-medium text-zinc-600 leading-relaxed pl-1 border-l-2 border-zinc-200 ml-1">{sol.content}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

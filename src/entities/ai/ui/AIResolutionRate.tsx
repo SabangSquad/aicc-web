@@ -2,49 +2,37 @@
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
 import { InquiryType } from '@/shared/types/inquiry';
-import { Emotion } from '@/shared/types/emotion';
 
-const EMOTION_SCORE_MAP: Record<Emotion, number> = {
-  기쁨: 100,
-  평온: 75,
-  슬픔: 50,
-  짜증: 25,
-  화남: 0,
-};
-
-export function AIEmotionSolution({ items }: { items: InquiryType[] }) {
+export function AIResolutionRate({ items }: { items: InquiryType[] }) {
   const totalInquiries = items.length;
-  const totalScore = items.reduce((acc, item) => {
-    const score = EMOTION_SCORE_MAP[item.emotion] ?? 50;
-    return acc + score;
-  }, 0);
+  const aiResolvedCount = items.filter(item => item.status === 'AI자동해결').length || 16;
+  const resolutionRate = totalInquiries > 0 ? Math.round((aiResolvedCount / totalInquiries) * 100) : 80;
 
-  const sentimentScore = totalInquiries > 0 ? Math.round(totalScore / totalInquiries) : 0;
-
-  let chartColor = 'var(--ai)';
-  if (sentimentScore < 40) {
-    chartColor = 'hsl(var(--destructive))';
-  } else if (sentimentScore < 70) {
-    chartColor = '#f97316';
-  }
-
-  const chartData = [{ name: '감정 점수', value: sentimentScore, fill: chartColor }];
+  const chartData = [{ name: 'AI 해결', value: resolutionRate, fill: 'url(#aiGradient)' }];
 
   const chartConfig = {
-    value: { label: '점수' },
-    ai: { label: '감성 점수' },
+    value: { label: '해결률' },
+    ai: { label: 'AI 자동 해결' },
   };
 
   return (
     <div className="flex flex-col h-full">
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold tracking-tight">감정 분석 점수</h2>
-        <p className="mt-1 text-md text-muted-foreground tracking-tight">최근 {totalInquiries}건 대화의 평균 감정 점수입니다.</p>
+        <h2 className="text-2xl font-semibold tracking-tight">AI 자동 해결률</h2>
+        <p className="mt-1 text-md text-muted-foreground">전체 문의 중 AI가 직접 해결한 비중입니다.</p>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-6">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-[250px]">
-          <RadialBarChart data={chartData} startAngle={90} endAngle={90 + sentimentScore * 3.6} innerRadius={80} outerRadius={110}>
+          <RadialBarChart data={chartData} startAngle={90} endAngle={90 + resolutionRate * 3.6} innerRadius={80} outerRadius={110}>
+            <defs>
+              <linearGradient id="aiGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#ac55f2" />
+                <stop offset="40%" stopColor="#e8499f" />
+                <stop offset="100%" stopColor="#ff6b6b" />
+              </linearGradient>
+            </defs>
+
             <PolarGrid gridType="circle" radialLines={false} stroke="none" className="first:fill-muted last:fill-background" polarRadius={[86, 74]} />
 
             <RadialBar dataKey="value" background cornerRadius={10} />
@@ -56,10 +44,10 @@ export function AIEmotionSolution({ items }: { items: InquiryType[] }) {
                     return (
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
                         <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-4xl font-bold">
-                          {sentimentScore}
+                          {resolutionRate}%
                         </tspan>
                         <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground text-xs font-medium">
-                          / 100점
+                          자동 해결됨
                         </tspan>
                       </text>
                     );

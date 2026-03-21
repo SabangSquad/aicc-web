@@ -26,10 +26,10 @@ export function PoliciesPage() {
   };
 
   return (
-    <div className="w-full space-y-16 pb-24 pt-8 px-6 md:px-10 lg:px-16">
+    <div className="w-full space-y-16">
       {/* 헤더 섹션 */}
       <div>
-        <h1 className="text-[32px] sm:text-[36px] font-bold tracking-tight text-slate-900 mb-3">이용약관 및 정책 관리</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-3">이용약관 및 정책 관리</h1>
         <p className="text-[17px] font-medium text-slate-500">
           매장의 운영 정책과 법적 약관을 관리합니다. AI는 이 정책을 기반으로 환불 및 이용 문의에 답변합니다.
         </p>

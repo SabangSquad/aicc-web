@@ -29,11 +29,10 @@ export function StoreInfoPage() {
   };
 
   return (
-    /* max-w-4xl을 지우고 w-full로 화면 전체를 사용하도록 변경 */
-    <div className="w-full space-y-16 pb-24 pt-8 px-6 md:px-10 lg:px-16">
+    <div className="w-full space-y-16">
       {/* 헤더 섹션 */}
       <div>
-        <h1 className="text-[32px] sm:text-[36px] font-bold tracking-tight text-slate-900 mb-3">업장 기본 정보</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-3">업장 기본 정보</h1>
         <p className="text-[17px] font-medium text-slate-500">고객과 AI 상담사가 참고할 매장의 핵심 정보를 관리합니다.</p>
       </div>
 

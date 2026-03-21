@@ -30,7 +30,6 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
         </Link>
       </Button>
 
-      {/* ... 상단 헤더 영역 ... */}
       <div className="p-6 border-b">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">{inquiry.title}</h1>

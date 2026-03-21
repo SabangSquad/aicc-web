@@ -45,7 +45,7 @@ export function LeftPanel({
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-3">
       <Tabs defaultValue="전체" className="flex-1 overflow-hidden">
         <div className="p-4">
           <Input type="search" placeholder="제목 또는 내용으로 검색..." className="mb-4" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
