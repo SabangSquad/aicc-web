@@ -1,7 +1,8 @@
-import { AISolution } from '@/entities/ai';
+import { AISolution, AISolutionSkeleton } from '@/entities/ai';
 import { InquiryTable, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
 import { DUMMY_INQUIRIES } from '@/entities/inquiry/data';
 import { Separator } from '@/shared/ui/separator';
+import { Suspense } from 'react';
 
 export async function Home() {
   // const items = await InquiryAPI.getListByAgent(3);
@@ -17,10 +18,6 @@ export async function Home() {
         </h1>
       </div>
 
-      <AISolution />
-
-      <Separator />
-
       <div className="flex h-96 gap-8">
         <InquiryTable items={items} />
 
@@ -30,6 +27,12 @@ export async function Home() {
           <InquiryChart items={items} />
         </div>
       </div>
+
+      <Separator />
+
+      <Suspense fallback={<AISolutionSkeleton />}>
+        <AISolution />
+      </Suspense>
 
       <Separator />
       <InquiryLineChart items={items} />
