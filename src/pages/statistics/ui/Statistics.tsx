@@ -10,7 +10,11 @@ export async function Statistics() {
   const items = DUMMY_INQUIRIES;
 
   return (
-    <div className="space-y-10 ">
+    <div className="space-y-16">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight mb-3">통계</h1>
+        <p className="text-[17px] font-medium text-slate-500">AI 상담사의 성과와 문의 통계를 확인할 수 있습니다.</p>
+      </div>
       <div className="flex gap-8 px-20 md:px-40 justify-between">
         <AIEmotionSolution items={items} />
         <AIAverageResponseTime items={items} />

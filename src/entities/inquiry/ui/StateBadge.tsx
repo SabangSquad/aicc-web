@@ -1,6 +1,6 @@
 import { InquiryStatus } from '@/shared/types/inquiry';
 import { Badge } from '@/shared/ui/badge';
-import { CheckCircle, Clock, MessageCircle } from 'lucide-react';
+import { Check, Clock, MessageCircle } from 'lucide-react';
 
 export function StateBadge({ status }: { status: InquiryStatus }) {
   if (status === '대기') {
@@ -24,7 +24,7 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
   if (status === '종료') {
     return (
       <Badge variant="secondary" className="text-white bg-red-400">
-        <CheckCircle />
+        <Check />
         <span>종료</span>
       </Badge>
     );
@@ -32,7 +32,7 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
   if (status === 'AI자동해결') {
     return (
       <Badge variant="secondary" className="text-white bg-ai">
-        <CheckCircle />
+        <Check />
         <span>AI자동해결</span>
       </Badge>
     );

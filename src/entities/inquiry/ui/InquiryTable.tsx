@@ -80,7 +80,7 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
             답변을 기다리는 고객의 질문이 <span className="text-xl font-bold text-red-400 underline">{counts.pending}건</span> 있습니다.
           </p>
         </div>
-        <Link href="/inquiry" className="pb-3 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
+        <Link href="/inquiry" className="underline pb-3 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
           더보기
         </Link>
       </div>

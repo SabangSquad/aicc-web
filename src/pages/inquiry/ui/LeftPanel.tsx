@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Input } from '@/shared/ui/input';
-import { StateBadge } from '@/entities/inquiry/ui/StateBadge';
+import { StateBadge } from '@/entities/inquiry';
 import { InquiryType } from '@/shared/types/inquiry';
 import { useState } from 'react';
 
