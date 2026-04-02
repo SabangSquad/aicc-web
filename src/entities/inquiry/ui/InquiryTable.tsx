@@ -2,11 +2,11 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { InquiryType, InquiryStatus } from '@/shared/types/inquiry';
-import { Emotion } from '@/shared/types/emotion';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/shared/ui/carousel';
+import { EmotionType } from '@/shared/types/emotion';
+import { CaseStatus, CaseType } from '@/shared/types/case';
 
-const getCardStyle = (emotion: Emotion) => {
+const getCardStyle = (emotion: EmotionType) => {
   switch (emotion) {
     case '기쁨':
       return { bg: 'bg-[var(--laugh-color,#22a37a)]', character: '😆' };
@@ -33,13 +33,12 @@ const formatCardDate = (dateString: string) => {
 };
 
 interface InquiryGraphicBoardProps {
-  items: InquiryType[];
+  items: CaseType[];
 }
-
 export function InquiryTable({ items }: InquiryGraphicBoardProps) {
   const router = useRouter();
 
-  const [activeFilter, setActiveFilter] = useState<InquiryStatus>('대기');
+  const [activeFilter, setActiveFilter] = useState<CaseStatus>('대기');
 
   const [api, setApi] = useState<CarouselApi>();
 
@@ -66,21 +65,21 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
     });
   }, [items, activeFilter]);
 
-  const toggleFilter = (filter: InquiryStatus) => {
+  const toggleFilter = (filter: CaseStatus) => {
     setActiveFilter(prev => (prev === filter ? '대기' : filter));
     api?.scrollTo(0);
   };
 
   return (
-    <div className="flex-1 min-w-0">
+    <div className="min-w-0 flex-1">
       <div className="flex items-end justify-between">
         <div className="flex-1">
           <h2 className="text-2xl font-semibold tracking-tight">금주의 상담 현황</h2>
-          <p className="mt-1 text-muted-foreground">
+          <p className="text-muted-foreground mt-1">
             답변을 기다리는 고객의 질문이 <span className="text-xl font-bold text-red-400 underline">{counts.pending}건</span> 있습니다.
           </p>
         </div>
-        <Link href="/inquiry" className="underline pb-3 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground">
+        <Link href="/inquiry" className="text-muted-foreground hover:text-foreground pb-3 text-sm font-medium underline transition-colors">
           더보기
         </Link>
       </div>
@@ -88,31 +87,31 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
       <div className="flex gap-4 py-4 text-sm font-medium">
         <button
           onClick={() => toggleFilter('대기')}
-          className={`transition-colors flex items-center ${activeFilter === '대기' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`flex items-center transition-colors ${activeFilter === '대기' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
         >
           상담대기 <span className="ml-1 text-base font-bold">{counts.pending}</span>
         </button>
         <button
           onClick={() => toggleFilter('상담')}
-          className={`transition-colors flex items-center ${activeFilter === '상담' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`flex items-center transition-colors ${activeFilter === '상담' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
         >
           상담중 <span className="ml-1 text-base font-bold">{counts.inProgress}</span>
         </button>
         <button
           onClick={() => toggleFilter('AI자동해결')}
-          className={`transition-colors flex items-center ${activeFilter === 'AI자동해결' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`flex items-center transition-colors ${activeFilter === 'AI자동해결' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
         >
           AI자동해결 <span className="ml-1 text-base font-bold">{counts.aiResolved}</span>
         </button>
         <button
           onClick={() => toggleFilter('종료')}
-          className={`transition-colors flex items-center ${activeFilter === '종료' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`flex items-center transition-colors ${activeFilter === '종료' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
         >
           상담종료 <span className="ml-1 text-base font-bold">{counts.closed}</span>
         </button>
       </div>
 
-      <div className="relative group">
+      <div className="group relative">
         {filteredItems.length > 0 ? (
           <Carousel
             setApi={setApi}
@@ -126,19 +125,19 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
               {filteredItems.map(item => {
                 const style = getCardStyle(item.emotion);
                 return (
-                  <CarouselItem key={item.case_id} className="pl-4  basis-1/3 md:basis-1/4 ">
+                  <CarouselItem key={item.case_id} className="basis-1/3 pl-4 md:basis-1/4">
                     <div
                       onClick={() => router.push(`/inquiry/${item.case_id}`)}
-                      className={`relative w-full h-[240px] p-5 cursor-pointer overflow-hidden rounded-xl transition-transform hover:-translate-y-1 hover:shadow-lg ${style.bg}`}
+                      className={`relative h-[240px] w-full cursor-pointer overflow-hidden rounded-xl p-5 transition-transform hover:-translate-y-1 hover:shadow-lg ${style.bg}`}
                     >
                       <div className="flex justify-between text-[13px] font-medium text-white/90">
                         <span>{item.category}</span>
                         <span>{item.status}</span>
                       </div>
-                      <h3 className="mt-4 text-[16px] font-bold leading-tight text-white line-clamp-3">{item.title}</h3>
+                      <h3 className="mt-4 line-clamp-3 text-[16px] leading-tight font-bold text-white">{item.summary}</h3>
                       <p className="mt-2 text-[11px] font-medium text-white/80">{formatCardDate(item.created_at)}</p>
 
-                      <div className="absolute bottom-0 right-0 w-24 h-24 flex items-end justify-end p-2 select-none">
+                      <div className="absolute right-0 bottom-0 flex h-24 w-24 items-end justify-end p-2 select-none">
                         <span className="text-6xl">{style.character}</span>
                       </div>
                     </div>
@@ -147,11 +146,11 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
               })}
             </CarouselContent>
 
-            <CarouselPrevious className="absolute left-2 z-20 hidden md:flex bg-white/90 backdrop-blur-sm shadow-md border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CarouselNext className="absolute right-2 z-20 hidden md:flex bg-white/90 backdrop-blur-sm shadow-md border-gray-200 text-gray-500 hover:text-gray-800 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CarouselPrevious className="absolute left-2 z-20 hidden border-gray-200 bg-white/90 text-gray-500 opacity-0 shadow-md backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white hover:text-gray-800 md:flex" />
+            <CarouselNext className="absolute right-2 z-20 hidden border-gray-200 bg-white/90 text-gray-500 opacity-0 shadow-md backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white hover:text-gray-800 md:flex" />
           </Carousel>
         ) : (
-          <div className="flex items-center justify-center w-full h-[240px] bg-muted/30 rounded-[24px] text-muted-foreground font-medium my-2">
+          <div className="bg-muted/30 text-muted-foreground my-2 flex h-[240px] w-full items-center justify-center rounded-[24px] font-medium">
             해당 상태의 문의 내역이 없습니다.
           </div>
         )}

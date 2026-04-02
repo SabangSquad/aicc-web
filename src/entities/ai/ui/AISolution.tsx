@@ -9,7 +9,7 @@ export function AISolution() {
     <div className="flex h-full flex-col">
       <div>
         <h2 className="text-ai w-fit text-2xl font-bold tracking-tight">AI Insight</h2>
-        <p className="text-md mt-1 font-medium text-zinc-500">최근 상담 데이터 20건 분석 ({data.lastUpdated} 기준)</p>
+        <p className="text-md mt-1 font-medium text-zinc-500">최근 상담 데이터 20건 분석</p>
       </div>
       <div className="mt-6 flex flex-col gap-6">
         <h3 className="text-[24px] font-bold tracking-tighter text-zinc-700">{data.headline}</h3>

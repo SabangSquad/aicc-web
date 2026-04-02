@@ -1,9 +1,9 @@
 'use client';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
-import { InquiryType } from '@/shared/types/inquiry';
+import { CaseType } from '@/shared/types/case';
 
-export function AIResolutionRate({ items }: { items: InquiryType[] }) {
+export function AIResolutionRate({ items }: { items: CaseType[] }) {
   const totalInquiries = items.length;
   const aiResolvedCount = items.filter(item => item.status === 'AI자동해결').length || 16;
   const resolutionRate = totalInquiries > 0 ? Math.round((aiResolvedCount / totalInquiries) * 100) : 80;
@@ -16,13 +16,13 @@ export function AIResolutionRate({ items }: { items: InquiryType[] }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="mb-4">
         <h2 className="text-2xl font-semibold tracking-tight">AI 자동 해결률</h2>
-        <p className="mt-1 text-md text-muted-foreground">전체 문의 중 AI가 직접 해결한 비중입니다.</p>
+        <p className="text-md text-muted-foreground mt-1">전체 문의 중 AI가 직접 해결한 비중입니다.</p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
+      <div className="flex flex-1 flex-col items-center justify-center p-6">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-[250px]">
           <RadialBarChart data={chartData} startAngle={90} endAngle={90 + resolutionRate * 3.6} innerRadius={80} outerRadius={110}>
             <defs>

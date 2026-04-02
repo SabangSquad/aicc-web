@@ -2,12 +2,11 @@
 import { Pie, PieChart } from 'recharts';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/shared/ui/chart';
 import { categoryChartColorSet } from '@/shared/lib/category';
-import { InquiryType } from '@/shared/types/inquiry';
-import { Category } from '@/shared/types/category';
+import { CaseType } from '@/shared/types/case';
 
-export function InquiryChart({ items }: { items: InquiryType[] }) {
+export function InquiryChart({ items }: { items: CaseType[] }) {
   // 1. 카테고리별 개수 집계
-  const categoryCounts = items.reduce((acc: Partial<Record<Category, number>>, item) => {
+  const categoryCounts = items.reduce((acc: Partial<Record<string, number>>, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
   }, {});
@@ -15,11 +14,10 @@ export function InquiryChart({ items }: { items: InquiryType[] }) {
   // 2. 데이터 변환, 정렬 및 상위 6개 추출
   const chartData = Object.entries(categoryCounts)
     .map(([category, count]) => {
-      // category key를 사용하여 색상 가져오기 (타입 단언 필요할 수 있음)
-      const color = categoryChartColorSet[category as Category]?.color;
+      const color = categoryChartColorSet[category]?.color;
       return {
         category: category,
-        count: count,
+        count: count ?? 0,
         fill: color,
       };
     })
@@ -32,8 +30,8 @@ export function InquiryChart({ items }: { items: InquiryType[] }) {
     <div className="flex flex-col">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">문의 카테고리 현황</h2>
-        <p className="mt-1 text-muted-foreground">
-          총 {totalInquiries}건의 문의 ({new Date().toLocaleDateString('ko-KR')})<span className="text-xs ml-2">(상위 6개 항목)</span>
+        <p className="text-muted-foreground mt-1">
+          총 {totalInquiries}건의 문의 ({new Date().toLocaleDateString('ko-KR')})<span className="ml-2 text-xs">(상위 6개 항목)</span>
         </p>
       </div>
 

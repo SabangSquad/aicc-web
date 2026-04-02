@@ -1,28 +1,29 @@
-async function request<T>(url: string, options?: RequestInit): Promise<T> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const headers: Record<string, string> = {
-    ...(options?.headers as Record<string, string>),
-  };
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!(options?.body instanceof FormData)) {
-    if (!headers['Content-Type']) {
-      headers['Content-Type'] = 'application/json';
+export async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const headers = new Headers(options?.headers);
+
+  if (typeof window === 'undefined') {
+    try {
+      const { cookies } = await import('next/headers');
+      const cookieStore = await cookies();
+      const cookieString = cookieStore.toString();
+      if (cookieString) {
+        headers.set('Cookie', cookieString);
+      }
+    } catch (error) {
+      console.warn('Fetcher: 쿠키를 가져오는 데 실패했습니다 (Static Generation 중일 수 있음).', error);
     }
   }
 
-  const config: RequestInit = {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    cache: options?.cache || 'no-store',
-    headers: {
-      ...headers,
-    },
-  };
-
-  const res = await fetch(`${baseUrl}${url}`, config);
-
+    headers,
+    credentials: 'include',
+  });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.msg || '요청 처리 중 에러가 발생했습니다.');
+    throw errorData;
   }
 
   return res.json();

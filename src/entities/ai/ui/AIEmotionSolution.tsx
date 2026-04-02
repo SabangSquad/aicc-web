@@ -1,65 +1,85 @@
 'use client';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
-import { InquiryType } from '@/shared/types/inquiry';
-import { Emotion } from '@/shared/types/emotion';
+import { CaseType } from '@/shared/types/case';
+import { EmotionType } from '@/shared/types/emotion';
 
-const EMOTION_SCORE_MAP: Record<Emotion, number> = {
-  기쁨: 100,
-  평온: 75,
-  슬픔: 50,
-  짜증: 25,
-  화남: 0,
+const EMOTION_SCORE_MAP: Record<EmotionType, number> = {
+  기쁨: 100, // -> 100°C
+  평온: 50, // -> 36.5°C (기준)
+  슬픔: 30, // -> 약 22°C
+  짜증: 15, // -> 약 11°C
+  화남: 0, // -> 0°C
 };
 
-export function AIEmotionSolution({ items }: { items: InquiryType[] }) {
+export function AIEmotionSolution({ items }: { items: CaseType[] }) {
   const totalInquiries = items.length;
-  const totalScore = items.reduce((acc, item) => {
-    const score = EMOTION_SCORE_MAP[item.emotion] ?? 50;
-    return acc + score;
-  }, 0);
 
-  const sentimentScore = totalInquiries > 0 ? Math.round(totalScore / totalInquiries) : 0;
+  // 1. 평균 점수 계산 (0~100)
+  const totalScore = items.reduce((acc, item) => acc + (EMOTION_SCORE_MAP[item.emotion] ?? 50), 0);
+  const avgScore = totalInquiries > 0 ? totalScore / totalInquiries : 50;
 
-  let chartColor = 'var(--ai)';
-  if (sentimentScore < 40) {
-    chartColor = 'hsl(var(--destructive))';
-  } else if (sentimentScore < 70) {
-    chartColor = '#f97316';
+  // 2. 점수를 온도로 변환 (Piecewise Linear Scaling)
+  // 0~50점 구간: 0°C ~ 36.5°C (기울기 0.73)
+  // 50~100점 구간: 36.5°C ~ 100°C (기울기 1.27)
+  let currentTemperature: number;
+  if (avgScore <= 50) {
+    currentTemperature = avgScore * 0.73;
+  } else {
+    currentTemperature = 36.5 + (avgScore - 50) * 1.27;
   }
 
-  const chartData = [{ name: '감정 점수', value: sentimentScore, fill: chartColor }];
+  const displayTemp = parseFloat(currentTemperature.toFixed(1));
 
-  const chartConfig = {
-    value: { label: '점수' },
-    ai: { label: '감성 점수' },
-  };
+  // 3. 온도별 색상 전략
+  let tempColor = '#3b82f6'; // 저온: 블루
+  if (displayTemp >= 70) {
+    tempColor = '#ef4444'; // 고온(매우 좋음): 레드
+  } else if (displayTemp >= 36.5) {
+    tempColor = '#10b981'; // 적정~훈훈: 그린/에메랄드
+  } else if (displayTemp >= 20) {
+    tempColor = '#f59e0b'; // 미지근(주의): 앰버
+  }
+
+  const chartData = [{ name: '마음 온도', value: avgScore, fill: tempColor }];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col" data-testid="emotion-temp-card">
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold tracking-tight">감정 분석 점수</h2>
-        <p className="mt-1 text-md text-muted-foreground tracking-tight">최근 {totalInquiries}건 대화의 평균 감정 점수입니다.</p>
+        <h2 className="text-2xl font-bold tracking-tight">감정 분석 온도</h2>
+        <p className="text-md text-muted-foreground mt-1">
+          {totalInquiries > 0 ? '챗봇과의 채팅을 분석한 고객의 감정온도입니다.' : '데이터가 쌓이길 기다리고 있어요.'}
+        </p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square w-[250px]">
-          <RadialBarChart data={chartData} startAngle={90} endAngle={90 + sentimentScore * 3.6} innerRadius={80} outerRadius={110}>
-            <PolarGrid gridType="circle" radialLines={false} stroke="none" className="first:fill-muted last:fill-background" polarRadius={[86, 74]} />
-
+      <div className="flex flex-1 flex-col items-center justify-center p-6">
+        <ChartContainer config={{}} className="mx-auto aspect-square w-[250px]">
+          <RadialBarChart
+            data={chartData}
+            startAngle={90}
+            endAngle={90 + avgScore * 1.8} // 바의 길이는 점수(0~100)에 비례
+            innerRadius={80}
+            outerRadius={110}
+          >
+            <PolarGrid gridType="circle" radialLines={false} stroke="none" className="first:fill-zinc-100 last:fill-white" polarRadius={[86, 74]} />
             <RadialBar dataKey="value" background cornerRadius={10} />
-
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
                     return (
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                        <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-4xl font-bold">
-                          {sentimentScore}
+                        <tspan x={viewBox.cx} y={viewBox.cy} className="fill-zinc-800 text-4xl font-bold">
+                          {displayTemp}°C
                         </tspan>
-                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground text-xs font-medium">
-                          / 100점
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-zinc-400 text-xs font-medium">
+                          {displayTemp >= 60
+                            ? '열정적인 핫플 🔥'
+                            : displayTemp >= 36.5
+                              ? '훈훈한 분위기 🌿'
+                              : displayTemp >= 20
+                                ? '조금 서늘해요 ☁️'
+                                : '영하권 주의보 ❄️'}
                         </tspan>
                       </text>
                     );

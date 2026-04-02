@@ -11,7 +11,7 @@ const QUICK_PROMPTS = [
 ];
 
 export const ChatInterface = () => {
-  const [messages, setMessages] = useState([{ id: 1, text: '안녕하세요! "가게이름" 챗봇 입니다. 문의사항이 있으신가요?', isAi: true }]);
+  const [messages, setMessages] = useState([{ id: 1, text: '안녕하세요! "봉구스 밥버거 (인천대점)" 챗봇 입니다. 문의사항이 있으신가요?', isAi: true }]);
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -48,7 +48,7 @@ export const ChatInterface = () => {
       const response = await fetch('http://localhost:8080/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageContent }),
+        body: JSON.stringify({ message: messageContent + '봉구스 밥버거 (인천대점)' }),
       });
 
       if (!response.ok) {
@@ -116,12 +116,13 @@ export const ChatInterface = () => {
 
   return (
     <>
-      <section className="flex-1 overflow-y-auto p-6 pb-[50vh] space-y-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <section className="flex-1 space-y-8 overflow-y-auto p-6 pb-[50vh] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {messages.map(msg => {
           const isLatestUser = msg.id === latestUserMsgId;
 
           return (
             <motion.div
+              data-testid="message-bubble"
               key={msg.id}
               ref={isLatestUser ? latestUserMsgRef : null}
               initial={{ opacity: 0, y: 30 }}
@@ -130,35 +131,35 @@ export const ChatInterface = () => {
               className={`flex scroll-mt-6 ${msg.isAi ? 'justify-start' : 'justify-end'}`}
             >
               <div
-                className={`px-5 py-3 max-w-[80%] rounded-2xl border ${
+                className={`max-w-[80%] rounded-2xl border px-5 py-3 ${
                   msg.isAi
-                    ? 'bg-white/60 border-white/80 text-zinc-700 rounded-tl-sm backdrop-blur-md shadow-sm'
-                    : 'bg-zinc-800 border-zinc-700 text-white rounded-tr-sm font-medium shadow-md'
+                    ? 'rounded-tl-sm border-white/80 bg-white/60 text-zinc-700 shadow-sm backdrop-blur-md'
+                    : 'rounded-tr-sm border-zinc-700 bg-zinc-800 font-medium text-white shadow-md'
                 }`}
               >
-                <p className="leading-relaxed text-[15px] break-words">{msg.text}</p>
+                <p className="text-[15px] leading-relaxed break-words">{msg.text}</p>
               </div>
             </motion.div>
           );
         })}
         {messages.length === 1 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 w-full max-w-[340px]">
-            <p className="text-[13px] text-zinc-500 font-medium mb-3 px-2">클릭하면 바로 물어볼 수 있어요</p>
+            <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">클릭하면 바로 물어볼 수 있어요</p>
 
-            <div className="flex flex-col gap-2 w-full">
+            <div className="flex w-full flex-col gap-2">
               {QUICK_PROMPTS.map(prompt => (
                 <motion.button
                   whileHover={{ scale: 1.01, backgroundColor: '#fafafa' }}
                   whileTap={{ scale: 0.98 }}
                   key={prompt.id}
                   onClick={() => handleSendMessage(prompt.text)}
-                  className="cursor-pointer flex items-center justify-between px-4 py-3 bg-white border border-zinc-100 rounded-2xl transition-all shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] text-left w-full group"
+                  className="group flex w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-100 bg-white px-4 py-3 text-left shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] transition-all"
                 >
                   <div className="flex items-center gap-3.5">
                     <div className="text-zinc-800">{prompt.icon}</div>
-                    <span className="text-[14.5px] text-zinc-700 font-medium">{prompt.text}</span>
+                    <span className="text-[14.5px] font-medium text-zinc-700">{prompt.text}</span>
                   </div>
-                  <ArrowUpRight size={16} className="text-zinc-300 group-hover:text-zinc-400 transition-colors" />
+                  <ArrowUpRight size={16} className="text-zinc-300 transition-colors group-hover:text-zinc-400" />
                 </motion.button>
               ))}
             </div>
@@ -171,11 +172,11 @@ export const ChatInterface = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex justify-start px-2"
+            className="flex justify-start px-2 py-3"
           >
             <div className="flex items-center gap-2.5 py-2">
-              <Loader2 size={16} className="text-zinc-400 animate-spin" />
-              <div className="relative overflow-hidden h-5 flex items-center">
+              <Loader2 size={16} className="animate-spin text-zinc-400" />
+              <div className="relative flex h-5 items-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={thinkingStep}
@@ -183,7 +184,7 @@ export const ChatInterface = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
                     transition={{ duration: 0.2 }}
-                    className="text-[14px] text-zinc-400 font-medium tracking-tight whitespace-nowrap leading-none"
+                    className="text-[14px] leading-none font-medium tracking-tight whitespace-nowrap text-zinc-400"
                   >
                     {thinkingStep || '생각 중...'}
                   </motion.span>
@@ -196,20 +197,20 @@ export const ChatInterface = () => {
 
       {/* 입력창 */}
       <footer className="p-6">
-        <div className="relative flex items-center bg-white/50 border border-white/80 backdrop-blur-xl rounded-2xl p-2 transition-all focus-within:border-zinc-300 focus-within:bg-white/80 shadow-sm">
+        <div className="relative flex items-center rounded-2xl border border-white/80 bg-white/50 p-2 shadow-sm backdrop-blur-xl transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
           <input
             type="text"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="메시지를 입력하세요..."
-            className="flex-1 bg-transparent border-none px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50"
+            className="flex-1 border-none bg-transparent px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50"
           />
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white p-2.5 rounded-xl transition-all shadow-sm"
+            className="rounded-xl bg-zinc-800 p-2.5 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-400"
           >
             <Send size={18} />
           </motion.button>

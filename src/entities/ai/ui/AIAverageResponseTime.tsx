@@ -1,10 +1,10 @@
 'use client';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
-import { InquiryType } from '@/shared/types/inquiry';
+import { CaseType } from '@/shared/types/case';
 
-export function AIAverageResponseTime({ items }: { items: InquiryType[] }) {
-  const calculateMedianTime = (data: InquiryType[]) => {
+export function AIAverageResponseTime({ items }: { items: CaseType[] }) {
+  const calculateMedianTime = (data: CaseType[]) => {
     const aiCases = data
       .filter(item => item.status === 'AI자동해결' && item.closed_at)
       .map(item => {
@@ -36,13 +36,13 @@ export function AIAverageResponseTime({ items }: { items: InquiryType[] }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="mb-4">
         <h2 className="text-2xl font-semibold tracking-tight">AI 평균 처리 시간</h2>
-        <p className="mt-1 text-md text-muted-foreground">상담 생성부터 종료까지 AI의 평균 소요 시간입니다.</p>
+        <p className="text-md text-muted-foreground mt-1">상담 생성부터 종료까지 AI의 평균 소요 시간입니다.</p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
+      <div className="flex flex-1 flex-col items-center justify-center p-6">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-[250px]">
           <RadialBarChart data={chartData} startAngle={90} endAngle={90 + displayValue * 3.6} innerRadius={80} outerRadius={110}>
             <PolarGrid gridType="circle" radialLines={false} stroke="none" className="first:fill-muted last:fill-background" polarRadius={[86, 74]} />

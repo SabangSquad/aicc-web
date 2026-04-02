@@ -1,12 +1,11 @@
 import { AISolution, AISolutionSkeleton } from '@/entities/ai';
 import { InquiryTable, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
-import { DUMMY_INQUIRIES } from '@/entities/inquiry/data';
+import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 import { Suspense } from 'react';
 
 export async function Home() {
-  // const items = await InquiryAPI.getListByAgent(3);
-  const items = DUMMY_INQUIRIES;
+  const items = await storeAPI.getCases(1);
   const pending = items.filter(item => item.status === '대기').length;
 
   return (
@@ -30,9 +29,9 @@ export async function Home() {
 
       <Separator />
 
-      <Suspense fallback={<AISolutionSkeleton />}>
+      {/* <Suspense fallback={<AISolutionSkeleton />}>
         <AISolution />
-      </Suspense>
+      </Suspense> */}
 
       <Separator />
       <InquiryLineChart items={items} />

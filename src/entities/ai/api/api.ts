@@ -7,6 +7,6 @@ export const AiAPI = {
     return http.post<{ data: AIAssistType }>(`/chat/${caseId}`, {}).then(res => res.data);
   },
   getSolution: () => {
-    return http.get<{ data: AISolutionResponse }>('/solution').then(res => res.data);
+    return http.get<{ data: AISolutionResponse }>('/stores/1/solutions').then(res => res.data);
   },
 };

@@ -4,9 +4,9 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/shared/ui/chart';
 import { categoryChartColorSet } from '@/shared/lib/category';
 import { thirtyDaysAgo } from '@/shared/lib/date';
-import { InquiryType } from '@/shared/types/inquiry';
+import { CaseType } from '@/shared/types/case';
 
-export function InquiryLineChart({ items }: { items: InquiryType[] }) {
+export function InquiryLineChart({ items }: { items: CaseType[] }) {
   const recentItems = items.filter(item => new Date(item.created_at) >= thirtyDaysAgo);
 
   const inquiryCountByDate = recentItems.reduce((acc: Record<string, number>, item) => {
@@ -18,6 +18,7 @@ export function InquiryLineChart({ items }: { items: InquiryType[] }) {
     return acc;
   }, {});
   const chartData: Array<{ date: string; count: number }> = [];
+
   for (let i = 0; i <= 30; i++) {
     const d = new Date(thirtyDaysAgo);
     d.setDate(d.getDate() + i);
@@ -35,7 +36,7 @@ export function InquiryLineChart({ items }: { items: InquiryType[] }) {
         <h2 className="text-2xl font-semibold tracking-tight">최근 문의 그래프</h2>
         <div className="mt-2 flex items-center gap-2">
           <TrendingUp className="text-emerald-500" size={16} />
-          <p className="mt-1 text-muted-foreground">최근 한 달 동안 {total}건의 문의가 발생했습니다.</p>
+          <p className="text-muted-foreground mt-1">최근 한 달 동안 {total}건의 문의가 발생했습니다.</p>
         </div>
       </div>
 

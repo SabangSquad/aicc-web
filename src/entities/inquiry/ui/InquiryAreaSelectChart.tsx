@@ -6,11 +6,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select';
 import { Category } from '@/shared/types/category';
 import { categoryChartColorSet } from '@/shared/lib/category';
-import { InquiryType } from '@/shared/types/inquiry';
-import { categoryGroups } from '@/shared/constant/category';
 import { cn } from '@/shared/lib/utils';
+import { CaseType } from '@/shared/types/case';
 
-export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
+export function InquiryAreaSelectChart({ items }: { items: CaseType[] }) {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'all'>('all');
 
@@ -87,10 +86,10 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">문의 추이 그래프</h2>
-          <p className="mt-1 text-sm text-muted-foreground">기간별 문의량을 비교 분석합니다.</p>
+          <p className="text-muted-foreground mt-1 text-sm">기간별 문의량을 비교 분석합니다.</p>
         </div>
         <Select value={dateFilter} onValueChange={(v: 'week' | 'month' | 'all') => setDateFilter(v)}>
           <SelectTrigger className="w-[140px]">
@@ -105,7 +104,7 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
       </div>
 
       {/* 카테고리 선택 영역 ('요약-전체' 섹션 제거됨) */}
-      <div className="flex flex-col gap-4 p-4 rounded-lg bg-muted/30 border">
+      <div className="bg-muted/30 flex flex-col gap-4 rounded-lg border p-4">
         {Object.entries(categoryGroups).map(([groupName, cats]) => {
           const isGroupAllSelected = cats.every(cat => selectedCategories.includes(cat));
 
@@ -114,7 +113,7 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
               <button
                 onClick={() => handleGroupToggle(groupName as keyof typeof categoryGroups)}
                 className={cn(
-                  'text-sm font-medium w-16 text-left pl-1 transition-colors rounded-sm hover:bg-accent/50 py-0.5',
+                  'hover:bg-accent/50 w-16 rounded-sm py-0.5 pl-1 text-left text-sm font-medium transition-colors',
                   isGroupAllSelected ? 'text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'
                 )}
                 title={`${groupName} 전체 선택/해제`}
@@ -122,7 +121,7 @@ export function InquiryAreaSelectChart({ items }: { items: InquiryType[] }) {
                 {groupName}
               </button>
 
-              <div className="flex flex-wrap gap-2 flex-1">
+              <div className="flex flex-1 flex-wrap gap-2">
                 {cats.map(cat => (
                   <CategoryChip
                     key={cat}
@@ -183,8 +182,8 @@ function CategoryChip({ label, isSelected, color, onClick }: { label: string; is
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border',
-        isSelected ? 'text-white shadow-sm' : 'bg-white text-muted-foreground hover:bg-muted/50 border-transparent hover:border-border'
+        'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200',
+        isSelected ? 'text-white shadow-sm' : 'text-muted-foreground hover:bg-muted/50 hover:border-border border-transparent bg-white'
       )}
       style={{
         backgroundColor: isSelected ? color : undefined,
@@ -192,7 +191,7 @@ function CategoryChip({ label, isSelected, color, onClick }: { label: string; is
       }}
     >
       {isSelected && (
-        <span className="mr-1.5 bg-white/20 rounded-full p-0.5">
+        <span className="mr-1.5 rounded-full bg-white/20 p-0.5">
           <svg width="8" height="6" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

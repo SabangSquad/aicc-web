@@ -17,7 +17,7 @@ export function LeftPanel({
   setSelectedInquiry: (inquiry: InquiryType) => void;
 }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const filteredItems = items.filter(inquiry => inquiry.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredItems = items.filter(inquiry => (inquiry.summary || '').toLowerCase().includes(searchTerm.toLowerCase()));
 
   const pendingInquiries = filteredItems.filter(inquiry => inquiry.status === '대기');
   const ongoingInquiries = filteredItems.filter(inquiry => inquiry.status === '상담');
@@ -29,23 +29,22 @@ export function LeftPanel({
       key={inquiry.case_id}
       href={`/inquiry/${inquiry.case_id}`}
       onMouseEnter={() => setSelectedInquiry(inquiry)}
-      className={`flex w-full flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ${
+      className={`hover:bg-accent flex w-full flex-col items-start gap-1 rounded-lg border p-3 text-left text-sm transition-all ${
         selectedInquiry?.case_id === inquiry.case_id && 'bg-muted'
       }`}
     >
-      <div className="flex items-center justify-between w-full">
-        <span className="font-semibold">{inquiry.title}</span>
+      <div className="flex w-full items-center justify-between">
+        <span className="font-semibold">{inquiry.summary}</span>
         <StateBadge status={inquiry.status} />
       </div>
 
       <div className="text-xs font-medium">{inquiry.category}</div>
-      <div className="text-xs line-clamp-2 text-muted-foreground">{inquiry.content}</div>
-      <div className="text-xs text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</div>
+      <div className="text-muted-foreground text-xs">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</div>
     </Link>
   );
 
   return (
-    <div className="flex flex-col h-full pt-3">
+    <div className="flex h-full flex-col pt-3">
       <Tabs defaultValue="전체" className="flex-1 overflow-hidden">
         <div className="p-4">
           <Input type="search" placeholder="제목 또는 내용으로 검색..." className="mb-4" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
@@ -58,7 +57,7 @@ export function LeftPanel({
           </TabsList>
         </div>
 
-        <ScrollArea className="flex-1 h-0 px-4 pb-4">
+        <ScrollArea className="h-0 flex-1 px-4 pb-4">
           <TabsContent value="전체">
             <div className="flex flex-col gap-2">{filteredItems.map(renderInquiryItem)}</div>
           </TabsContent>

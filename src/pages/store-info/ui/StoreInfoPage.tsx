@@ -5,118 +5,147 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
-import { CheckCircle2 } from 'lucide-react';
+import { Utensils, Stethoscope, ShoppingBag, Check, Loader2 } from 'lucide-react';
+
+// 업종 타입
+type StoreType = 'RESTAURANT' | 'HOSPITAL' | 'ECOMMERCE';
 
 export function StoreInfoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [storeType, setStoreType] = useState<StoreType>('RESTAURANT');
+
+  // 폼 데이터 상태
   const [formData, setFormData] = useState({
-    name: '맛있는 베이커리',
-    category: '베이커리/카페',
-    phone: '02-1234-5678',
-    address: '서울시 강남구 테헤란로 123',
-    hours: '매일 09:00 - 21:00 (라스트오더 20:30)',
-    description:
-      '매일 아침 직접 구운 신선한 빵과 스페셜티 커피를 제공하는 동네 맛집입니다. 건강한 재료만을 사용하여 아이들도 안심하고 먹을 수 있는 빵을 만듭니다.',
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    notice: '',
+    description: '',
+    menu: '', // 식당 전용
+    departments: '', // 병원 전용
   });
+
+  // 요일별 영업시간 상태
+  const [weeklyHours, setWeeklyHours] = useState([
+    { day: '월', isOpen: true, open: '09:00', close: '21:00' },
+    { day: '화', isOpen: true, open: '09:00', close: '21:00' },
+    { day: '수', isOpen: true, open: '09:00', close: '21:00' },
+    { day: '목', isOpen: true, open: '09:00', close: '21:00' },
+    { day: '금', isOpen: true, open: '09:00', close: '21:00' },
+    { day: '토', isOpen: false, open: '10:00', close: '18:00' },
+    { day: '일', isOpen: false, open: '10:00', close: '18:00' },
+  ]);
+
+  // 영업시간 업데이트 함수
+  const updateHour = (index: number, field: string, value: any) => {
+    const newHours = [...weeklyHours];
+    newHours[index] = { ...newHours[index], [field]: value };
+    setWeeklyHours(newHours);
+  };
+
+  // 평일 일괄 적용 (월요일 -> 화~금)
+  const copyToWeekdays = () => {
+    const mon = weeklyHours[0];
+    const newHours = weeklyHours.map((h, i) => (i > 0 && i < 5 ? { ...h, isOpen: mon.isOpen, open: mon.open, close: mon.close } : h));
+    setWeeklyHours(newHours);
+  };
 
   const handleSave = async () => {
     setIsSubmitting(true);
-    // API 호출 시뮬레이션
+    // 여기서 API 호출 (formData + weeklyHours 전송)
     setTimeout(() => {
       setIsSubmitting(false);
-      alert('업장 정보가 성공적으로 저장되었습니다.');
+      alert('업장 정보가 성공적으로 업데이트되었습니다.');
     }, 1000);
   };
 
+  // 섹션 헤더 컴포넌트 (내부 재사용)
+  const SectionHeader = ({ title, desc }: { title: string; desc: string }) => (
+    <div className="shrink-0 xl:w-80">
+      <h2 className="text-[22px] font-bold text-slate-900">{title}</h2>
+      <p className="mt-2 text-[15px] leading-relaxed font-medium text-slate-500">{desc}</p>
+    </div>
+  );
+
   return (
-    <div className="w-full space-y-16">
-      {/* 헤더 섹션 */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-3">업장 기본 정보</h1>
-        <p className="text-[17px] font-medium text-slate-500">고객과 AI 상담사가 참고할 매장의 핵심 정보를 관리합니다.</p>
+    <div className="relative w-full space-y-16 pb-32">
+      {/* 1. 헤더 & 업종 선택 */}
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <h1 className="mb-3 text-3xl font-bold tracking-tight text-slate-900">업장 정보 설정</h1>
+          <p className="text-[17px] font-medium text-slate-500">매장 성격에 맞는 상세 정보를 입력해주세요.</p>
+        </div>
+
+        <div className="flex rounded-2xl bg-slate-100 p-1.5 shadow-inner">
+          {(['RESTAURANT', 'HOSPITAL', 'ECOMMERCE'] as const).map(type => (
+            <button
+              key={type}
+              onClick={() => setStoreType(type)}
+              className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-[14px] font-bold transition-all ${
+                storeType === type ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              {type === 'RESTAURANT' && <Utensils className="h-4 w-4" />}
+              {type === 'HOSPITAL' && <Stethoscope className="h-4 w-4" />}
+              {type === 'ECOMMERCE' && <ShoppingBag className="h-4 w-4" />}
+              {type === 'RESTAURANT' ? '식당' : type === 'HOSPITAL' ? '병원' : '이커머스'}
+            </button>
+          ))}
+        </div>
       </div>
 
       <hr className="border-t-2 border-slate-100" />
 
-      {/* 기본 정보 섹션 */}
-      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
-        <div className="xl:w-80 shrink-0">
-          <h2 className="text-[22px] font-bold text-slate-900">매장 프로필</h2>
-          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">매장의 이름과 업종 등 가장 기본적인 정보를 설정합니다.</p>
-        </div>
-
-        {/* 화면이 넓어지면(lg 이상) 2단 그리드로 배치 */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
+      {/* 2. 공통 정보 섹션 */}
+      <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
+        <SectionHeader title="기본 정보" desc="고객 상담의 기본이 되는 핵심 연락처입니다." />
+        <div className="grid flex-1 grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
           <div className="space-y-3">
-            <Label htmlFor="name" className="text-[15px] font-semibold text-slate-700">
-              매장명
-            </Label>
+            <Label className="text-[15px] font-semibold text-slate-700">업장명</Label>
             <Input
-              id="name"
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
-              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+              placeholder="상호명을 입력하세요"
+              className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 transition-all focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
             />
           </div>
-
           <div className="space-y-3">
-            <Label htmlFor="category" className="text-[15px] font-semibold text-slate-700">
-              업종
-            </Label>
+            <Label className="text-[15px] font-semibold text-slate-700">대표 연락처</Label>
             <Input
-              id="category"
-              value={formData.category}
-              onChange={e => setFormData({ ...formData, category: e.target.value })}
-              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
-            />
-          </div>
-        </div>
-      </div>
-
-      <hr className="border-t-2 border-slate-100" />
-
-      {/* 연락처 및 위치 섹션 */}
-      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
-        <div className="xl:w-80 shrink-0">
-          <h2 className="text-[22px] font-bold text-slate-900">연락처 및 위치</h2>
-          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">고객이 찾아오거나 문의할 수 있는 정보를 입력합니다.</p>
-        </div>
-
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
-          <div className="space-y-3">
-            <Label htmlFor="phone" className="text-[15px] font-semibold text-slate-700">
-              대표 전화번호
-            </Label>
-            <Input
-              id="phone"
               value={formData.phone}
+              type="tel"
               onChange={e => setFormData({ ...formData, phone: e.target.value })}
-              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+              placeholder="02-000-0000"
+              className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 transition-all focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
             />
           </div>
-
           <div className="space-y-3">
-            <Label htmlFor="hours" className="text-[15px] font-semibold text-slate-700">
-              영업 시간
-            </Label>
+            <Label className="text-[15px] font-semibold text-slate-700">대표 이메일</Label>
             <Input
-              id="hours"
-              value={formData.hours}
-              onChange={e => setFormData({ ...formData, hours: e.target.value })}
-              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none"
+              value={formData.email}
+              type={'email'}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              placeholder="example@email.com"
+              className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 transition-all focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
             />
           </div>
-
-          {/* 주소는 길어질 수 있으므로 전체 너비(col-span-1 lg:col-span-2) 사용 */}
-          <div className="space-y-3 lg:col-span-2">
-            <Label htmlFor="address" className="text-[15px] font-semibold text-slate-700">
-              매장 주소
-            </Label>
+          <div className="space-y-3">
+            <Label className="text-[15px] font-semibold text-slate-700">주소</Label>
             <Input
-              id="address"
               value={formData.address}
               onChange={e => setFormData({ ...formData, address: e.target.value })}
-              className="h-14 bg-slate-100 border-transparent rounded-2xl px-5 text-[17px] text-slate-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none w-full"
+              placeholder="주소 검색을 이용하거나 직접 입력하세요"
+              className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 transition-all focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+            />
+          </div>
+          <div className="space-y-3 lg:col-span-2">
+            <Label className="text-[15px] font-semibold text-slate-700">실시간 공지</Label>
+            <Input
+              value={formData.notice}
+              onChange={e => setFormData({ ...formData, notice: e.target.value })}
+              placeholder="예: 이번 주 금요일은 내부 수리로 인해 임시 휴무입니다."
+              className="h-14 rounded-2xl border-blue-100 bg-blue-50/50 px-5 focus-visible:ring-blue-600"
             />
           </div>
         </div>
@@ -124,47 +153,95 @@ export function StoreInfoPage() {
 
       <hr className="border-t-2 border-slate-100" />
 
-      {/* 상세 설명 섹션 */}
-      <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
-        <div className="xl:w-80 shrink-0">
-          <h2 className="text-[22px] font-bold text-slate-900">매장 소개</h2>
-          <p className="text-[15px] font-medium text-slate-500 mt-2 leading-relaxed">AI 상담사가 고객에게 매장을 소개할 때 사용하는 문구입니다.</p>
-        </div>
-
-        <div className="flex-1 space-y-4">
-          <div className="space-y-3">
-            <Label htmlFor="description" className="text-[15px] font-semibold text-slate-700">
-              상세 설명
-            </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
-              className="min-h-[160px] bg-slate-100 border-transparent rounded-2xl p-5 text-[17px] text-slate-900 leading-relaxed focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent transition-all shadow-none resize-none w-full"
+      {/* 3. 업종별 특화 필드 (식당/병원만) */}
+      {storeType !== 'ECOMMERCE' && (
+        <>
+          <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
+            <SectionHeader
+              title={storeType === 'RESTAURANT' ? '메뉴 정보' : '진료 정보'}
+              desc={storeType === 'RESTAURANT' ? '주요 메뉴를 입력하면 AI가 더 풍부하게 답변합니다.' : '병원의 전문 진료 과목을 입력해주세요.'}
             />
+            <div className="flex-1 space-y-3">
+              <Label className="text-[15px] font-semibold text-slate-700">{storeType === 'RESTAURANT' ? '대표 메뉴 리스트' : '진료 과목'}</Label>
+              <Textarea
+                value={storeType === 'RESTAURANT' ? formData.menu : formData.departments}
+                onChange={e => setFormData({ ...formData, [storeType === 'RESTAURANT' ? 'menu' : 'departments']: e.target.value })}
+                placeholder={storeType === 'RESTAURANT' ? '예: 아메리카노(4.5), 소금빵(3.2)' : '예: 내과, 소아과, 영유아 검진'}
+                className="min-h-[120px] resize-none rounded-2xl border-transparent bg-slate-100 p-5 transition-all focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+              />
+            </div>
           </div>
+          <hr className="border-t-2 border-slate-100" />
+        </>
+      )}
 
-          <div className="flex items-start gap-3 mt-2 p-5 bg-blue-50/50 rounded-2xl w-full">
-            <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-            <p className="text-[14px] font-medium text-slate-600 leading-relaxed">
-              <strong className="text-blue-600 mr-1">Tip.</strong>
-              매장의 특징이나 주차 정보, 시그니처 메뉴 등을 상세히 적어주시면 AI가 더 풍부하게 응대할 수 있습니다.
-            </p>
+      {/* 4. 요일별 영업시간 설정 (식당/병원만) */}
+      {storeType !== 'ECOMMERCE' && (
+        <>
+          <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
+            <SectionHeader title="영업 시간" desc="요일별 운영 시간을 상세히 설정할 수 있습니다." />
+            <div className="flex-1 space-y-6">
+              <div className="flex items-center justify-between px-2">
+                <Label className="text-[16px] font-bold text-slate-800">요일별 설정</Label>
+                <button
+                  onClick={copyToWeekdays}
+                  className="rounded-lg bg-blue-50 px-3 py-1.5 text-[13px] font-bold text-blue-600 transition-colors hover:text-blue-800"
+                >
+                  월요일 시간을 평일 전체에 적용
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {weeklyHours.map((item, idx) => (
+                  <div
+                    key={item.day}
+                    className={`flex items-center gap-4 rounded-2xl p-4 transition-all ${item.isOpen ? 'bg-slate-100' : 'bg-slate-50 opacity-60'}`}
+                  >
+                    <div className="flex w-24 items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={item.isOpen}
+                        onChange={e => updateHour(idx, 'isOpen', e.target.checked)}
+                        className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-[14px] font-bold text-slate-700">{item.day}요일</span>
+                    </div>
+
+                    {item.isOpen ? (
+                      <div className="flex flex-1 items-center gap-3">
+                        <Input
+                          type="time"
+                          value={item.open}
+                          onChange={e => updateHour(idx, 'open', e.target.value)}
+                          className="h-11 rounded-xl border-none bg-white px-4 text-[15px] shadow-sm"
+                        />
+                        <span className="font-bold text-slate-400">~</span>
+                        <Input
+                          type="time"
+                          value={item.close}
+                          onChange={e => updateHour(idx, 'close', e.target.value)}
+                          className="h-11 rounded-xl border-none bg-white px-4 text-[15px] shadow-sm"
+                        />
+                      </div>
+                    ) : (
+                      <span className="flex-1 px-2 py-3 text-[14px] font-medium text-slate-400">정기 휴무</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
-      {/* 하단 저장 영역 */}
-      <div className="pt-8 flex flex-col-reverse sm:flex-row justify-between items-center gap-6">
-        <p className="text-[14px] font-medium text-slate-400">마지막 업데이트: 2024년 2월 13일</p>
-        <Button
-          onClick={handleSave}
-          disabled={isSubmitting}
-          className="w-full sm:w-auto h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-10 text-[17px] font-bold transition-all shadow-none"
-        >
-          {isSubmitting ? '저장 중...' : '저장하기'}
-        </Button>
-      </div>
+      <Button
+        onClick={handleSave}
+        disabled={isSubmitting}
+        className="fixed right-16 bottom-8 z-50 flex h-16 min-w-[160px] items-center justify-center gap-3 rounded-2xl bg-blue-600 text-[16px] font-bold text-white shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-1 hover:bg-blue-700 active:scale-95 disabled:opacity-70"
+      >
+        {isSubmitting ? <Loader2 className="h-8 w-8 animate-spin" /> : <Check className="h-8 w-8" />}
+        <span>{isSubmitting ? '저장 중...' : '설정 완료'}</span>
+      </Button>
     </div>
   );
 }

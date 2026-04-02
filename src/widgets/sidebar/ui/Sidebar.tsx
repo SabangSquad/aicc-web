@@ -10,7 +10,7 @@ export function AppSidebar() {
   const pathname = usePathname() ?? '/';
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const userName = '홍길동';
+  const userName = '사방팔방';
 
   const isActive = (url: string) => {
     if (url === '/') {
@@ -27,14 +27,13 @@ export function AppSidebar() {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-200 bg-white py-8 transition-all duration-300 ease-in-out shadow-sm
-        ${isCollapsed ? 'w-20 px-4' : 'w-64 px-4'}`}
+      className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-200 bg-white py-8 shadow-sm transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20 px-4' : 'w-64 px-4'}`}
     >
       <div className={`mb-10 flex shrink-0 items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-2`}>
         {!isCollapsed && (
           <div className="flex flex-col overflow-hidden pr-2">
             <span className="text-xs font-medium text-slate-500">환영합니다,</span>
-            <span className="text-lg font-bold text-slate-900 truncate">{userName}님 👋</span>
+            <span className="truncate text-lg font-bold text-slate-900">{userName}님 👋</span>
           </div>
         )}
 
@@ -46,7 +45,7 @@ export function AppSidebar() {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
+      <div className="scrollbar-hide flex-1 overflow-y-auto">
         <nav className="flex flex-col gap-8">
           {sidebarGroups.map(group => (
             <div key={group.id} className="flex flex-col gap-2">
@@ -62,18 +61,14 @@ export function AppSidebar() {
                       key={item.title}
                       href={item.url}
                       title={isCollapsed ? item.title : ''}
-                      className={`
-                        group relative flex items-center gap-3 rounded-xl transition-all duration-200
-                        ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'}
-                        ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
-                      `}
+                      className={`group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'} ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'} `}
                     >
                       <Icon
                         size={20}
                         className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? 'text-white' : 'text-slate-400'}`}
                       />
 
-                      {!isCollapsed && <span className={`text-sm truncate`}>{item.title}</span>}
+                      {!isCollapsed && <span className={`truncate text-sm`}>{item.title}</span>}
                     </Link>
                   );
                 })}
@@ -87,14 +82,10 @@ export function AppSidebar() {
         <button
           onClick={handleLogout}
           title={isCollapsed ? '로그아웃' : ''}
-          className={`
-            group flex w-full items-center gap-3 rounded-xl transition-all duration-200 cursor-pointer
-            ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'}
-            text-slate-500 hover:bg-red-50 hover:text-red-600
-          `}
+          className={`group flex w-full cursor-pointer items-center gap-3 rounded-xl transition-all duration-200 ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'} text-slate-500 hover:bg-red-50 hover:text-red-600`}
         >
           <LogOut size={20} className="shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
-          {!isCollapsed && <span className="text-sm font-medium truncate">로그아웃</span>}
+          {!isCollapsed && <span className="truncate text-sm font-medium">로그아웃</span>}
         </button>
       </div>
     </aside>
