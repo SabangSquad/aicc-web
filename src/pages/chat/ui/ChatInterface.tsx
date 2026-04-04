@@ -1,10 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Clock, MapPin, Star, HelpCircle, ArrowUpRight, XCircle } from 'lucide-react';
+import { Send, Loader2, Clock, MapPin, Star, HelpCircle, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
 import { GoogleLoginButton } from '@/features/login';
+import { ChatCloseButton, StarRatingUI } from './Components';
+import { ChatMessage } from '../types/chat';
 
 const QUICK_PROMPTS = [
   { id: 1, icon: <Clock size={18} />, text: '오늘 영업 시간 알려줘' },
@@ -14,39 +16,32 @@ const QUICK_PROMPTS = [
 ];
 
 export const ChatInterface = ({ store_id, storeData }: { store_id: string; storeData: StoreType }) => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     { id: 1, text: `안녕하세요! ${storeData.name} 챗봇 입니다. 문의사항이 있으신가요?`, isAi: true, isLoginRequired: false },
   ]);
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
-
-  const [currentCaseId, setCurrentCaseId] = useState<number | null>(null);
+  const [currentCaseId, setCurrentCaseId] = useState<string | null>(null);
 
   const latestUserMsgRef = useRef<HTMLDivElement>(null);
   const latestUserMsgId = [...messages].reverse().find(m => !m.isAi)?.id;
 
+  const isChatEnded = messages.some(msg => msg.isRating);
+
   useEffect(() => {
     if (latestUserMsgRef.current) {
-      latestUserMsgRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+      latestUserMsgRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [messages.length, isTyping]);
 
   const handleSendMessage = async (textToSend?: string) => {
     const messageContent = textToSend || inputValue;
+    if (!messageContent.trim() || isChatEnded) return;
 
-    if (!messageContent.trim()) return;
-
-    const userMessage = { id: Date.now(), text: messageContent, isAi: false, isLoginRequired: false };
-    setMessages(prev => [...prev, userMessage]);
-
-    if (!textToSend) {
-      setInputValue('');
-    }
+    setMessages(prev => [...prev, { id: Date.now(), text: messageContent, isAi: false }]);
+    if (!textToSend) setInputValue('');
 
     setIsTyping(true);
     setThinkingStep('생각 중...');
@@ -56,48 +51,20 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
         if (response.type === 'thinking') {
           setThinkingStep(response.message);
         } else if (response.type === 'answer' && response.ok) {
-          const aiMessage = {
-            id: Date.now(),
-            text: response.answer,
-            isAi: true,
-            isLoginRequired: false,
-          };
-          setMessages(prev => [...prev, aiMessage]);
+          setMessages(prev => [...prev, { id: Date.now(), text: response.answer, isAi: true }]);
           setIsTyping(false);
           setThinkingStep('');
-
-          if (response.caseId) {
-            setCurrentCaseId(response.caseId);
-          }
+          if (response.caseId) setCurrentCaseId(response.caseId);
         } else if (response.type === 'login_required') {
-          const aiMessage = {
-            id: Date.now(),
-            text: response.message,
-            isAi: true,
-            isLoginRequired: true,
-          };
-          setMessages(prev => [...prev, aiMessage]);
+          setMessages(prev => [...prev, { id: Date.now(), text: response.message, isAi: true, isLoginRequired: true }]);
           setIsTyping(false);
           setThinkingStep('');
-
-          if (response.caseId) {
-            setCurrentCaseId(response.caseId);
-          }
-        } else if (response.ok === false) {
-          throw new Error(response.error);
+          if (response.caseId) setCurrentCaseId(response.caseId);
         }
       });
     } catch (error) {
       console.error('API Error:', error);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now(),
-          text: '응답 처리 중 오류가 발생했습니다.',
-          isAi: true,
-          isLoginRequired: false,
-        },
-      ]);
+      setMessages(prev => [...prev, { id: Date.now(), text: '응답 처리 중 오류가 발생했습니다.', isAi: true }]);
       setIsTyping(false);
       setThinkingStep('');
     }
@@ -110,29 +77,10 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
     }
   };
 
-  const handleCloseChat = async () => {
-    if (!currentCaseId) return;
-
-    try {
-      await chatAPI.postChatClose(currentCaseId);
-      setMessages(prev => [...prev, { id: Date.now(), text: '상담이 종료되었습니다. 이용해 주셔서 감사합니다.', isAi: true, isLoginRequired: false }]);
-      setCurrentCaseId(null);
-    } catch (error) {
-      console.error('채팅 종료 중 오류 발생:', error);
-    }
-  };
-
   return (
     <>
-      {currentCaseId && (
-        <button
-          onClick={handleCloseChat}
-          className="absolute top-4 right-4 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-200"
-        >
-          <XCircle size={16} />
-          상담 종료
-        </button>
-      )}
+      {!isChatEnded && <ChatCloseButton currentCaseId={currentCaseId} setMessages={setMessages} />}
+
       <section className="flex-1 space-y-8 overflow-y-auto p-6 pb-[50vh] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {messages.map(msg => {
           const isLatestUser = msg.id === latestUserMsgId;
@@ -156,16 +104,19 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
               >
                 <p className="text-[15px] leading-relaxed break-words">{msg.text}</p>
 
+                {/* 로그인 버튼 렌더링 */}
                 {msg.isLoginRequired && (
                   <div className="mt-4 w-full">
                     <GoogleLoginButton />
                   </div>
                 )}
+
+                {/* ⭐ isRating 플래그가 true면 별점 컴포넌트 렌더링 */}
+                {msg.isRating && <StarRatingUI store_id={store_id} case_id={currentCaseId!} />}
               </div>
             </motion.div>
           );
         })}
-
         {messages.length === 1 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 w-full max-w-[340px]">
             <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">클릭하면 바로 물어볼 수 있어요</p>
@@ -191,13 +142,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
         )}
 
         {isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex justify-start px-2 py-3"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex justify-start px-2 py-3">
             <div className="flex items-center gap-2.5 py-2">
               <Loader2 size={16} className="animate-spin text-zinc-400" />
               <div className="relative flex h-5 items-center overflow-hidden">
@@ -207,8 +152,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-[14px] leading-none font-medium tracking-tight whitespace-nowrap text-zinc-400"
+                    className="text-[14px] font-medium tracking-tight text-zinc-400"
                   >
                     {thinkingStep || '생각 중...'}
                   </motion.span>
@@ -226,13 +170,14 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="메시지를 입력하세요..."
-            className="flex-1 border-none bg-transparent px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50"
+            disabled={isChatEnded} // ⭐ 상담 끝나면 입력 불가
+            placeholder={isChatEnded ? '상담이 종료되었습니다.' : '메시지를 입력하세요...'}
+            className="flex-1 border-none bg-transparent px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           />
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSendMessage()}
-            disabled={!inputValue.trim() || isTyping}
+            disabled={!inputValue.trim() || isTyping || isChatEnded} // ⭐ 상담 끝나면 전송 불가
             className="rounded-xl bg-zinc-800 p-2.5 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-400"
           >
             <Send size={18} />

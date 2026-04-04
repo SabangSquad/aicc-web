@@ -1,6 +1,6 @@
 import { storeAPI } from '@/entities/store';
 import { ChatInterface } from './ChatInterface';
-import { ChatNotice } from './ChatNotice';
+import { ChatNotice } from './Components';
 
 export async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
