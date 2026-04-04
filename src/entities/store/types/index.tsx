@@ -1,3 +1,8 @@
+export type StoreType =
+  | (BaseStore & { category: '식당'; store_items: RestaurantItems })
+  | (BaseStore & { category: '병원'; store_items: HospitalItems })
+  | (BaseStore & { category: '이커머스' });
+
 interface BaseStore {
   readonly store_id: number;
   name: string;
@@ -33,8 +38,3 @@ interface RestaurantItems {
 interface HospitalItems {
   department: string[];
 }
-
-export type StoreType =
-  | (BaseStore & { category: '식당'; store_items: RestaurantItems })
-  | (BaseStore & { category: '병원'; store_items: HospitalItems })
-  | (BaseStore & { category: '이커머스' });

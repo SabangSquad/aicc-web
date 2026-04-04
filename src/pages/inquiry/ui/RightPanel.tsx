@@ -1,11 +1,11 @@
 'use client';
 import { StateBadge } from '@/entities/inquiry';
-import { AIAssist, CustomerInformation } from '@/features/inquiry';
-import { InquiryType } from '@/shared/types/inquiry';
+import { CustomerInformation } from '@/features/inquiry';
+import { CaseType } from '@/shared/types/case';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
 
-export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType | null }) {
+export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | null }) {
   if (!selectedInquiry) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -33,7 +33,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: InquiryType |
           <div className="space-y-8 py-6">
             <CustomerInformation customerId={selectedInquiry.customer_id} />
             <Separator />
-            <AIAssist inquiry={selectedInquiry} />
+            {/* <AIAssist inquiry={selectedInquiry} /> */}
             <Separator />
           </div>
         </ScrollArea>

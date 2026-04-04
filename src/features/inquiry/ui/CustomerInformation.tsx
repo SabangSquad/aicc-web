@@ -1,5 +1,4 @@
 'use client';
-import { GradeBadge } from '@/entities/customer';
 import { useCustomerInfo } from '@/entities/inquiry/hooks/useInquiryQuery';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
@@ -12,7 +11,7 @@ export function CustomerInformation({ customerId }: { customerId: number }) {
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-4">고객 정보</h3>
+      <h3 className="mb-4 text-lg font-semibold">고객 정보</h3>
 
       <div className="space-y-4">
         <div className="flex items-center gap-4">
@@ -23,19 +22,18 @@ export function CustomerInformation({ customerId }: { customerId: number }) {
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
               <p className="text-base font-semibold">{customer.name}</p>
-              <GradeBadge grade={customer.grade} />
             </div>
 
-            <p className="text-sm text-muted-foreground">{customer.email}</p>
-            <p className="text-sm text-muted-foreground">{customer.phone}</p>
+            <p className="text-muted-foreground text-sm">{customer.email}</p>
+            <p className="text-muted-foreground text-sm">{customer.phone}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-          <span className="font-medium text-muted-foreground">가입일</span>
+          <span className="text-muted-foreground font-medium">가입일</span>
           <ValueDisplay value={new Date(customer.joined_at).toLocaleString('ko-KR')} />
 
-          <span className="font-medium text-muted-foreground">적립금</span>
+          <span className="text-muted-foreground font-medium">적립금</span>
           <ValueDisplay value={customer.points.toLocaleString('ko-KR')} />
         </div>
       </div>

@@ -31,8 +31,18 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
 
 export const http = {
   get: <T>(url: string, options?: RequestInit) => request<T>(url, { ...options, method: 'GET' }),
-  post: <T>(url: string, body: unknown, options?: RequestInit) =>
-    request<T>(url, { ...options, method: 'POST', body: body instanceof FormData ? body : JSON.stringify(body) }),
+  post: <T>(url: string, body: unknown, options?: RequestInit) => {
+    const isFormData = body instanceof FormData;
+    return request<T>(url, {
+      ...options,
+      method: 'POST',
+      headers: {
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
+        ...options?.headers,
+      },
+      body: isFormData ? body : JSON.stringify(body),
+    });
+  },
   patch: <T>(url: string, body: unknown, options?: RequestInit) =>
     request<T>(url, { ...options, method: 'PATCH', body: body instanceof FormData ? body : JSON.stringify(body) }),
   put: <T>(url: string, body: unknown, options?: RequestInit) =>

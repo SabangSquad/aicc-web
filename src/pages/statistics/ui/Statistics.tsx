@@ -1,7 +1,7 @@
 import { AIEmotionSolution } from '@/entities/ai';
 import { AIAverageResponseTime } from '@/entities/ai/ui/AIAverageResponseTime';
 import { AIResolutionRate } from '@/entities/ai/ui/AIResolutionRate';
-import { InquiryAPI, InquiryEmotionChart, InquiryAreaSelectChart } from '@/entities/inquiry';
+import { InquiryEmotionChart, InquiryAreaSelectChart } from '@/entities/inquiry';
 import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 

@@ -8,16 +8,15 @@ import { ScrollArea } from '@/shared/ui/scroll-area';
 
 import { InquiryAPI, StateBadge } from '@/entities/inquiry';
 import { CustomerInformation, AIAssist, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
-import { InquiryType } from '@/shared/types/inquiry';
 import { Textarea } from '@/shared/ui/textarea';
 import { Suspense } from 'react';
+import { casesAPI } from '@/entities/cases';
 
 export async function InquiryDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const caseData = await casesAPI.getCase(Number(id));
 
-  const inquiry: InquiryType | undefined = (await InquiryAPI.getListByAgent(3)).find(item => item.case_id === Number(id));
-
-  if (!inquiry) {
+  if (!caseData) {
     return <div className="p-6">문의 내역을 찾을 수 없습니다.</div>;
   }
 
@@ -30,40 +29,34 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
         </Link>
       </Button>
 
-      <div className="p-6 border-b">
+      <div className="border-b p-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">{inquiry.title}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{caseData.summary}</h1>
           <div className="flex items-center gap-2">
-            <StateBadge status={inquiry.status} />
+            <StateBadge status={caseData.status} />
           </div>
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{new Date(inquiry.created_at).toLocaleString('ko-KR')}</p>
+        <p className="text-muted-foreground mt-1 text-sm">{new Date(caseData.created_at).toLocaleString('ko-KR')}</p>
       </div>
 
-      <div className="p-6 border-b">
-        <CustomerInformation customerId={inquiry.customer_id} />
+      <div className="border-b p-6">
+        <CustomerInformation customerId={caseData.customer_id} />
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
         <ResizablePanel defaultSize={60} minSize={30}>
-          <div className="flex flex-col h-full">
-            <ScrollArea className="flex-1 h-0">
-              <div className="p-6 space-y-8">
-                <AIAssist inquiry={inquiry} />
+          <div className="flex h-full flex-col">
+            <ScrollArea className="h-0 flex-1">
+              <div className="space-y-8 p-6">
+                <AIAssist inquiry={caseData} />
 
                 <Separator />
                 <div className="flex flex-row gap-6">
                   <div className="flex-1">
                     <h3 className="mb-3 text-lg font-medium">문의 내역 본문</h3>
-                    <div className="w-full rounded-md p-4 bg-muted/50">
-                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{inquiry.content}</p>
+                    <div className="bg-muted/50 w-full rounded-md p-4">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{caseData.summary}</p>
                     </div>
-                  </div>
-
-                  <div className="flex-1">
-                    <h3 className="mb-3 text-lg font-medium">메모</h3>
-                    <Textarea value={inquiry.memo || ''} placeholder="메모를 입력하세요..." className="min-h-[120px] mb-2" />
-                    <Button>저장</Button>
                   </div>
                 </div>
               </div>
@@ -76,13 +69,13 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
         <ResizablePanel defaultSize={40} minSize={30}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel defaultSize={50} minSize={15}>
-              <PastInquiryList customerId={inquiry.customer_id} />
+              <PastInquiryList customerId={caseData.customer_id} />
             </ResizablePanel>
 
             <ResizableHandle withHandle />
 
             <ResizablePanel defaultSize={50} minSize={15}>
-              <ChatHistoryViewer caseId={inquiry.case_id} />
+              <ChatHistoryViewer caseId={caseData.case_id} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

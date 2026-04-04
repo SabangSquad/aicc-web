@@ -2,6 +2,7 @@ import '../globals.css';
 import { AppSidebar } from '@/widgets/sidebar/ui/Sidebar';
 import { ReactQueryProvider } from '../provider/ReactQueryProvider';
 import { outfit, pretendard } from '../font';
+import { Toaster } from '@/shared/ui/toaster';
 
 export function RootLayout({
   children,
@@ -11,6 +12,7 @@ export function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} ${outfit.variable}`}>
       <body className="font-pretendard antialiased">
+        <Toaster />
         <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
