@@ -1,3 +1,5 @@
+import { EmotionType } from '@/shared/types/emotion';
+
 export type StoreType =
   | (BaseStore & { category: '식당'; store_items: RestaurantItems })
   | (BaseStore & { category: '병원'; store_items: HospitalItems })
@@ -37,4 +39,32 @@ interface RestaurantItems {
 
 interface HospitalItems {
   department: string[];
+}
+
+export interface AISolutionType {
+  readonly store_id: number;
+  readonly hours: number;
+  readonly total_cases: number;
+  stats: {
+    by_category: {
+      category: string;
+      count: number;
+    }[];
+    by_emotion: {
+      emotion: EmotionType;
+      count: number;
+    }[];
+  };
+  ai_analysis: {
+    headline: string;
+    issues: {
+      title: string;
+      detail: string;
+    }[];
+    strategies: {
+      urgency: 'high' | 'medium' | 'low' | string;
+      title: string;
+      detail: string;
+    }[];
+  };
 }

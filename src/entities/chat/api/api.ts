@@ -45,7 +45,6 @@ export const chatAPI = {
       }
     }
   },
-
-  getSummary: (case_Id: string) => http.post<ChatSummary>(`/chats/${case_Id}`, {}),
-  postChatClose: (case_id: string) => http.post(`/chats/${case_id}/close`, {}),
+  getSummary: (case_Id: number) => http.post<ChatSummary>(`/chats/${case_Id}`, {}),
+  postChatClose: (case_id: number) => http.post(`/chats/${case_id}/close`, {}),
 };

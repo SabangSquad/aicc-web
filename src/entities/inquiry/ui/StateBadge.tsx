@@ -1,8 +1,8 @@
-import { InquiryStatus } from '@/shared/types/inquiry';
+import { CaseStatus } from '@/shared/types/case';
 import { Badge } from '@/shared/ui/badge';
 import { Check, Clock, MessageCircle } from 'lucide-react';
 
-export function StateBadge({ status }: { status: InquiryStatus }) {
+export function StateBadge({ status }: { status: CaseStatus }) {
   if (status === '대기') {
     return (
       <Badge variant="secondary">
@@ -14,7 +14,7 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
 
   if (status === '상담') {
     return (
-      <Badge variant="secondary" className="text-white bg-deep-green">
+      <Badge variant="secondary" className="bg-deep-green text-white">
         <MessageCircle />
         <span>상담중</span>
       </Badge>
@@ -23,7 +23,7 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
 
   if (status === '종료') {
     return (
-      <Badge variant="secondary" className="text-white bg-red-400">
+      <Badge variant="secondary" className="bg-red-400 text-white">
         <Check />
         <span>종료</span>
       </Badge>
@@ -31,7 +31,7 @@ export function StateBadge({ status }: { status: InquiryStatus }) {
   }
   if (status === 'AI자동해결') {
     return (
-      <Badge variant="secondary" className="text-white bg-ai">
+      <Badge variant="secondary" className="bg-ai text-white">
         <Check />
         <span>AI자동해결</span>
       </Badge>

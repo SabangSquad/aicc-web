@@ -1,5 +1,5 @@
 import { AISolution, AISolutionSkeleton } from '@/entities/ai';
-import { InquiryTable, InquiryChart, InquiryLineChart, InquiryAPI } from '@/entities/inquiry';
+import { InquiryTable, InquiryChart, InquiryLineChart } from '@/entities/inquiry';
 import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 import { Suspense } from 'react';
@@ -29,9 +29,9 @@ export async function Home() {
 
       <Separator />
 
-      {/* <Suspense fallback={<AISolutionSkeleton />}>
+      <Suspense fallback={<AISolutionSkeleton />}>
         <AISolution />
-      </Suspense> */}
+      </Suspense>
 
       <Separator />
       <InquiryLineChart items={items} />

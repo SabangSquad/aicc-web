@@ -4,18 +4,15 @@ import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Input } from '@/shared/ui/input';
 import { StateBadge } from '@/entities/inquiry';
-import { InquiryType } from '@/shared/types/inquiry';
 import { useState } from 'react';
+import { CaseType } from '@/shared/types/case';
 
-export function LeftPanel({
-  items,
-  selectedInquiry,
-  setSelectedInquiry,
-}: {
-  items: InquiryType[];
-  selectedInquiry: InquiryType | null;
-  setSelectedInquiry: (inquiry: InquiryType) => void;
-}) {
+interface LeftPanelProps {
+  items: CaseType[];
+  selectedInquiry: CaseType | null;
+  setSelectedInquiry: (inquiry: CaseType) => void;
+}
+export function LeftPanel({ items, selectedInquiry, setSelectedInquiry }: LeftPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const filteredItems = items.filter(inquiry => (inquiry.summary || '').toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -24,7 +21,7 @@ export function LeftPanel({
   const completedInquiries = filteredItems.filter(inquiry => inquiry.status === '종료');
   const aiInquiries = filteredItems.filter(inquiry => inquiry.status === 'AI자동해결');
 
-  const renderInquiryItem = (inquiry: InquiryType) => (
+  const renderInquiryItem = (inquiry: CaseType) => (
     <Link
       key={inquiry.case_id}
       href={`/inquiry/${inquiry.case_id}`}

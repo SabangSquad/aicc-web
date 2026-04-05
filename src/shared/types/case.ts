@@ -2,10 +2,10 @@ import { EMOTION } from '../constant/emotion';
 
 export interface CaseType {
   readonly case_id: number;
-  readonly customer_id: number;
+  readonly customer_id: number | null;
   readonly store_id: number;
-  readonly order_id: number;
-  readonly reservation_id: number;
+  readonly order_id: number | null;
+  readonly reservation_id: number | null;
   readonly created_at: string;
   readonly closed_at: string;
   category: string;

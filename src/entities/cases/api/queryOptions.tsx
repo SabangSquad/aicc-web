@@ -1,37 +1,22 @@
-import { storeAPI } from './api';
+import { casesAPI } from './api';
 
 const queryKeys = {
-  storeInfomation: (store_id: number) => ['storeInfomation', store_id],
-  cases: (store_id: number) => ['cases', store_id],
-  satisfactions: (store_id: number) => ['satisfactions', store_id],
-  reservations: (store_id: number) => ['reservations', store_id],
-  products: (store_id: number) => ['products', store_id],
-  solution: (store_id: number) => ['solution', store_id],
+  cases: (case_id: number) => ['cases', case_id],
+  satisfactions: (case_id: number) => ['satisfactions', case_id],
+  messages: (case_id: number) => ['messages', case_id],
 };
 
 export const queryOptions = {
-  getStoreInfomation: (store_id: number) => ({
-    queryKey: queryKeys.storeInfomation(store_id),
-    queryFn: () => storeAPI.getStoreInfomation(store_id),
+  getSatisfactions: (case_id: number) => ({
+    queryKey: queryKeys.satisfactions(case_id),
+    queryFn: () => casesAPI.getSatisfactions(case_id),
   }),
-  getCases: (store_id: number) => ({
-    queryKey: queryKeys.cases(store_id),
-    queryFn: () => storeAPI.getCases(store_id),
+  getMessages: (case_id: number) => ({
+    queryKey: queryKeys.messages(case_id),
+    queryFn: () => casesAPI.getMessages(case_id),
   }),
-  getSatisfactions: (store_id: number) => ({
-    queryKey: queryKeys.satisfactions(store_id),
-    queryFn: () => storeAPI.getSatisfactions(store_id),
-  }),
-  getReservations: (store_id: number) => ({
-    queryKey: queryKeys.reservations(store_id),
-    queryFn: () => storeAPI.getReservations(store_id),
-  }),
-  getProducts: (store_id: number) => ({
-    queryKey: queryKeys.products(store_id),
-    queryFn: () => storeAPI.getProducts(store_id),
-  }),
-  getSolution: (store_id: number) => ({
-    queryKey: queryKeys.solution(store_id),
-    queryFn: () => storeAPI.getSolution(store_id),
+  getCase: (case_id: number) => ({
+    queryKey: queryKeys.cases(case_id),
+    queryFn: () => casesAPI.getCase(case_id),
   }),
 };

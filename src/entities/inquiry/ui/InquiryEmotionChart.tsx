@@ -2,10 +2,10 @@
 import { Bar, BarChart, XAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/shared/ui/chart';
 import { chartConfig } from '@/shared/lib/emotion';
-import { InquiryType } from '@/shared/types/inquiry';
+import { CaseType } from '@/shared/types/case';
 
-export function InquiryEmotionChart({ items }: { items: InquiryType[] }) {
-  const aggregateEmotionsByDay = (items: InquiryType[]) => {
+export function InquiryEmotionChart({ items }: { items: CaseType[] }) {
+  const aggregateEmotionsByDay = (items: CaseType[]) => {
     const days = ['일', '월', '화', '수', '목', '금', '토'];
 
     const initialData = days.map(day => ({
@@ -34,7 +34,7 @@ export function InquiryEmotionChart({ items }: { items: InquiryType[] }) {
     <div className="flex flex-col">
       <div className="mb-4">
         <h2 className="text-2xl font-semibold tracking-tight">요일별 감정 추이</h2>
-        <p className="mt-1 text-muted-foreground">요일별 감정 분포를 확인할 수 있습니다.</p>
+        <p className="text-muted-foreground mt-1">요일별 감정 분포를 확인할 수 있습니다.</p>
       </div>
 
       <ChartContainer config={chartConfig} className="h-[300px] w-full">

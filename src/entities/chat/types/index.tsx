@@ -19,7 +19,7 @@ interface ChatError {
 }
 export type ChatResponse = ChatStream | ChatOk | ChatError;
 
-interface ChatSummaryOk {
+export interface ChatSummaryOk {
   ok: true;
   case_id: number;
   emotion: EmotionType;

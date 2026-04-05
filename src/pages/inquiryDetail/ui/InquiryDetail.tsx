@@ -6,22 +6,16 @@ import { Button } from '@/shared/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
-import { InquiryAPI, StateBadge } from '@/entities/inquiry';
-import { CustomerInformation, AIAssist, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
-import { Textarea } from '@/shared/ui/textarea';
-import { Suspense } from 'react';
+import { StateBadge } from '@/entities/inquiry';
+import { CustomerInformation, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
 import { casesAPI } from '@/entities/cases';
 
-export async function InquiryDetail({ params }: { params: Promise<{ id: string }> }) {
+export async function InquiryDetail({ params }: { params: Promise<{ id: number }> }) {
   const { id } = await params;
-  const caseData = await casesAPI.getCase(Number(id));
-
-  if (!caseData) {
-    return <div className="p-6">문의 내역을 찾을 수 없습니다.</div>;
-  }
+  const caseData = await casesAPI.getCase(id);
 
   return (
-    <Suspense fallback={<div className="p-6">로딩 중...</div>}>
+    <>
       <Button asChild variant="outline" className="ml-6">
         <Link href="/inquiry">
           <ArrowLeft />
@@ -39,16 +33,16 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
         <p className="text-muted-foreground mt-1 text-sm">{new Date(caseData.created_at).toLocaleString('ko-KR')}</p>
       </div>
 
-      <div className="border-b p-6">
+      {/* <div className="border-b p-6">
         <CustomerInformation customerId={caseData.customer_id} />
-      </div>
+      </div> */}
 
       <ResizablePanelGroup direction="horizontal" className="min-h-[70vh] w-full border-b">
         <ResizablePanel defaultSize={60} minSize={30}>
           <div className="flex h-full flex-col">
             <ScrollArea className="h-0 flex-1">
               <div className="space-y-8 p-6">
-                <AIAssist inquiry={caseData} />
+                {/* <AIAssist inquiry={caseData} /> */}
 
                 <Separator />
                 <div className="flex flex-row gap-6">
@@ -69,7 +63,7 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
         <ResizablePanel defaultSize={40} minSize={30}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel defaultSize={50} minSize={15}>
-              <PastInquiryList customerId={caseData.customer_id} />
+              {/* <PastInquiryList customerId={caseData.customer_id} /> */}
             </ResizablePanel>
 
             <ResizableHandle withHandle />
@@ -80,6 +74,6 @@ export async function InquiryDetail({ params }: { params: Promise<{ id: string }
           </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </Suspense>
+    </>
   );
 }

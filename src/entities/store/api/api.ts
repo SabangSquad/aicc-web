@@ -1,5 +1,5 @@
 import { http } from '@/shared/lib/http';
-import { StoreType } from '../types';
+import { AISolutionType, StoreType } from '../types';
 import { CaseType } from '@/shared/types/case';
 import { OrderType } from '@/shared/types/order';
 import { ManualType } from '@/shared/types/manual';
@@ -8,7 +8,7 @@ import { SatisfactionType } from '@/shared/types/satisfaction';
 import { ProductType } from '@/shared/types/product';
 
 export const storeAPI = {
-  getStoreInfomation: (store_id: string) => http.get<StoreType>(`/stores/${store_id}`),
+  getStoreInfomation: (store_id: number) => http.get<StoreType>(`/stores/${store_id}`),
 
   getCases: (store_id: number) => http.get<{ data: CaseType[] }>(`/stores/${store_id}/cases`).then(res => res.data || []),
 
@@ -22,5 +22,5 @@ export const storeAPI = {
 
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
 
-  getSolution: (store_id: number) => http.get<{ data: string }>(`/stores/${store_id}/solution`),
+  getSolution: (store_id: number) => http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`),
 };

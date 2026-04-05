@@ -1,25 +1,24 @@
-'use client';
+import { Bot, User } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { ScrollArea } from '@/shared/ui/scroll-area';
-import { Bot, User } from 'lucide-react';
-import { Message } from '@/entities/inquiry';
-import { useCaseMessages } from '@/entities/inquiry/hooks/useInquiryQuery';
+import { useCaseMessage } from '@/entities/cases';
 
-export function ChatHistoryViewer({ caseId }: { caseId: number | string }) {
-  const { data: chatLogs } = useCaseMessages(caseId);
-  if (!chatLogs || chatLogs.length === 0) {
-    return <div className="p-4 text-center text-sm text-muted-foreground">챗봇/보이스봇 대화 내역이 없습니다.</div>;
+export function ChatHistoryViewer({ caseId }: { caseId: number }) {
+  const { data } = useCaseMessage(caseId);
+
+  if (!data || data.length === 0) {
+    return <div className="text-muted-foreground p-4 text-center text-sm">챗봇/보이스봇 대화 내역이 없습니다.</div>;
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="flex-shrink-0 p-4">
-        <h3 className="font-semibold">챗봇/보이스봇 이력 ({chatLogs.length})</h3>
+        <h3 className="font-semibold">챗봇/보이스봇 이력 ({data.length})</h3>
       </div>
-      <ScrollArea className="flex-1 h-0">
+      <ScrollArea className="h-0 flex-1">
         <div className="space-y-6 p-4">
           <div className="flex flex-col gap-3">
-            {chatLogs.map(msg => (
+            {data.map(msg => (
               <ChatMessageBubble key={msg.message_id} message={msg} />
             ))}
           </div>
@@ -29,26 +28,18 @@ export function ChatHistoryViewer({ caseId }: { caseId: number | string }) {
   );
 }
 
-function ChatMessageBubble({ message }: { message: Message }) {
+function ChatMessageBubble({ message }: { message: ReturnType<typeof useCaseMessage>['data'][number] }) {
   const isUser = message.speaker === '고객';
 
   return (
     <div className={cn('flex items-start gap-3', isUser ? 'justify-end' : 'justify-start')}>
       {!isUser && (
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+        <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full">
           <Bot className="h-5 w-5" />
         </div>
       )}
 
-      {/* 말풍선 */}
-      <div
-        className={cn(
-          'max-w-[80%] rounded-lg p-3 text-sm',
-          isUser
-            ? 'rounded-br-none bg-blue-600 text-white' // 유저 말풍선
-            : 'rounded-bl-none bg-muted' // 봇 말풍선
-        )}
-      >
+      <div className={cn('max-w-[80%] rounded-lg p-3 text-sm', isUser ? 'rounded-br-none bg-blue-600 text-white' : 'bg-muted rounded-bl-none')}>
         <p className="leading-relaxed">{message.content}</p>
         <p className={cn('mt-1.5 text-xs', isUser ? 'text-blue-200' : 'text-muted-foreground')}>
           {new Date(message.occurred_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
@@ -56,7 +47,7 @@ function ChatMessageBubble({ message }: { message: Message }) {
       </div>
 
       {isUser && (
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+        <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-full">
           <User className="h-5 w-5" />
         </div>
       )}

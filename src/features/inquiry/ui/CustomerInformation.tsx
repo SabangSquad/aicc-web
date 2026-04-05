@@ -1,10 +1,16 @@
-'use client';
-import { useCustomerInfo } from '@/entities/inquiry/hooks/useInquiryQuery';
+import { customerAPI } from '@/entities/customer/api/api';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
-export function CustomerInformation({ customerId }: { customerId: number }) {
-  const { data: customer } = useCustomerInfo(customerId);
-
+export async function CustomerInformation({ customerId }: { customerId: number | null }) {
+  if (!customerId) {
+    return (
+      <div>
+        <h3 className="mb-4 text-lg font-semibold">고객 정보</h3>
+        <p className="text-muted-foreground italic">고객 정보가 없습니다.</p>
+      </div>
+    );
+  }
+  const customer = await customerAPI.getCustomerInfo(customerId);
   const getInitials = (name: string) => {
     return name ? name.substring(0, 1).toUpperCase() : 'U';
   };
@@ -25,16 +31,8 @@ export function CustomerInformation({ customerId }: { customerId: number }) {
             </div>
 
             <p className="text-muted-foreground text-sm">{customer.email}</p>
-            <p className="text-muted-foreground text-sm">{customer.phone}</p>
+            <p className="text-muted-foreground text-sm">{customer.phone_number}</p>
           </div>
-        </div>
-
-        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-          <span className="text-muted-foreground font-medium">가입일</span>
-          <ValueDisplay value={new Date(customer.joined_at).toLocaleString('ko-KR')} />
-
-          <span className="text-muted-foreground font-medium">적립금</span>
-          <ValueDisplay value={customer.points.toLocaleString('ko-KR')} />
         </div>
       </div>
     </div>

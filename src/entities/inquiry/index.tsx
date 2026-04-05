@@ -4,4 +4,3 @@ export * from './ui/InquiryLineChart';
 export * from './ui/InquiryTable';
 export * from './ui/InquiryEmotionChart';
 export * from './ui/InquiryAreaSelectChart';
-export * from './api/api';
