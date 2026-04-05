@@ -42,10 +42,8 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | nu
               <AIAssist case_id={selectedInquiry.case_id} />
               <CaseSatisfaction case_id={selectedInquiry.case_id} />
             </div>
+            <Separator />
             <ChatHistoryViewer caseId={selectedInquiry.case_id} />
-
-            <Separator />
-            <Separator />
           </div>
         </ScrollArea>
       </div>

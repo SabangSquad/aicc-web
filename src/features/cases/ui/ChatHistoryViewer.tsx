@@ -1,3 +1,4 @@
+'use client';
 import { Bot, User } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { ScrollArea } from '@/shared/ui/scroll-area';
