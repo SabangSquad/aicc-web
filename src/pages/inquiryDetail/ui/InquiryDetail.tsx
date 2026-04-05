@@ -7,7 +7,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/u
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
 import { StateBadge } from '@/entities/inquiry';
-import { CustomerInformation, PastInquiryList, ChatHistoryViewer } from '@/features/inquiry';
+import { CustomerInformation, PastInquiryList, ChatHistoryViewer } from '@/features/cases';
 import { casesAPI } from '@/entities/cases';
 
 export async function InquiryDetail({ params }: { params: Promise<{ id: number }> }) {

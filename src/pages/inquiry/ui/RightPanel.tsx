@@ -1,7 +1,7 @@
 'use client';
 import { StateBadge } from '@/entities/inquiry';
 import { AIAssist } from '@/features/chat';
-import { ChatHistoryViewer, CustomerInformation } from '@/features/inquiry';
+import { CaseSatisfaction, ChatHistoryViewer, CustomerInformation, PastInquiryList } from '@/features/cases';
 import { CaseType } from '@/shared/types/case';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
@@ -32,11 +32,20 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | nu
 
         <ScrollArea className="h-0 flex-1 px-6">
           <div className="space-y-8 py-6">
-            {/* <CustomerInformation customerId={selectedInquiry.customer_id} /> */}
-            <Separator />
-            <AIAssist case_id={selectedInquiry.case_id} />
-            <Separator />
+            {selectedInquiry.customer_id && (
+              <div className="flex flex-row gap-6">
+                <CustomerInformation customerId={selectedInquiry.customer_id} />
+                <PastInquiryList customerId={selectedInquiry.customer_id} storeId={selectedInquiry.store_id} />
+              </div>
+            )}
+            <div className="flex flex-row gap-6">
+              <AIAssist case_id={selectedInquiry.case_id} />
+              <CaseSatisfaction case_id={selectedInquiry.case_id} />
+            </div>
             <ChatHistoryViewer caseId={selectedInquiry.case_id} />
+
+            <Separator />
+            <Separator />
           </div>
         </ScrollArea>
       </div>

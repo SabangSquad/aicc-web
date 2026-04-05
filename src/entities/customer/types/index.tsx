@@ -3,7 +3,7 @@ export interface CustomerType {
   readonly store_id: number;
   name: string;
   email: string;
-  phone_number: string;
+  phone: string;
   address: string;
   birthdate: string;
 }
