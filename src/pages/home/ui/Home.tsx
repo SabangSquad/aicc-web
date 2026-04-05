@@ -1,5 +1,5 @@
-import { AISolution, AISolutionSkeleton } from '@/entities/ai';
-import { InquiryTable, InquiryChart, InquiryLineChart } from '@/entities/inquiry';
+import { AISolution, AISolutionSkeleton } from '@/entities/store';
+import { InquiryTable, InquiryChart, InquiryLineChart } from '@/features/statistics';
 import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 import { Suspense } from 'react';

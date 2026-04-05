@@ -1,7 +1,4 @@
-import { AIEmotionSolution } from '@/entities/ai';
-import { AIAverageResponseTime } from '@/entities/ai/ui/AIAverageResponseTime';
-import { AIResolutionRate } from '@/entities/ai/ui/AIResolutionRate';
-import { InquiryEmotionChart, InquiryAreaSelectChart } from '@/entities/inquiry';
+import { AIEmotionSolution, AIResolutionRate, AIAverageResponseTime, InquiryEmotionChart } from '@/features/statistics';
 import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 

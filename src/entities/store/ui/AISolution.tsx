@@ -1,5 +1,5 @@
 'use client';
-import { InsightGauge } from '../../ai/ui/InsightGauge';
+import { InsightGauge } from '../../../features/statistics/ui/InsightGauge';
 import { useAISolution } from '../hooks/useStore';
 
 export function AISolution() {
