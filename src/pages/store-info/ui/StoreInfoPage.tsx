@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Check, Loader2 } from 'lucide-react';
-import { useStoreInformation, useStoreAction, StoreType, StorePatchRequest } from '@/entities/store';
+import { useStoreInformation, useStoreAction, StoreType } from '@/entities/store';
 
 import { BasicInfoSection } from './BasicSection';
 import { FacilitiesSection } from './FacilitiesSection';
@@ -70,11 +70,11 @@ export function StoreInfoPage() {
 
           <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
             <SectionHeader
-              title={formData.category === '식당' ? '메뉴 정보' : '진료 정보'}
+              title={formData.category === '식당' ? '메뉴 정보' : '진료 과목'}
               desc={
                 formData.category === '식당'
                   ? `판매 중인 메뉴를 알려주세요. \nAI가 꼼꼼하게 확인해 답변합니다.`
-                  : `주요 진료 과목을 설정해 주세요. \n환자들이 궁금해하는 진료 범위를 명확히 답변할 수 있습니다.`
+                  : `병원에서 진료하는 과목을 추가해주세요. \n환자들이 궁금해하는 진료 범위를 명확히 답변할 수 있습니다.`
               }
             />
             {formData.category === '식당' ? (
@@ -99,7 +99,7 @@ export function StoreInfoPage() {
       <Button
         onClick={handleSave}
         disabled={editMutation.isPending}
-        className="fixed right-16 bottom-8 z-50 flex h-16 min-w-[160px] items-center justify-center gap-3 rounded-2xl bg-blue-600 text-[16px] font-bold text-white shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-1 hover:bg-blue-700 active:scale-95 disabled:opacity-70"
+        className="fixed right-24 bottom-8 z-50 flex h-16 min-w-[160px] animate-bounce cursor-pointer items-center justify-center gap-3 rounded-xl bg-zinc-800 text-[18px] font-bold text-white shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-1 hover:bg-zinc-400 active:scale-95 disabled:opacity-70"
       >
         {editMutation.isPending ? <Loader2 className="h-8 w-8 animate-spin" /> : <Check className="h-8 w-8" />}
         <span>{editMutation.isPending ? '저장 중...' : '설정 완료'}</span>

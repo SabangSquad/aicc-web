@@ -50,7 +50,7 @@ export function FacilitiesSection({ facilities, onChange }: FacilitiesSectionPro
               type="button"
               onClick={() => toggleFacility(key)}
               className={cn(
-                'group relative flex flex-col items-center justify-center gap-3 rounded-2xl border py-5 transition-all duration-200',
+                'group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border py-5 transition-all duration-200',
                 isSelected
                   ? 'border-zinc-700 bg-zinc-700 text-white shadow-md shadow-zinc-200'
                   : 'border-zinc-100 bg-white text-zinc-400 hover:border-zinc-200 hover:bg-zinc-50/50'

@@ -26,7 +26,7 @@ interface BaseStore {
 
 export type StorePatchRequest = Omit<StoreType, 'store_id' | '_links' | 'category'>;
 
-interface RestaurantItems {
+export interface RestaurantItems {
   menu: {
     name: string;
     price: number;
@@ -34,7 +34,7 @@ interface RestaurantItems {
   }[];
 }
 
-interface HospitalItems {
+export interface HospitalItems {
   department: string[];
 }
 

@@ -46,7 +46,7 @@ export function CategorySelector({ category, onChange }: CategorySelectorProps) 
             type="button"
             onClick={() => onChange(item.key, item.items)}
             className={cn(
-              'group relative flex flex-col items-center justify-center gap-4 rounded-[2rem] border p-8 transition-all duration-300',
+              'group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[2rem] border p-8 transition-all duration-300',
               isSelected
                 ? 'border-zinc-700 bg-zinc-700 text-white shadow-xl shadow-zinc-200'
                 : 'border-zinc-100 bg-white text-zinc-400 hover:border-zinc-200 hover:bg-zinc-50/50'
@@ -61,7 +61,6 @@ export function CategorySelector({ category, onChange }: CategorySelectorProps) 
               {isSelected ? <Check className="h-3 w-3 stroke-[3px] text-zinc-900" /> : <X className="h-3 w-3 stroke-[3px] text-zinc-300" />}
             </div>
 
-            {/* 메인 아이콘: 크기를 키워 벤또 느낌 강조 */}
             <div
               className={cn(
                 'flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-500 group-hover:scale-110',
@@ -71,7 +70,6 @@ export function CategorySelector({ category, onChange }: CategorySelectorProps) 
               <Icon className="h-7 w-7 stroke-[1.5px]" />
             </div>
 
-            {/* 텍스트 정보 */}
             <div className="space-y-1.5 text-center">
               <h3 className={cn('text-[18px] font-bold tracking-tight transition-colors', isSelected ? 'text-white' : 'text-zinc-900')}>{item.label}</h3>
               <p className={cn('text-[13px] leading-tight font-medium transition-colors', isSelected ? 'text-zinc-500' : 'text-zinc-400')}>
