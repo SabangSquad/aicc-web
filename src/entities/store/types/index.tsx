@@ -19,13 +19,13 @@ interface BaseStore {
     fri: string;
     sat: string;
     sun: string;
-  };
+  } | null;
   facilities: {
     wifi: boolean;
     '남/녀 화장실 구분': boolean;
     휠체어: boolean;
     주차: boolean;
-  };
+  } | null;
   notice: string | null;
 }
 

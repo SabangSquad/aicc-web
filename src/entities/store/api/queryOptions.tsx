@@ -1,6 +1,6 @@
 import { storeAPI } from './api';
 
-const queryKeys = {
+export const queryKeys = {
   storeInfomation: (store_id: number) => ['storeInfomation', store_id],
   cases: (store_id: number) => ['cases', store_id],
   satisfactions: (store_id: number) => ['satisfactions', store_id],

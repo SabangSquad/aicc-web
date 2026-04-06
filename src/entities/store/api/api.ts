@@ -23,4 +23,6 @@ export const storeAPI = {
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
 
   getSolution: (store_id: number) => http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`),
+
+  patchStoreInformation: ({ store_id, data }: { store_id: number; data: StoreType }) => http.patch(`/stores/${store_id}`, data),
 };
