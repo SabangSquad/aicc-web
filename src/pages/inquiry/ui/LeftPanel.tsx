@@ -30,8 +30,8 @@ export function LeftPanel({ items, selectedInquiry, setSelectedInquiry }: LeftPa
         selectedInquiry?.case_id === inquiry.case_id && 'bg-muted'
       }`}
     >
-      <div className="flex w-full items-center justify-between">
-        <span className="font-semibold">{inquiry.summary}</span>
+      <div className="flex w-full items-center justify-between gap-1">
+        <span className="line-clamp-2 font-semibold">{inquiry.summary}</span>
         <StateBadge status={inquiry.status} />
       </div>
 
@@ -43,7 +43,7 @@ export function LeftPanel({ items, selectedInquiry, setSelectedInquiry }: LeftPa
   return (
     <div className="flex h-full flex-col pt-3">
       <Tabs defaultValue="전체" className="flex-1 overflow-hidden">
-        <div className="p-4">
+        <div className="py-4 pr-4">
           <Input type="search" placeholder="제목 또는 내용으로 검색..." className="mb-4" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="전체">전체</TabsTrigger>
@@ -54,7 +54,7 @@ export function LeftPanel({ items, selectedInquiry, setSelectedInquiry }: LeftPa
           </TabsList>
         </div>
 
-        <ScrollArea className="h-0 flex-1 px-4 pb-4">
+        <ScrollArea className="h-0 flex-1 pr-4 pb-4">
           <TabsContent value="전체">
             <div className="flex flex-col gap-2">{filteredItems.map(renderInquiryItem)}</div>
           </TabsContent>

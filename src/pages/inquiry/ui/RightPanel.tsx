@@ -5,6 +5,7 @@ import { CaseSatisfaction, ChatHistoryViewer, CustomerInformation, PastInquiryLi
 import { CaseType } from '@/shared/types/case';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { Separator } from '@/shared/ui/separator';
+import { motion } from 'motion/react';
 
 export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | null }) {
   if (!selectedInquiry) {
@@ -22,7 +23,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | nu
       <div className="flex h-full w-full flex-col">
         <div className="border-b p-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight">{selectedInquiry.summary}</h2>
+            <h2 className="text-xl font-semibold tracking-tight">{selectedInquiry.summary}</h2>
             <div className="flex items-center gap-2">
               <StateBadge status={selectedInquiry.status} />
             </div>
@@ -31,7 +32,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | nu
         </div>
 
         <ScrollArea className="h-0 flex-1 px-6">
-          <div className="space-y-8 py-6">
+          <motion.div className="space-y-8 py-6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             {selectedInquiry.customer_id && (
               <div className="flex flex-row gap-6">
                 <CustomerInformation customerId={selectedInquiry.customer_id} />
@@ -44,7 +45,7 @@ export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | nu
             </div>
             <Separator />
             <ChatHistoryViewer caseId={selectedInquiry.case_id} />
-          </div>
+          </motion.div>
         </ScrollArea>
       </div>
     </div>

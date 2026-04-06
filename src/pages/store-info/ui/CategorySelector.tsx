@@ -6,7 +6,6 @@ interface CategorySelectorProps {
   category: CategoryType;
   onChange: (newCategory: CategoryType, newStoreItems: any) => void;
 }
-
 export function CategorySelector({ category, onChange }: CategorySelectorProps) {
   const handleCategoryChange = (newCategory: CategoryType) => {
     const newItems = newCategory === '식당' ? { menu: [] } : newCategory === '병원' ? { department: [] } : {};

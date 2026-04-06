@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Check, Loader2 } from 'lucide-react';
-import { useStoreInformation, useStoreAction } from '@/entities/store/';
-import { StoreType } from '@/entities/store';
+import { useStoreInformation, useStoreAction, StoreType } from '@/entities/store/';
 
 import { BasicInfoSection } from './BasicSection';
 import { FacilitiesSection } from './FacilitiesSection';

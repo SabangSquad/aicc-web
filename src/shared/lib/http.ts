@@ -1,5 +1,14 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+const stripHateoasLinks = (data: any): any => {
+  if (data !== null && typeof data === 'object') {
+    const { links, _links, ...rest } = data;
+    return rest;
+  }
+
+  return data;
+};
+
 export async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const headers = new Headers(options?.headers);
 
@@ -21,12 +30,16 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
     headers,
     credentials: 'include',
   });
+
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     throw errorData;
   }
 
-  return res.json();
+  const data = await res.json();
+
+  // 💡 여기서 모든 응답 데이터를 세탁(?)해서 반환합니다.
+  return stripHateoasLinks(data) as T;
 }
 
 export const http = {
@@ -43,9 +56,14 @@ export const http = {
       body: isFormData ? body : JSON.stringify(body),
     });
   },
-  patch: <T>(url: string, body: unknown, options?: RequestInit) =>
-    request<T>(url, { ...options, method: 'PATCH', body: body instanceof FormData ? body : JSON.stringify(body) }),
-  put: <T>(url: string, body: unknown, options?: RequestInit) =>
-    request<T>(url, { ...options, method: 'PUT', body: body instanceof FormData ? body : JSON.stringify(body) }),
+  patch: <T>(url: string, body: unknown, options?: RequestInit) => {
+    // 💡 PATCH 요청을 보낼 때도 혹시 모르니 클라이언트에서 한 번 더 잘라서 보낼 수도 있습니다. (선택)
+    const cleanBody = body instanceof FormData ? body : stripHateoasLinks(body);
+    return request<T>(url, { ...options, method: 'PATCH', body: cleanBody instanceof FormData ? cleanBody : JSON.stringify(cleanBody) });
+  },
+  put: <T>(url: string, body: unknown, options?: RequestInit) => {
+    const cleanBody = body instanceof FormData ? body : stripHateoasLinks(body);
+    return request<T>(url, { ...options, method: 'PUT', body: cleanBody instanceof FormData ? cleanBody : JSON.stringify(cleanBody) });
+  },
   delete: <T>(url: string, options?: RequestInit) => request<T>(url, { ...options, method: 'DELETE' }),
 };

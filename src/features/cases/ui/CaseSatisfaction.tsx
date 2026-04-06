@@ -1,6 +1,5 @@
 'use client';
 import { Star, Target } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useCaseSatisfaction } from '@/entities/cases';
 
 export const CaseSatisfaction = ({ case_id }: { case_id: number }) => {
@@ -37,11 +36,7 @@ export const CaseSatisfaction = ({ case_id }: { case_id: number }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)]"
-    >
+    <div className="w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)]">
       <div className="flex items-center justify-between border-b border-zinc-100 bg-zinc-50/50 px-5 py-4">
         <div className="flex items-center gap-2">
           <Target size={16} className="text-zinc-800" />
@@ -61,6 +56,6 @@ export const CaseSatisfaction = ({ case_id }: { case_id: number }) => {
 
         <span className="rounded-full bg-zinc-100 px-3 py-1 text-[13px] font-medium text-zinc-600">{getScoreFeedback(satisfactionData.score)}</span>
       </div>
-    </motion.div>
+    </div>
   );
 };

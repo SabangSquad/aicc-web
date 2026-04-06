@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Label } from '@/shared/ui/label';
 import { Input } from '@/shared/ui/input';
 
@@ -14,51 +13,60 @@ export const DEFAULT_BUSINESS_HOURS = {
 
 interface BusinessHoursSectionProps {
   hours: any;
-  onChange: (newHours: any) => void; // 부모에게 완성된 객체를 전달
+  onChange: (newHours: any) => void;
 }
 
 export function BusinessHoursSection({ hours, onChange }: BusinessHoursSectionProps) {
-  const [weeklyHours, setWeeklyHours] = useState(() => {
-    const currentHours = hours || DEFAULT_BUSINESS_HOURS;
-    const daysMap = [
-      { key: 'mon', label: '월' },
-      { key: 'tue', label: '화' },
-      { key: 'wed', label: '수' },
-      { key: 'thu', label: '목' },
-      { key: 'fri', label: '금' },
-      { key: 'sat', label: '토' },
-      { key: 'sun', label: '일' },
-    ];
-    return daysMap.map(({ key, label }) => {
-      const timeStr = currentHours[key] || '휴무';
-      const isOpen = timeStr !== '휴무';
-      const [open, close] = isOpen ? timeStr.split('~') : ['09:00', '18:00'];
-      return { id: key, day: label, isOpen, open: open?.trim() || '09:00', close: close?.trim() || '18:00' };
-    });
+  const currentHours = hours || DEFAULT_BUSINESS_HOURS;
+
+  const daysMap = [
+    { key: 'mon', label: '월' },
+    { key: 'tue', label: '화' },
+    { key: 'wed', label: '수' },
+    { key: 'thu', label: '목' },
+    { key: 'fri', label: '금' },
+    { key: 'sat', label: '토' },
+    { key: 'sun', label: '일' },
+  ];
+
+  // 렌더링할 때마다 최신 부모 상태를 바탕으로 UI용 배열을 만듭니다.
+  const weeklyHours = daysMap.map(({ key, label }) => {
+    const timeStr = currentHours[key] || '휴무';
+    const isOpen = timeStr !== '휴무';
+    const [open, close] = isOpen ? timeStr.split('~') : ['09:00', '18:00'];
+    return { id: key, day: label, isOpen, open: open?.trim() || '09:00', close: close?.trim() || '18:00' };
   });
 
-  // 내부 상태가 바뀔 때마다 부모에게 전달할 API 포맷으로 말아서 전송
-  useEffect(() => {
-    const formattedHours = weeklyHours.reduce(
+  // 💡 2. 체크박스나 시간이 바뀔 때, 계산을 거쳐 부모의 onChange를 '직접' 호출합니다.
+  const updateHour = (index: number, field: string, value: any) => {
+    const newWeeklyHours = [...weeklyHours];
+    newWeeklyHours[index] = { ...newWeeklyHours[index], [field]: value };
+
+    const formattedHours = newWeeklyHours.reduce(
       (acc, curr) => {
         acc[curr.id] = curr.isOpen ? `${curr.open}~${curr.close}` : '휴무';
         return acc;
       },
       {} as Record<string, string>
     );
-    onChange(formattedHours);
-  }, [weeklyHours]);
 
-  const updateHour = (index: number, field: string, value: any) => {
-    const newHours = [...weeklyHours];
-    newHours[index] = { ...newHours[index], [field]: value };
-    setWeeklyHours(newHours);
+    onChange(formattedHours);
   };
 
+  // 💡 3. 일괄 적용 버튼을 누를 때도 마찬가지로 직접 계산해서 쏩니다.
   const copyToWeekdays = () => {
     const mon = weeklyHours[0];
-    const newHours = weeklyHours.map((h, i) => (i > 0 && i < 5 ? { ...h, isOpen: mon.isOpen, open: mon.open, close: mon.close } : h));
-    setWeeklyHours(newHours);
+    const newWeeklyHours = weeklyHours.map((h, i) => (i > 0 && i < 5 ? { ...h, isOpen: mon.isOpen, open: mon.open, close: mon.close } : h));
+
+    const formattedHours = newWeeklyHours.reduce(
+      (acc, curr) => {
+        acc[curr.id] = curr.isOpen ? `${curr.open}~${curr.close}` : '휴무';
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    onChange(formattedHours);
   };
 
   return (

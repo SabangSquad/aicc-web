@@ -11,7 +11,7 @@ export function InquiryPage({ items }: { items: CaseType[] }) {
   const [selectedInquiry, setSelectedInquiry] = useState<CaseType | null>(null);
 
   return (
-    <div className="-mx-10 -my-12 h-screen w-full overflow-hidden">
+    <div className="-my-12 h-screen w-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px]">
         <ResizablePanel defaultSize={30} minSize={25}>
           <LeftPanel items={items} selectedInquiry={selectedInquiry} setSelectedInquiry={setSelectedInquiry} />

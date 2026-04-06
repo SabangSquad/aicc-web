@@ -1,6 +1,5 @@
 'use client';
 import { User, Phone, Mail, MapPin, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useCustomerInfo } from '@/entities/customer/hooks/useCustomer';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
@@ -22,11 +21,7 @@ export function CustomerInformation({ customerId }: { customerId: number }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)]"
-    >
+    <div className="w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)]">
       {/* 🔹 헤더 영역 */}
       <div className="flex items-center border-b border-zinc-100 bg-zinc-50/50 px-5 py-4">
         <div className="flex items-center gap-2">
@@ -55,7 +50,7 @@ export function CustomerInformation({ customerId }: { customerId: number }) {
           <InfoRow icon={<Calendar size={14} />} label="생년월일" value={formatBirthdate(customer.birthdate)} />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
