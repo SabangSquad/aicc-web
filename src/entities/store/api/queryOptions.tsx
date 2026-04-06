@@ -7,6 +7,7 @@ export const queryKeys = {
   reservations: (store_id: number) => ['reservations', store_id],
   products: (store_id: number) => ['products', store_id],
   solution: (store_id: number) => ['solution', store_id],
+  manuals: () => ['manuals'],
 };
 
 export const queryOptions = {
@@ -33,5 +34,9 @@ export const queryOptions = {
   getSolution: (store_id: number) => ({
     queryKey: queryKeys.solution(store_id),
     queryFn: () => storeAPI.getSolution(store_id),
+  }),
+  getManuals: (store_id: number) => ({
+    queryKey: queryKeys.manuals(),
+    queryFn: () => storeAPI.getManuals(store_id),
   }),
 };

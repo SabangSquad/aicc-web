@@ -2,7 +2,7 @@ import { http } from '@/shared/lib/http';
 import { AISolutionType, StorePatchRequest, StoreType } from '../types';
 import { CaseType } from '@/shared/types/case';
 import { OrderType } from '@/shared/types/order';
-import { ManualType } from '@/shared/types/manual';
+import { ManualRequest, ManualType } from '@/shared/types/manual';
 import { ReservationType } from '@/shared/types/reservation';
 import { SatisfactionType } from '@/shared/types/satisfaction';
 import { ProductType } from '@/shared/types/product';
@@ -19,6 +19,9 @@ export const storeAPI = {
   getReservations: (store_id: number) => http.get<{ data: ReservationType[] }>(`/stores/${store_id}/reservations`),
 
   getManuals: (store_id: number) => http.get<{ data: ManualType[] }>(`/stores/${store_id}/manuals`),
+  postManuals: ({ store_id, data }: { store_id: number; data: ManualRequest }) => http.post(`/stores/${store_id}/manuals`, data),
+  patchManuals: ({ store_id, manual_id, data }: { store_id: number; manual_id: number; data: ManualRequest }) =>
+    http.patch(`/stores/${store_id}/manuals/${manual_id}`, data),
 
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
 

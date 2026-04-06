@@ -3,6 +3,7 @@ import { InquiryTable, InquiryChart, InquiryLineChart } from '@/features/statist
 import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 import { Suspense } from 'react';
+import { AsyncBoundary } from '@/shared/error/AsyncBoundary';
 
 export async function Home() {
   const items = await storeAPI.getCases(1);
@@ -29,9 +30,9 @@ export async function Home() {
 
       <Separator />
 
-      <Suspense fallback={<AISolutionSkeleton />}>
+      <AsyncBoundary fallback={<AISolutionSkeleton />}>
         <AISolution />
-      </Suspense>
+      </AsyncBoundary>
 
       <Separator />
       <InquiryLineChart items={items} />

@@ -6,3 +6,9 @@ export interface ManualType {
   category: string;
   content: string;
 }
+
+export interface ManualRequest {
+  title: string;
+  category: string;
+  content: string;
+}

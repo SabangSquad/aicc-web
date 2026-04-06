@@ -24,3 +24,23 @@ export function useStoreAction(store_id: number) {
 
   return { editMutation };
 }
+
+export function useManualsAction() {
+  const queryClient = useQueryClient();
+
+  const invalidateQuery = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.manuals() });
+  };
+
+  const addMutation = useMutation({
+    mutationFn: storeAPI.postManuals,
+    onSuccess: () => invalidateQuery(),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: storeAPI.patchManuals,
+    onSuccess: () => invalidateQuery(),
+  });
+
+  return { addMutation, editMutation };
+}
