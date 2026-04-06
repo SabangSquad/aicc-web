@@ -1,5 +1,5 @@
-import { Home, ChartNoAxesCombined, ClipboardList, Store, FileText } from 'lucide-react';
 import React from 'react';
+import { Home, ChartNoAxesCombined, ClipboardList, Store, FileText } from 'lucide-react';
 
 export type MenuItem = {
   title: string;
@@ -10,10 +10,9 @@ export type MenuItem = {
 };
 
 export type MenuGroup = {
-  id: string; // key 용
-  label?: string; // 그룹 레이블 (없어도 됨)
+  id: string;
+  label?: string;
   items: MenuItem[];
-  collapsible?: boolean; // 확장/접기 기능을 추가하고 싶을 때 사용(선택)
 };
 
 export const sidebarGroups: MenuGroup[] = [
@@ -29,17 +28,26 @@ export const sidebarGroups: MenuGroup[] = [
     id: 'management',
     label: '채팅',
     items: [
-      { title: '문의내역', url: '/inquiry', icon: ClipboardList },
+      { title: '문의 내역', url: '/inquiry', icon: ClipboardList },
       { title: '업장 기본 정보', url: '/store-info', icon: Store },
       { title: '이용약관 및 정책 관리', url: '/policies', icon: FileText },
     ],
   },
-  // 예시로 다른 그룹 추가 가능
-  // {
-  //   id: "others",
-  //   label: "기타",
-  //   items: [
-  //     { title: "설정", url: "/settings", icon: Settings },
-  //   ]
-  // }
+  {
+    id: 'reservation',
+    label: '예약 확인',
+    items: [{ title: '예약 관리', url: '/reservation', icon: ClipboardList }],
+  },
+  {
+    id: 'items',
+    label: '상품',
+    items: [
+      { title: '상품 관리', url: '/products', icon: Store },
+      {
+        title: '배송 관리',
+        url: '/orders',
+        icon: Store,
+      },
+    ],
+  },
 ];

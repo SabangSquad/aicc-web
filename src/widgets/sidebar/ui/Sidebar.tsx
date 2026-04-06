@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronsLeft, ChevronsRight, LogOut } from 'lucide-react';
 import { sidebarGroups, MenuItem } from '../model/sidebarItem';
@@ -47,34 +47,38 @@ export function AppSidebar() {
 
       <div className="scrollbar-hide flex-1 overflow-y-auto">
         <nav className="flex flex-col gap-8">
-          {sidebarGroups.map(group => (
-            <div key={group.id} className="flex flex-col gap-2">
-              {!isCollapsed && group.label && <p className="px-4 text-[11px] font-medium tracking-[0.15em] text-slate-400 uppercase">{group.label}</p>}
+          {sidebarGroups.map(group => {
+            if (storeData.category === '이커머스' && group.id === 'reservation') return null;
+            if (storeData.category !== '이커머스' && group.id === 'items') return null;
+            return (
+              <div key={group.id} className="flex flex-col gap-2">
+                {!isCollapsed && group.label && <p className="px-2 text-[12px] font-medium text-zinc-500 uppercase">{group.label}</p>}
 
-              <div className="flex flex-col gap-1">
-                {group.items.map((item: MenuItem) => {
-                  const Icon = item.icon;
-                  const active = isActive(item.url);
+                <div className="flex flex-col gap-1">
+                  {group.items.map((item: MenuItem) => {
+                    const Icon = item.icon;
+                    const active = isActive(item.url);
 
-                  return (
-                    <Link
-                      key={item.title}
-                      href={item.url}
-                      title={isCollapsed ? item.title : ''}
-                      className={`group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'} ${active ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'} `}
-                    >
-                      <Icon
-                        size={20}
-                        className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? 'text-white' : 'text-slate-400'}`}
-                      />
+                    return (
+                      <Link
+                        key={item.title}
+                        href={item.url}
+                        title={isCollapsed ? item.title : ''}
+                        className={`group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'} ${active ? 'bg-zinc-800 text-white shadow-lg shadow-zinc-200' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'} `}
+                      >
+                        <Icon
+                          size={20}
+                          className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? 'text-white' : 'text-zinc-400'}`}
+                        />
 
-                      {!isCollapsed && <span className={`truncate text-sm`}>{item.title}</span>}
-                    </Link>
-                  );
-                })}
+                        {!isCollapsed && <span className={`truncate text-sm`}>{item.title}</span>}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
       </div>
 
@@ -84,7 +88,7 @@ export function AppSidebar() {
           title={isCollapsed ? '로그아웃' : ''}
           className={`group flex w-full cursor-pointer items-center gap-3 rounded-xl transition-all duration-200 ${isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'} text-slate-500 hover:bg-red-50 hover:text-red-600`}
         >
-          <LogOut size={20} className="shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
+          <LogOut size={20} className="shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
           {!isCollapsed && <span className="truncate text-sm font-medium">로그아웃</span>}
         </button>
       </div>
