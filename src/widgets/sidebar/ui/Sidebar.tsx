@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronsLeft, ChevronsRight, LogOut } from 'lucide-react';
 import { sidebarGroups, MenuItem } from '../model/sidebarItem';
+import { useStoreInformation } from '@/entities/store';
 
 export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname() ?? '/';
   const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const userName = '사방팔방';
+  const { data: storeData } = useStoreInformation(2);
 
   const isActive = (url: string) => {
     if (url === '/') {
@@ -33,7 +33,7 @@ export function AppSidebar() {
         {!isCollapsed && (
           <div className="flex flex-col overflow-hidden pr-2">
             <span className="text-xs font-medium text-slate-500">환영합니다,</span>
-            <span className="truncate text-lg font-bold text-slate-900">{userName}님 👋</span>
+            <span className="truncate text-lg font-bold text-slate-900">{storeData.name} 사장님 👋</span>
           </div>
         )}
 
