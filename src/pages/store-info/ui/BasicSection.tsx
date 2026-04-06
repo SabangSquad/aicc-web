@@ -14,27 +14,27 @@ export function BasicInfoSection({ formData, setFormData }: BasicInfoSectionProp
           value={formData.name || ''}
           onChange={e => setFormData({ ...formData, name: e.target.value })}
           placeholder="상호명을 입력하세요"
-          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-zinc-400"
         />
       </div>
       <div className="space-y-3">
-        <Label className="text-[15px] font-semibold text-slate-700">대표 연락처</Label>
+        <Label className="text-[15px] font-semibold text-slate-700">연락처</Label>
         <Input
           value={formData.phone || ''}
           type="tel"
           onChange={e => setFormData({ ...formData, phone: e.target.value })}
           placeholder="02-000-0000"
-          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-zinc-400"
         />
       </div>
       <div className="space-y-3">
-        <Label className="text-[15px] font-semibold text-slate-700">대표 이메일</Label>
+        <Label className="text-[15px] font-semibold text-slate-700">이메일</Label>
         <Input
           value={formData.email || ''}
           type="email"
           onChange={e => setFormData({ ...formData, email: e.target.value })}
           placeholder="example@email.com"
-          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-zinc-400"
         />
       </div>
       <div className="space-y-3">
@@ -43,7 +43,7 @@ export function BasicInfoSection({ formData, setFormData }: BasicInfoSectionProp
           value={formData.address || ''}
           onChange={e => setFormData({ ...formData, address: e.target.value })}
           placeholder="주소 검색을 이용하거나 직접 입력하세요"
-          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="h-14 rounded-2xl border-transparent bg-slate-100 px-5 focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-zinc-400"
         />
       </div>
       <div className="space-y-3 lg:col-span-2">
@@ -51,8 +51,8 @@ export function BasicInfoSection({ formData, setFormData }: BasicInfoSectionProp
         <Input
           value={formData.notice || ''}
           onChange={e => setFormData({ ...formData, notice: e.target.value })}
-          placeholder="예: 이번 주 금요일은 내부 수리로 인해 임시 휴무입니다."
-          className="h-14 rounded-2xl border-blue-100 bg-blue-50/50 px-5 focus-visible:ring-blue-600"
+          placeholder="챗봇 화면에 노출되는 공지사항을 입력하세요 (예: 오늘은 5시까지 영업합니다)"
+          className="h-14 rounded-2xl border-blue-100 bg-blue-50/50 px-5 focus-visible:ring-zinc-400"
         />
       </div>
     </div>

@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 const SectionHeader = ({ title, desc }: { title: string; desc: string }) => (
   <div className="shrink-0 xl:w-80">
     <h2 className="text-[22px] font-bold text-slate-900">{title}</h2>
-    <p className="mt-2 text-[15px] leading-relaxed font-medium text-slate-500">{desc}</p>
+    <p className="mt-2 text-[15px] leading-relaxed font-medium whitespace-pre-wrap text-slate-500">{desc}</p>
   </div>
 );
 
@@ -24,6 +24,7 @@ export function StoreInfoPage() {
   const { editMutation } = useStoreAction(2);
 
   const [formData, setFormData] = useState<StoreType>(initialData);
+  console.log('formData', formData);
 
   const handleSave = async () => {
     try {
@@ -36,22 +37,25 @@ export function StoreInfoPage() {
 
   return (
     <div className="relative w-full space-y-16 pb-32">
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div>
-          <h1 className="mb-3 text-3xl font-bold tracking-tight text-slate-900">업장 정보 설정</h1>
-          <p className="text-[17px] font-medium text-slate-500">매장 성격에 맞는 상세 정보를 입력해주세요.</p>
-        </div>
+      <div>
+        <h1 className="mb-3 text-3xl font-bold tracking-tight text-slate-900">업장 정보 설정</h1>
+        <p className="text-[17px] font-medium text-slate-500">매장 정보를 관리합니다. 꼼꼼히 작성할수록 AI 상담원이 고객에게 더 똑똑하게 답변할 수 있습니다.</p>
+      </div>
 
-        <CategorySelector
-          category={formData.category}
-          onChange={(newCategory, newItems) => setFormData({ ...formData, category: newCategory, store_items: newItems } as StoreType)}
-        />
+      <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
+        <SectionHeader title="업종 설정" desc="운영 중인 매장의 성격을 선택해 주세요." />
+        <div className="flex-1">
+          <CategorySelector
+            category={formData.category}
+            onChange={(newCategory, newItems) => setFormData({ ...formData, category: newCategory, store_items: newItems } as StoreType)}
+          />
+        </div>
       </div>
 
       <hr className="border-t-2 border-slate-100" />
 
       <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
-        <SectionHeader title="기본 정보" desc="고객 상담의 기본이 되는 핵심 연락처입니다." />
+        <SectionHeader title="기본 정보" desc={`업장의 기본적인 정보를 입력해주세요. \nAI 답변에 활용됩니다.`} />
         <div className="flex-1">
           <BasicInfoSection formData={formData} setFormData={setFormData} />
           {formData.category !== '이커머스' && (
@@ -67,7 +71,11 @@ export function StoreInfoPage() {
           <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
             <SectionHeader
               title={formData.category === '식당' ? '메뉴 정보' : '진료 정보'}
-              desc={formData.category === '식당' ? '상세 메뉴를 입력하면 AI가 더 정확하게 답변합니다.' : '병원의 전문 진료 과목을 입력해주세요.'}
+              desc={
+                formData.category === '식당'
+                  ? `판매 중인 메뉴를 알려주세요. \nAI가 꼼꼼하게 확인해 답변합니다.`
+                  : `주요 진료 과목을 설정해 주세요. \n환자들이 궁금해하는 진료 범위를 명확히 답변할 수 있습니다.`
+              }
             />
             {formData.category === '식당' ? (
               <MenuSection menus={formData.store_items?.menu} onChange={newMenu => setFormData({ ...formData, store_items: { menu: newMenu } })} />
@@ -83,7 +91,7 @@ export function StoreInfoPage() {
 
           {/* 영업시간 */}
           <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
-            <SectionHeader title="영업 시간" desc="요일별 운영 시간을 상세히 설정할 수 있습니다." />
+            <SectionHeader title="영업 시간" desc={`요일별 운영 시간을 설정해주세요.\nAI가 매장 운영 상황을 이해하는 데 도움이 됩니다.`} />
             <BusinessHoursSection hours={formData.business_hours} onChange={newHours => setFormData({ ...formData, business_hours: newHours })} />
           </div>
         </>

@@ -1,120 +1,168 @@
-import { Label } from '@/shared/ui/label';
-import { Input } from '@/shared/ui/input';
+'use client';
+import { useRef } from 'react';
+import { Copy, X } from 'lucide-react';
+import { cn } from '@/shared/lib/utils';
 
-export const DEFAULT_BUSINESS_HOURS = {
+const DEFAULT_BUSINESS_HOURS = {
   mon: '09:00~18:00',
   tue: '09:00~18:00',
   wed: '09:00~18:00',
   thu: '09:00~18:00',
   fri: '09:00~18:00',
-  sat: '휴무',
-  sun: '휴무',
+  sat: 'off',
+  sun: 'off',
 };
 
-interface BusinessHoursSectionProps {
-  hours: any;
-  onChange: (newHours: any) => void;
-}
+const TIME_SLOTS = Array.from({ length: 48 }, (_, i) => {
+  const hour = Math.floor(i / 2)
+    .toString()
+    .padStart(2, '0');
+  const minute = i % 2 === 0 ? '00' : '30';
+  return `${hour}:${minute}`;
+});
 
-export function BusinessHoursSection({ hours, onChange }: BusinessHoursSectionProps) {
+export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange: (newHours: any) => void }) {
   const currentHours = hours || DEFAULT_BUSINESS_HOURS;
+  const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
+  const korDays: Record<string, string> = { mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토', sun: '일' };
 
-  const daysMap = [
-    { key: 'mon', label: '월' },
-    { key: 'tue', label: '화' },
-    { key: 'wed', label: '수' },
-    { key: 'thu', label: '목' },
-    { key: 'fri', label: '금' },
-    { key: 'sat', label: '토' },
-    { key: 'sun', label: '일' },
-  ];
+  const isDragging = useRef(false);
+  const selectionStart = useRef<{ day: string; slotIdx: number } | null>(null);
 
-  // 렌더링할 때마다 최신 부모 상태를 바탕으로 UI용 배열을 만듭니다.
-  const weeklyHours = daysMap.map(({ key, label }) => {
-    const timeStr = currentHours[key] || '휴무';
-    const isOpen = timeStr !== '휴무';
-    const [open, close] = isOpen ? timeStr.split('~') : ['09:00', '18:00'];
-    return { id: key, day: label, isOpen, open: open?.trim() || '09:00', close: close?.trim() || '18:00' };
-  });
+  const getSelectedIndices = (timeStr: string) => {
+    if (!timeStr || typeof timeStr !== 'string' || timeStr === 'off' || !timeStr.includes('~')) {
+      return null;
+    }
 
-  // 💡 2. 체크박스나 시간이 바뀔 때, 계산을 거쳐 부모의 onChange를 '직접' 호출합니다.
-  const updateHour = (index: number, field: string, value: any) => {
-    const newWeeklyHours = [...weeklyHours];
-    newWeeklyHours[index] = { ...newWeeklyHours[index], [field]: value };
+    const [open, close] = timeStr.split('~');
 
-    const formattedHours = newWeeklyHours.reduce(
-      (acc, curr) => {
-        acc[curr.id] = curr.isOpen ? `${curr.open}~${curr.close}` : '휴무';
-        return acc;
-      },
-      {} as Record<string, string>
-    );
+    if (!open || !close) return null;
 
-    onChange(formattedHours);
+    const startIdx = TIME_SLOTS.indexOf(open.trim());
+    const endIdx = TIME_SLOTS.indexOf(close.trim());
+
+    if (startIdx === -1 || endIdx === -1) return null;
+
+    return {
+      start: startIdx,
+      end: endIdx,
+    };
+  };
+  const formatTimeRange = (start: number, end: number) => {
+    return `${TIME_SLOTS[start]}~${TIME_SLOTS[end]}`;
   };
 
-  // 💡 3. 일괄 적용 버튼을 누를 때도 마찬가지로 직접 계산해서 쏩니다.
+  const handleMouseDown = (day: string, slotIdx: number) => {
+    isDragging.current = true;
+    selectionStart.current = { day, slotIdx };
+  };
+
+  const handleMouseEnter = (day: string, slotIdx: number) => {
+    if (!isDragging.current || !selectionStart.current) return;
+    if (selectionStart.current.day !== day) return;
+    const startIdx = selectionStart.current.slotIdx;
+    const min = Math.min(startIdx, slotIdx);
+    const max = Math.max(startIdx, slotIdx);
+    const newHours = { ...currentHours };
+    newHours[day] = formatTimeRange(min, max);
+    onChange(newHours);
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+    selectionStart.current = null;
+  };
+
   const copyToWeekdays = () => {
-    const mon = weeklyHours[0];
-    const newWeeklyHours = weeklyHours.map((h, i) => (i > 0 && i < 5 ? { ...h, isOpen: mon.isOpen, open: mon.open, close: mon.close } : h));
-
-    const formattedHours = newWeeklyHours.reduce(
-      (acc, curr) => {
-        acc[curr.id] = curr.isOpen ? `${curr.open}~${curr.close}` : '휴무';
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-
-    onChange(formattedHours);
+    const next = { ...currentHours };
+    ['tue', 'wed', 'thu', 'fri'].forEach(d => {
+      next[d] = next.mon;
+    });
+    onChange(next);
   };
 
   return (
-    <div className="flex-1 space-y-6">
-      <div className="flex items-center justify-between px-2">
-        <Label className="text-[16px] font-bold text-slate-800">요일별 설정</Label>
+    <div className="w-full space-y-6 pb-10" onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+      <div className="flex flex-col gap-4 px-1 sm:flex-row sm:items-center sm:justify-between">
         <button
+          type="button"
           onClick={copyToWeekdays}
-          className="rounded-lg bg-blue-50 px-3 py-1.5 text-[13px] font-bold text-blue-600 transition-colors hover:text-blue-800"
+          className="flex items-center justify-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-[13px] font-bold text-zinc-600 transition-all hover:bg-zinc-900 hover:text-white"
         >
-          월요일 시간을 평일 전체에 적용
+          <Copy size={14} /> 월요일 시간을 평일 전체에 적용
         </button>
       </div>
 
-      <div className="space-y-3">
-        {weeklyHours.map((item, idx) => (
-          <div key={item.id} className={`flex items-center gap-4 rounded-2xl p-4 transition-all ${item.isOpen ? 'bg-slate-100' : 'bg-slate-50 opacity-60'}`}>
-            <div className="flex w-24 items-center gap-3">
-              <input
-                type="checkbox"
-                checked={item.isOpen}
-                onChange={e => updateHour(idx, 'isOpen', e.target.checked)}
-                className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-[14px] font-bold text-slate-700">{item.day}요일</span>
+      <div className="relative">
+        <div className="mb-4 grid grid-cols-[140px_repeat(48,1fr)] items-center text-[16px] tracking-tighter text-zinc-400 uppercase">
+          <div className="col-start-1" />
+          {[0, 6, 12, 18, 24].map(h => (
+            <div
+              key={h}
+              className={cn('relative flex flex-col items-center', h === 0 ? 'items-start' : h === 24 ? 'items-end' : 'items-center')}
+              style={{
+                gridColumnStart: h === 24 ? 49 : h * 2 + 2,
+              }}
+            >
+              <span
+                style={{
+                  transform: h !== 0 && h !== 24 ? 'translateX(-50%)' : 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {h.toString().padStart(2, '0')}:00
+              </span>
             </div>
+          ))}
+        </div>
 
-            {item.isOpen ? (
-              <div className="flex flex-1 items-center gap-3">
-                <Input
-                  type="time"
-                  value={item.open}
-                  onChange={e => updateHour(idx, 'open', e.target.value)}
-                  className="h-11 rounded-xl border-none bg-white px-4 text-[15px] shadow-sm"
-                />
-                <span className="font-bold text-slate-400">~</span>
-                <Input
-                  type="time"
-                  value={item.close}
-                  onChange={e => updateHour(idx, 'close', e.target.value)}
-                  className="h-11 rounded-xl border-none bg-white px-4 text-[15px] shadow-sm"
-                />
+        <div className="grid grid-cols-[80px_repeat(48,1fr)] gap-x-px gap-y-1.5">
+          {days.map(day => {
+            const indices = getSelectedIndices(currentHours[day]);
+
+            return (
+              <div key={day} className="group relative col-span-full grid h-8 grid-cols-[140px_repeat(48,1fr)] items-center gap-x-px">
+                <div className="flex h-full items-center gap-3 pr-4">
+                  <span
+                    className={cn('w-5 shrink-0 text-center text-[16px]', day === 'sun' ? 'text-rose-400' : day === 'sat' ? 'text-blue-400' : 'text-zinc-700')}
+                  >
+                    {korDays[day]}
+                  </span>
+
+                  <div
+                    className={cn(
+                      'flex flex-1 items-center justify-between gap-1.5 rounded-lg border px-2 py-1.5 transition-all',
+                      indices ? 'border-zinc-700 bg-zinc-700 text-white' : 'border-zinc-100 bg-zinc-50 text-zinc-300'
+                    )}
+                  >
+                    <span className="truncate text-[10px] leading-none font-bold tracking-tighter">{indices ? currentHours[day] : 'CLOSED'}</span>
+                    <button
+                      onClick={() => onChange({ ...currentHours, [day]: indices ? 'off' : '09:00~18:00' })}
+                      className="shrink-0 transition-colors hover:text-rose-500"
+                    >
+                      <X size={12} strokeWidth={3} />
+                    </button>
+                  </div>
+                </div>
+
+                {TIME_SLOTS.map((slot, idx) => {
+                  const isSelected = indices && idx >= indices.start && idx <= indices.end;
+                  return (
+                    <div
+                      key={`${day}-${idx}`}
+                      onMouseDown={() => handleMouseDown(day, idx)}
+                      onMouseEnter={() => handleMouseEnter(day, idx)}
+                      className={cn(
+                        'h-8 cursor-pointer border transition-all duration-100',
+                        isSelected ? 'border-zinc-700 bg-zinc-700' : 'border-zinc-100 bg-zinc-100 hover:border-zinc-300 hover:bg-zinc-50'
+                      )}
+                    />
+                  );
+                })}
               </div>
-            ) : (
-              <span className="flex-1 px-2 py-3 text-[14px] font-medium text-slate-400">정기 휴무</span>
-            )}
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
