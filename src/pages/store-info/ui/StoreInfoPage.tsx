@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Check, Loader2 } from 'lucide-react';
-import { useStoreInformation, useStoreAction, StoreType } from '@/entities/store/';
+import { useStoreInformation, useStoreAction, StoreType, StorePatchRequest } from '@/entities/store';
 
 import { BasicInfoSection } from './BasicSection';
 import { FacilitiesSection } from './FacilitiesSection';
@@ -24,11 +24,11 @@ export function StoreInfoPage() {
   const { editMutation } = useStoreAction(2);
 
   const [formData, setFormData] = useState<StoreType>(initialData);
-  console.log('formData', formData);
 
   const handleSave = async () => {
     try {
-      await editMutation.mutateAsync({ store_id: 2, data: formData });
+      const { store_id, _links, category, ...rest } = formData;
+      await editMutation.mutateAsync({ store_id: 2, data: rest });
       toast.success('업장 정보가 성공적으로 업데이트되었습니다.');
     } catch {
       toast.error('업장 정보 업데이트에 실패했습니다.');
@@ -89,7 +89,6 @@ export function StoreInfoPage() {
 
           <hr className="border-t-2 border-slate-100" />
 
-          {/* 영업시간 */}
           <div className="flex flex-col gap-8 xl:flex-row xl:gap-20">
             <SectionHeader title="영업 시간" desc={`요일별 운영 시간을 설정해주세요.\nAI가 매장 운영 상황을 이해하는 데 도움이 됩니다.`} />
             <BusinessHoursSection hours={formData.business_hours} onChange={newHours => setFormData({ ...formData, business_hours: newHours })} />

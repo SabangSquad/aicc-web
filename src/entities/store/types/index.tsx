@@ -1,5 +1,7 @@
 import { EmotionType } from '@/shared/types/emotion';
 
+export type DayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+
 export type StoreType =
   | (BaseStore & { category: '식당'; store_items: RestaurantItems })
   | (BaseStore & { category: '병원'; store_items: HospitalItems })
@@ -11,15 +13,7 @@ interface BaseStore {
   phone: string;
   email: string;
   address: string;
-  business_hours: {
-    mon: string;
-    tue: string;
-    wed: string;
-    thu: string;
-    fri: string;
-    sat: string;
-    sun: string;
-  } | null;
+  business_hours: Record<DayKey, string> | null;
   facilities: {
     wifi: boolean;
     '남/녀 화장실 구분': boolean;
@@ -27,7 +21,10 @@ interface BaseStore {
     주차: boolean;
   } | null;
   notice: string | null;
+  _links: Array<{ rel: string; href: string; method: string }>;
 }
+
+export type StorePatchRequest = Omit<StoreType, 'store_id' | '_links' | 'category'>;
 
 interface RestaurantItems {
   menu: {

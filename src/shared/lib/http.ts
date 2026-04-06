@@ -57,9 +57,17 @@ export const http = {
     });
   },
   patch: <T>(url: string, body: unknown, options?: RequestInit) => {
-    // 💡 PATCH 요청을 보낼 때도 혹시 모르니 클라이언트에서 한 번 더 잘라서 보낼 수도 있습니다. (선택)
-    const cleanBody = body instanceof FormData ? body : stripHateoasLinks(body);
-    return request<T>(url, { ...options, method: 'PATCH', body: cleanBody instanceof FormData ? cleanBody : JSON.stringify(cleanBody) });
+    const isFormData = body instanceof FormData;
+
+    return request<T>(url, {
+      ...options,
+      method: 'PATCH',
+      headers: {
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
+        ...options?.headers,
+      },
+      body: isFormData ? body : JSON.stringify(stripHateoasLinks(body)),
+    });
   },
   put: <T>(url: string, body: unknown, options?: RequestInit) => {
     const cleanBody = body instanceof FormData ? body : stripHateoasLinks(body);

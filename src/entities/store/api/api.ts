@@ -1,5 +1,5 @@
 import { http } from '@/shared/lib/http';
-import { AISolutionType, StoreType } from '../types';
+import { AISolutionType, StorePatchRequest, StoreType } from '../types';
 import { CaseType } from '@/shared/types/case';
 import { OrderType } from '@/shared/types/order';
 import { ManualType } from '@/shared/types/manual';
@@ -24,5 +24,5 @@ export const storeAPI = {
 
   getSolution: (store_id: number) => http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`),
 
-  patchStoreInformation: ({ store_id, data }: { store_id: number; data: StoreType }) => http.patch(`/stores/${store_id}`, data),
+  patchStoreInformation: ({ store_id, data }: { store_id: number; data: StorePatchRequest }) => http.patch(`/stores/${store_id}`, data),
 };

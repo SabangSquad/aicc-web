@@ -2,13 +2,14 @@
 import { useRef } from 'react';
 import { Copy, X } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
+import { DayKey } from '@/entities/store';
 
-const DEFAULT_BUSINESS_HOURS = {
-  mon: '09:00~18:00',
-  tue: '09:00~18:00',
-  wed: '09:00~18:00',
-  thu: '09:00~18:00',
-  fri: '09:00~18:00',
+const DEFAULT_BUSINESS_HOURS: Record<DayKey, string> = {
+  mon: '09:00-18:00',
+  tue: '09:00-18:00',
+  wed: '09:00-18:00',
+  thu: '09:00-18:00',
+  fri: '09:00-18:00',
   sat: 'off',
   sun: 'off',
 };
@@ -21,21 +22,24 @@ const TIME_SLOTS = Array.from({ length: 48 }, (_, i) => {
   return `${hour}:${minute}`;
 });
 
-export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange: (newHours: any) => void }) {
+interface BusinessHoursSectionProps {
+  hours: Record<DayKey, string> | null;
+  onChange: (newHours: Record<DayKey, string>) => void;
+}
+export function BusinessHoursSection({ hours, onChange }: BusinessHoursSectionProps) {
   const currentHours = hours || DEFAULT_BUSINESS_HOURS;
-  const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
-  const korDays: Record<string, string> = { mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토', sun: '일' };
+  const days: DayKey[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const korDays: Record<DayKey, string> = { mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토', sun: '일' };
 
   const isDragging = useRef(false);
-  const selectionStart = useRef<{ day: string; slotIdx: number } | null>(null);
+  const selectionStart = useRef<{ day: DayKey; slotIdx: number } | null>(null);
 
-  const getSelectedIndices = (timeStr: string) => {
-    if (!timeStr || typeof timeStr !== 'string' || timeStr === 'off' || !timeStr.includes('~')) {
+  const getSelectedIndices = (timeStr: string | null) => {
+    if (!timeStr || timeStr === 'off' || !timeStr.includes('-')) {
       return null;
     }
 
-    const [open, close] = timeStr.split('~');
-
+    const [open, close] = timeStr.split('-');
     if (!open || !close) return null;
 
     const startIdx = TIME_SLOTS.indexOf(open.trim());
@@ -43,26 +47,26 @@ export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange
 
     if (startIdx === -1 || endIdx === -1) return null;
 
-    return {
-      start: startIdx,
-      end: endIdx,
-    };
-  };
-  const formatTimeRange = (start: number, end: number) => {
-    return `${TIME_SLOTS[start]}~${TIME_SLOTS[end]}`;
+    return { start: startIdx, end: endIdx };
   };
 
-  const handleMouseDown = (day: string, slotIdx: number) => {
+  const formatTimeRange = (start: number, end: number) => {
+    return `${TIME_SLOTS[start]}-${TIME_SLOTS[end]}`;
+  };
+
+  const handleMouseDown = (day: DayKey, slotIdx: number) => {
     isDragging.current = true;
     selectionStart.current = { day, slotIdx };
   };
 
-  const handleMouseEnter = (day: string, slotIdx: number) => {
+  const handleMouseEnter = (day: DayKey, slotIdx: number) => {
     if (!isDragging.current || !selectionStart.current) return;
     if (selectionStart.current.day !== day) return;
+
     const startIdx = selectionStart.current.slotIdx;
     const min = Math.min(startIdx, slotIdx);
     const max = Math.max(startIdx, slotIdx);
+
     const newHours = { ...currentHours };
     newHours[day] = formatTimeRange(min, max);
     onChange(newHours);
@@ -75,8 +79,10 @@ export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange
 
   const copyToWeekdays = () => {
     const next = { ...currentHours };
-    ['tue', 'wed', 'thu', 'fri'].forEach(d => {
-      next[d] = next.mon;
+    const monValue = next.mon || '09:00-18:00';
+    const weekdayKeys: DayKey[] = ['tue', 'wed', 'thu', 'fri'];
+    weekdayKeys.forEach(d => {
+      next[d] = monValue;
     });
     onChange(next);
   };
@@ -100,31 +106,26 @@ export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange
             <div
               key={h}
               className={cn('relative flex flex-col items-center', h === 0 ? 'items-start' : h === 24 ? 'items-end' : 'items-center')}
-              style={{
-                gridColumnStart: h === 24 ? 49 : h * 2 + 2,
-              }}
+              style={{ gridColumnStart: h === 24 ? 49 : h * 2 + 2 }}
             >
-              <span
-                style={{
-                  transform: h !== 0 && h !== 24 ? 'translateX(-50%)' : 'none',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {h.toString().padStart(2, '0')}:00
-              </span>
+              <span style={{ transform: h !== 0 && h !== 24 ? 'translateX(-50%)' : 'none', whiteSpace: 'nowrap' }}>{h.toString().padStart(2, '0')}:00</span>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-[80px_repeat(48,1fr)] gap-x-px gap-y-1.5">
+        <div className="grid grid-cols-[140px_repeat(48,1fr)] gap-x-0.5 gap-y-1.5">
           {days.map(day => {
-            const indices = getSelectedIndices(currentHours[day]);
+            const timeValue = currentHours[day];
+            const indices = getSelectedIndices(timeValue);
 
             return (
-              <div key={day} className="group relative col-span-full grid h-8 grid-cols-[140px_repeat(48,1fr)] items-center gap-x-px">
+              <div key={day} className="group relative col-span-full grid h-8 grid-cols-[subgrid] items-center gap-x-0.5">
                 <div className="flex h-full items-center gap-3 pr-4">
                   <span
-                    className={cn('w-5 shrink-0 text-center text-[16px]', day === 'sun' ? 'text-rose-400' : day === 'sat' ? 'text-blue-400' : 'text-zinc-700')}
+                    className={cn(
+                      'w-5 shrink-0 text-center text-[16px] font-bold',
+                      day === 'sun' ? 'text-rose-400' : day === 'sat' ? 'text-blue-400' : 'text-zinc-700'
+                    )}
                   >
                     {korDays[day]}
                   </span>
@@ -135,9 +136,10 @@ export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange
                       indices ? 'border-zinc-700 bg-zinc-700 text-white' : 'border-zinc-100 bg-zinc-50 text-zinc-300'
                     )}
                   >
-                    <span className="truncate text-[10px] leading-none font-bold tracking-tighter">{indices ? currentHours[day] : 'CLOSED'}</span>
+                    <span className="truncate text-[10px] leading-none font-bold tracking-tighter">{indices ? timeValue : 'CLOSED'}</span>
                     <button
-                      onClick={() => onChange({ ...currentHours, [day]: indices ? 'off' : '09:00~18:00' })}
+                      type="button"
+                      onClick={() => onChange({ ...currentHours, [day]: indices ? 'off' : '09:00-18:00' })}
                       className="shrink-0 transition-colors hover:text-rose-500"
                     >
                       <X size={12} strokeWidth={3} />
@@ -145,7 +147,7 @@ export function BusinessHoursSection({ hours, onChange }: { hours: any; onChange
                   </div>
                 </div>
 
-                {TIME_SLOTS.map((slot, idx) => {
+                {TIME_SLOTS.map((_, idx) => {
                   const isSelected = indices && idx >= indices.start && idx <= indices.end;
                   return (
                     <div
