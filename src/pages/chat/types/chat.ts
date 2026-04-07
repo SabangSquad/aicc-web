@@ -4,4 +4,5 @@ export type ChatMessage = {
   isAi: boolean;
   isLoginRequired?: boolean;
   isRating?: boolean;
+  showReservationForm?: boolean;
 };

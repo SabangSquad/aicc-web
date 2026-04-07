@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
 import { GoogleLoginButton } from '@/features/login';
-import { ChatCloseButton, StarRatingUI } from './Components';
+import { ChatCloseButton, ReservationForm, StarRatingUI } from './Components';
 import { ChatMessage } from '../types/chat';
 import { QuickPrompts } from './QuickPrompts';
 
@@ -45,7 +45,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
         if (response.type === 'thinking') {
           setThinkingStep(response.message);
         } else if (response.type === 'answer' && response.ok) {
-          setMessages(prev => [...prev, { id: Date.now(), text: response.answer, isAi: true }]);
+          setMessages(prev => [...prev, { id: Date.now(), text: response.answer, isAi: true, showReservationForm: response.showReservationForm }]);
           setIsTyping(false);
           setThinkingStep('');
           if (response.caseId) setCurrentCaseId(response.caseId);
@@ -110,17 +110,14 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
                     : 'rounded-tr-sm border-zinc-700 bg-zinc-800 font-medium text-white shadow-md'
                 }`}
               >
-                {/* ⭐ whitespace-pre-wrap 추가로 줄바꿈(\n) 렌더링 지원 */}
                 <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
 
-                {/* 로그인 버튼 렌더링 */}
+                {msg.showReservationForm && <ReservationForm />}
                 {msg.isLoginRequired && (
                   <div className="mt-4 w-full">
                     <GoogleLoginButton />
                   </div>
                 )}
-
-                {/* ⭐ isRating 플래그가 true면 별점 컴포넌트 렌더링 */}
                 {msg.isRating && <StarRatingUI store_id={store_id} case_id={currentCaseId!} />}
               </div>
             </motion.div>

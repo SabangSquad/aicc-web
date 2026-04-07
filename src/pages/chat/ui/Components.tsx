@@ -1,10 +1,10 @@
 'use client';
 import { chatAPI } from '@/entities/chat';
-import { Star, XCircle } from 'lucide-react';
+import { Calendar, Check, Star, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ChatMessage } from '../types/chat';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { casesAPI } from '@/entities/cases';
 
 interface ChatCloseButtonProps {
@@ -125,4 +125,69 @@ export const ChatNotice = ({ notice }: { notice: string | null }) => {
   }, [notice]);
 
   return <></>;
+};
+
+interface ReservationFormProps {
+  availableTimes?: string[];
+}
+export const ReservationForm = ({
+  availableTimes = ['04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'],
+}: ReservationFormProps) => {
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const handleSelect = (time: string) => {
+    setSelectedTime(time);
+  };
+
+  return (
+    <div className="mt-4 flex w-full flex-col items-center gap-4 border-t border-zinc-100 pt-6">
+      <AnimatePresence mode="wait">
+        {!selectedTime ? (
+          <motion.div
+            key="selection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex w-full flex-col items-center gap-4"
+          >
+            <div className="flex items-center gap-2">
+              <Calendar size={18} className="text-zinc-500" />
+              <p className="text-[15px] font-semibold text-zinc-700">방문 예정 시간을 선택해 주세요</p>
+            </div>
+
+            <div className="grid w-full grid-cols-4 gap-2">
+              {availableTimes.map(time => (
+                <motion.button
+                  key={time}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => handleSelect(time)}
+                  className="flex cursor-pointer items-center justify-center rounded-xl border border-zinc-200 bg-white py-3 text-[14px] font-medium text-zinc-600 transition-all hover:border-zinc-800 hover:bg-zinc-50 hover:text-zinc-900"
+                >
+                  {time}
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="flex w-full items-center justify-start pt-1">
+              <p className="text-[11px] font-medium text-zinc-400">* 버튼을 클릭하면 예약이 확정됩니다.</p>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="completed"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center py-2 text-center"
+          >
+            <div className="mb-2 flex h-10 w-10 items-center justify-center text-emerald-500">
+              <Check size={24} />
+            </div>
+            <p className="text-[15px] font-semibold text-zinc-700">{selectedTime} 예약이 완료되었습니다! </p>
+            <p className="mt-1 text-[13px] text-zinc-500">방문 시간에 맞춰 와주세요.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
