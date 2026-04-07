@@ -22,9 +22,9 @@ export function StoreInfoPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-[60vh] w-full items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-          <span className="ml-3 text-lg font-medium text-slate-600">업장 정보를 불러오는 중...</span>
+        <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-6">
+          <Loader2 className="h-10 w-10 animate-spin text-zinc-200" />
+          <span className="text-ai ml-3 text-lg font-medium">업장 정보를 불러오는 중...</span>
         </div>
       }
     >
@@ -113,7 +113,7 @@ function StoreInfo() {
       <Button
         onClick={handleSave}
         disabled={editMutation.isPending}
-        className="fixed right-24 bottom-8 z-50 flex h-16 min-w-[160px] animate-bounce cursor-pointer items-center justify-center gap-3 rounded-xl bg-zinc-800 text-[18px] font-bold text-white shadow-[0_20px_40px_-10px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-1 hover:bg-zinc-400 active:scale-95 disabled:opacity-70"
+        className="fixed right-24 bottom-8 z-50 flex h-16 min-w-[160px] animate-bounce cursor-pointer items-center justify-center gap-3 rounded-xl bg-zinc-800 text-[18px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-zinc-400 active:scale-95 disabled:opacity-70"
       >
         {editMutation.isPending ? <Loader2 className="h-8 w-8 animate-spin" /> : <Check className="h-8 w-8" />}
         <span>{editMutation.isPending ? '저장 중...' : '설정 완료'}</span>
