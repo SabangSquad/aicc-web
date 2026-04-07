@@ -4,7 +4,7 @@ import { ChatNotice } from './Components';
 
 export async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const storeData = await storeAPI.getStoreInfomation(id);
+  const storeData = await storeAPI.getStoreInfomation(Number(id));
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-50 text-zinc-800 md:p-8">

@@ -1,19 +1,13 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Clock, MapPin, Star, HelpCircle, ArrowUpRight } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
 import { GoogleLoginButton } from '@/features/login';
 import { ChatCloseButton, StarRatingUI } from './Components';
 import { ChatMessage } from '../types/chat';
-
-const QUICK_PROMPTS = [
-  { id: 1, icon: <Clock size={18} />, text: '오늘 영업 시간 알려줘' },
-  { id: 2, icon: <MapPin size={18} />, text: '여기 어떻게 찾아가?' },
-  { id: 3, icon: <Star size={18} />, text: '제일 잘나가는 메뉴 추천해봐' },
-  { id: 4, icon: <HelpCircle size={18} />, text: '주차 공간 넉넉해?' },
-];
+import { QuickPrompts } from './QuickPrompts';
 
 export const ChatInterface = ({ store_id, storeData }: { store_id: string; storeData: StoreType }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -23,7 +17,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
-  const [currentCaseId, setCurrentCaseId] = useState<string | null>(null);
+  const [currentCaseId, setCurrentCaseId] = useState<number | null>(null);
 
   const latestUserMsgRef = useRef<HTMLDivElement>(null);
   const latestUserMsgId = [...messages].reverse().find(m => !m.isAi)?.id;
@@ -70,6 +64,20 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
     }
   };
 
+  const handleQuickPromptAction = (userText: string, aiText: string) => {
+    if (isChatEnded) return;
+
+    setMessages(prev => [...prev, { id: Date.now(), text: userText, isAi: false }]);
+    setIsTyping(true);
+    setThinkingStep('정보를 확인하는 중...');
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, { id: Date.now() + 1, text: aiText, isAi: true }]);
+      setIsTyping(false);
+      setThinkingStep('');
+    }, 600);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -102,7 +110,8 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
                     : 'rounded-tr-sm border-zinc-700 bg-zinc-800 font-medium text-white shadow-md'
                 }`}
               >
-                <p className="text-[15px] leading-relaxed break-words">{msg.text}</p>
+                {/* ⭐ whitespace-pre-wrap 추가로 줄바꿈(\n) 렌더링 지원 */}
+                <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
 
                 {/* 로그인 버튼 렌더링 */}
                 {msg.isLoginRequired && (
@@ -117,29 +126,8 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
             </motion.div>
           );
         })}
-        {messages.length === 1 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 w-full max-w-[340px]">
-            <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">클릭하면 바로 물어볼 수 있어요</p>
 
-            <div className="flex w-full flex-col gap-2">
-              {QUICK_PROMPTS.map(prompt => (
-                <motion.button
-                  whileHover={{ scale: 1.01, backgroundColor: '#fafafa' }}
-                  whileTap={{ scale: 0.98 }}
-                  key={prompt.id}
-                  onClick={() => handleSendMessage(prompt.text)}
-                  className="group flex w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-100 bg-white px-4 py-3 text-left shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] transition-all"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="text-zinc-800">{prompt.icon}</div>
-                    <span className="text-[14.5px] font-medium text-zinc-700">{prompt.text}</span>
-                  </div>
-                  <ArrowUpRight size={16} className="text-zinc-300 transition-colors group-hover:text-zinc-400" />
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {messages.length === 1 && <QuickPrompts storeData={storeData} onAction={handleQuickPromptAction} />}
 
         {isTyping && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex justify-start px-2 py-3">
@@ -170,14 +158,14 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={isChatEnded} // ⭐ 상담 끝나면 입력 불가
+            disabled={isChatEnded}
             placeholder={isChatEnded ? '상담이 종료되었습니다.' : '메시지를 입력하세요...'}
             className="flex-1 border-none bg-transparent px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           />
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSendMessage()}
-            disabled={!inputValue.trim() || isTyping || isChatEnded} // ⭐ 상담 끝나면 전송 불가
+            disabled={!inputValue.trim() || isTyping || isChatEnded}
             className="rounded-xl bg-zinc-800 p-2.5 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-400"
           >
             <Send size={18} />

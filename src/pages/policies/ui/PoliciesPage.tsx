@@ -30,15 +30,10 @@ function Policies() {
   const store_id = 2;
   const { data: storeData } = useStoreInformation(store_id);
   const { data: responseData } = useManuals(store_id);
+  const sortedManuals = responseData?.data ? [...responseData.data].sort((a, b) => b.manual_id - a.manual_id) : [];
   const { addMutation, editMutation } = useManualsAction();
 
-  const [manuals, setManuals] = useState(responseData.data);
-
-  useEffect(() => {
-    if (responseData?.data) {
-      setManuals(responseData.data);
-    }
-  }, [responseData?.data]);
+  const [manuals, setManuals] = useState(sortedManuals);
 
   const handleManualChange = (manualId: string | number, field: string, value: string) => {
     setManuals(prevManuals => prevManuals.map(manual => (manual.manual_id === manualId ? { ...manual, [field]: value } : manual)));

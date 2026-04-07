@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 import { casesAPI } from '@/entities/cases';
 
 interface ChatCloseButtonProps {
-  currentCaseId: string | null;
+  currentCaseId: number | null;
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 export const ChatCloseButton = ({ currentCaseId, setMessages }: ChatCloseButtonProps) => {
@@ -48,7 +48,7 @@ export const ChatCloseButton = ({ currentCaseId, setMessages }: ChatCloseButtonP
   );
 };
 
-export const StarRatingUI = ({ store_id, case_id }: { store_id: string; case_id: string }) => {
+export const StarRatingUI = ({ store_id, case_id }: { store_id: string; case_id: number }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -117,10 +117,12 @@ export const StarRatingUI = ({ store_id, case_id }: { store_id: string; case_id:
 
 export const ChatNotice = ({ notice }: { notice: string | null }) => {
   useEffect(() => {
-    toast.success(notice || '가게 공지사항이 없습니다.', {
-      duration: 5000,
-    });
-  }, []);
+    if (notice) {
+      toast.success(notice, {
+        duration: 5000,
+      });
+    }
+  }, [notice]);
 
   return <></>;
 };
