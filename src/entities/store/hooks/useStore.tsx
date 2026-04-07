@@ -10,6 +10,10 @@ export function useStoreInformation(store_id: number) {
   return useSuspenseQuery(queryOptions.getStoreInfomation(store_id));
 }
 
+export function useManuals(store_id: number) {
+  return useSuspenseQuery(queryOptions.getManuals(store_id));
+}
+
 export function useStoreAction(store_id: number) {
   const queryClient = useQueryClient();
 

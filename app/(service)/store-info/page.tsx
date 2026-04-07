@@ -1,5 +1,5 @@
-import { Page } from '@/pages/store-info';
+import { StoreInfoPage } from '@/pages/store-info';
 
 export const dynamic = 'force-dynamic';
 
-export default Page;
+export default StoreInfoPage;

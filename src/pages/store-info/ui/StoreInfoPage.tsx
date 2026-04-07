@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Check, Loader2 } from 'lucide-react';
 import { useStoreInformation, useStoreAction, StoreType } from '@/entities/store';
@@ -18,8 +18,22 @@ const SectionHeader = ({ title, desc }: { title: string; desc: string }) => (
     <p className="mt-2 text-[15px] leading-relaxed font-medium whitespace-pre-wrap text-slate-500">{desc}</p>
   </div>
 );
-
 export function StoreInfoPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[60vh] w-full items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+          <span className="ml-3 text-lg font-medium text-slate-600">업장 정보를 불러오는 중...</span>
+        </div>
+      }
+    >
+      <StoreInfo />
+    </Suspense>
+  );
+}
+
+function StoreInfo() {
   const { data: initialData } = useStoreInformation(2);
   const { editMutation } = useStoreAction(2);
 
