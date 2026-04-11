@@ -1,7 +1,7 @@
 import { storeAPI } from '@/entities/store';
 import { ChatPage } from '@/pages/chat';
 
-export async function generateMetadata({ params }: { params: Promise<{ id?: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ id?: number }> }) {
   const { id } = await params;
 
   if (!id) {
