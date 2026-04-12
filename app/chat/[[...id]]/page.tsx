@@ -6,7 +6,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id?: numb
 
   if (!id) {
     return {
-      title: '다시 접속해주세요 ',
+      title: '가게를 찾을 수 없습니다',
       description: 'Chat with AI',
     };
   }
