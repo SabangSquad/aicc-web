@@ -19,9 +19,8 @@ export async function Statistics() {
         <SatisfactionRate items={satisfactions} />
       </div>
       <Separator />
-      {/* <InquiryAreaSelectChart items={items} /> */}
-      <Separator />
       <InquiryEmotionChart items={items} />
+      {/* <InquiryAreaSelectChart items={items} /> */}
     </div>
   );
 }

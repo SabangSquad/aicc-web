@@ -1,14 +1,20 @@
 'use client';
+import React, { useMemo } from 'react';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
 import { CaseType } from '@/shared/types/case';
 
-export function AIResolutionRate({ items }: { items: CaseType[] }) {
-  const totalInquiries = items.length;
-  const aiResolvedCount = items.filter(item => item.status === 'AI자동해결').length || 16;
-  const resolutionRate = totalInquiries > 0 ? Math.round((aiResolvedCount / totalInquiries) * 100) : 80;
+export const AIResolutionRate = React.memo(({ items }: { items: CaseType[] }) => {
+  const { resolutionRate, chartData } = useMemo(() => {
+    const totalInquiries = items?.length || 0;
+    const aiResolvedCount = items?.filter(item => item.status === 'AI자동해결').length || 16;
+    const rate = totalInquiries > 0 ? Math.round((aiResolvedCount / totalInquiries) * 100) : 80;
 
-  const chartData = [{ name: 'AI 해결', value: resolutionRate, fill: 'url(#aiGradient)' }];
+    return {
+      resolutionRate: rate,
+      chartData: [{ name: 'AI 해결', value: rate, fill: 'url(#aiGradient)' }],
+    };
+  }, [items]);
 
   const chartConfig = {
     value: { label: '해결률' },
@@ -60,4 +66,4 @@ export function AIResolutionRate({ items }: { items: CaseType[] }) {
       </div>
     </div>
   );
-}
+});

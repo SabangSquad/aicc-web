@@ -1,34 +1,47 @@
 'use client';
+import React, { useMemo } from 'react';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
 import { CaseType } from '@/shared/types/case';
 
-export function AIAverageResponseTime({ items }: { items: CaseType[] }) {
-  const calculateMedianTime = (data: CaseType[]) => {
-    const aiCases = data
+export const AIAverageResponseTime = React.memo(({ items }: { items: CaseType[] }) => {
+  const { avgMinutes, displayValue, chartData } = useMemo(() => {
+    if (!items || items.length === 0) {
+      const defaultAvg = 1.5;
+      const defaultDisplay = Math.min((defaultAvg / 5) * 100, 100);
+      return {
+        avgMinutes: defaultAvg,
+        displayValue: defaultDisplay,
+        chartData: [{ name: '응답 시간', value: defaultDisplay, fill: 'var(--chart-2)' }],
+      };
+    }
+
+    const aiCases = items
       .filter(item => item.status === 'AI자동해결' && item.closed_at)
       .map(item => {
         const start = new Date(item.created_at).getTime();
         const end = new Date(item.closed_at!).getTime();
         return (end - start) / (1000 * 60);
       })
-      .sort((a, b) => a - b); // 오름차순 정렬
+      .sort((a, b) => a - b);
 
-    if (aiCases.length === 0) return 0;
+    let median = 0;
+    if (aiCases.length > 0) {
+      const mid = Math.floor(aiCases.length / 2);
+      median = aiCases.length % 2 !== 0 ? aiCases[mid] : (aiCases[mid - 1] + aiCases[mid]) / 2;
+    }
 
-    const mid = Math.floor(aiCases.length / 2);
-    // 데이터 개수가 짝수면 중앙 두 값의 평균, 홀수면 중앙값 반환
-    const median = aiCases.length % 2 !== 0 ? aiCases[mid] : (aiCases[mid - 1] + aiCases[mid]) / 2;
+    const avg = median > 0 ? parseFloat(median.toFixed(1)) : 1.5;
 
-    return parseFloat(median.toFixed(1));
-  };
+    const TARGET_MINUTES = 5;
+    const display = Math.min((avg / TARGET_MINUTES) * 100, 100);
 
-  const avgMinutes = calculateMedianTime(items) || 1.5;
-
-  const TARGET_MINUTES = 5;
-  const displayValue = Math.min((avgMinutes / TARGET_MINUTES) * 100, 100);
-
-  const chartData = [{ name: '응답 시간', value: displayValue, fill: 'var(--chart-2)' }];
+    return {
+      avgMinutes: avg,
+      displayValue: display,
+      chartData: [{ name: '응답 시간', value: display, fill: 'var(--chart-2)' }],
+    };
+  }, [items]);
 
   const chartConfig = {
     value: { label: '평균 시간' },
@@ -72,4 +85,4 @@ export function AIAverageResponseTime({ items }: { items: CaseType[] }) {
       </div>
     </div>
   );
-}
+});

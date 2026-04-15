@@ -1,28 +1,32 @@
 'use client';
+import React, { useMemo } from 'react';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer } from '@/shared/ui/chart';
 import { SatisfactionType } from '@/shared/types/satisfaction';
 
-export function SatisfactionRate({ items }: { items: SatisfactionType[] }) {
-  const calculateAverageScore = (data: SatisfactionType[]) => {
-    if (!data || data.length === 0) return 0;
+export const SatisfactionRate = React.memo(({ items }: { items: SatisfactionType[] }) => {
+  const { avgScore, displayValue, chartData } = useMemo(() => {
+    if (!items || items.length === 0) {
+      return { avgScore: 0, displayValue: 0, chartData: [] };
+    }
 
-    const validScores = [...data].map(item => Number(item.score)).filter(score => !isNaN(score) && score > 0);
+    const validScores = items.map(item => Number(item.score)).filter(score => !isNaN(score) && score > 0);
 
-    if (validScores.length === 0) return 0;
+    let average = 0;
+    if (validScores.length > 0) {
+      const sum = validScores.reduce((acc, curr) => acc + curr, 0);
+      average = parseFloat((sum / validScores.length).toFixed(1));
+    }
 
-    const sum = validScores.reduce((acc, curr) => acc + curr, 0);
-    const average = sum / validScores.length;
+    const TARGET_SCORE = 5;
+    const display = Math.min((average / TARGET_SCORE) * 100, 100);
 
-    return parseFloat(average.toFixed(1));
-  };
-
-  const avgScore = calculateAverageScore(items);
-
-  const TARGET_SCORE = 5;
-  const displayValue = Math.min((avgScore / TARGET_SCORE) * 100, 100);
-
-  const chartData = [{ name: '만족도', value: displayValue, fill: 'var(--chart-2)' }];
+    return {
+      avgScore: average,
+      displayValue: display,
+      chartData: [{ name: '만족도', value: display, fill: 'var(--chart-2)' }],
+    };
+  }, [items]);
 
   const chartConfig = {
     value: { label: '평균 점수' },
@@ -38,7 +42,7 @@ export function SatisfactionRate({ items }: { items: SatisfactionType[] }) {
 
       <div className="flex flex-1 flex-col items-center justify-center p-6">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-[250px]">
-          <RadialBarChart data={chartData} startAngle={90} endAngle={90 - displayValue * 3.6} innerRadius={80} outerRadius={110}>
+          <RadialBarChart data={chartData} startAngle={90} endAngle={90 + displayValue * 3.6} innerRadius={80} outerRadius={110}>
             <PolarGrid gridType="circle" radialLines={false} stroke="none" className="first:fill-muted last:fill-background" polarRadius={[86, 74]} />
 
             <RadialBar dataKey="value" background cornerRadius={10} />
@@ -66,4 +70,6 @@ export function SatisfactionRate({ items }: { items: SatisfactionType[] }) {
       </div>
     </div>
   );
-}
+});
+
+SatisfactionRate.displayName = 'SatisfactionRate';
