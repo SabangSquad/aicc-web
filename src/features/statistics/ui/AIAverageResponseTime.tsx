@@ -39,7 +39,7 @@ export function AIAverageResponseTime({ items }: { items: CaseType[] }) {
     <div className="flex h-full flex-col">
       <div className="mb-4">
         <h2 className="text-2xl font-semibold tracking-tight">AI 평균 처리 시간</h2>
-        <p className="text-md text-muted-foreground mt-1">상담 생성부터 종료까지 AI의 평균 소요 시간입니다.</p>
+        <p className="text-md text-muted-foreground mt-1">상담 AI의 평균 처리 시간입니다.</p>
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center p-6">

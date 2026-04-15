@@ -12,7 +12,7 @@ export const storeAPI = {
 
   getCases: (store_id: number) => http.get<{ data: CaseType[] }>(`/stores/${store_id}/cases`).then(res => res.data || []),
 
-  getSatisfactions: (store_id: number) => http.get<{ data: SatisfactionType[] }>(`/stores/${store_id}/satisfaction`),
+  getSatisfactions: (store_id: number) => http.get<{ data: SatisfactionType[] }>(`/stores/${store_id}/satisfactions`),
 
   getOrders: (store_id: number) => http.get<{ data: OrderType[] }>(`/stores/${store_id}/orders`),
 

@@ -8,3 +8,4 @@ export { InquiryEmotionChart } from './ui/InquiryEmotionChart';
 export { InquiryLineChart } from './ui/InquiryLineChart';
 export { InquiryTable } from './ui/InquiryTable';
 export { InsightGauge } from './ui/InsightGauge';
+export { SatisfactionRate } from './ui/SatisfactionRate';
