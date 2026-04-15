@@ -1,12 +1,12 @@
-import { AISolution, AISolutionSkeleton } from '@/entities/store';
+'use client';
+import { AISolution, AISolutionSkeleton, useCases } from '@/entities/store';
 import { InquiryTable, InquiryChart, InquiryLineChart } from '@/features/statistics';
-import { storeAPI } from '@/entities/store/api/api';
 import { Separator } from '@/shared/ui/separator';
 import { AsyncBoundary } from '@/shared/error/AsyncBoundary';
 
-export async function Home() {
-  const items = await storeAPI.getCases(1);
-  const pending = items.filter(item => item.status === '대기').length;
+export function Home() {
+  const { data } = useCases(1);
+  const pending = data?.filter(item => item.status === '대기').length;
 
   return (
     <div className="space-y-10">
@@ -18,12 +18,12 @@ export async function Home() {
       </div>
 
       <div className="flex h-96 gap-8">
-        <InquiryTable items={items} />
+        <InquiryTable items={data} />
 
         <Separator orientation="vertical" />
 
         <div className="flex-1">
-          <InquiryChart items={items} />
+          <InquiryChart items={data} />
         </div>
       </div>
 
@@ -34,7 +34,7 @@ export async function Home() {
       </AsyncBoundary>
 
       <Separator />
-      <InquiryLineChart items={items} />
+      <InquiryLineChart items={data} />
     </div>
   );
 }

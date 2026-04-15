@@ -1,5 +1,5 @@
-import { Inquiry } from '@/pages/inquiry';
+import { InquiryPage } from '@/pages/inquiry';
 
 export const dynamic = 'force-dynamic';
 
-export default Inquiry;
+export default InquiryPage;

@@ -1,13 +1,26 @@
 'use client';
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/ui/resizable';
 
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
 import { RightPanelSkeleton } from './Skeleton';
 import { CaseType } from '@/shared/types/case';
+import { useCases } from '@/entities/store';
 
-export function InquiryPage({ items }: { items: CaseType[] }) {
+export function InquiryPage() {
+  const { data } = useCases(1);
+
+  const items = useMemo(() => {
+    if (!data) return [];
+
+    return [...data].sort((a, b) => {
+      if (a.status === '대기' && b.status !== '대기') return -1;
+      if (a.status !== '대기' && b.status === '대기') return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  }, [data]);
+
   const [selectedInquiry, setSelectedInquiry] = useState<CaseType | null>(null);
 
   return (

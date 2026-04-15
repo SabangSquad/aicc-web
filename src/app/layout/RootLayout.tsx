@@ -29,10 +29,10 @@ export function ServiceLayout({
     <div className="group/layout">
       <Suspense fallback={<div className="w-64 border-r bg-white" />}>
         <AppSidebar />
+        <main className="ml-64 flex-1 overflow-y-auto px-10 py-12 text-slate-900 transition-all duration-300 ease-in-out group-has-[aside.w-20]/layout:ml-20 selection:bg-emerald-100">
+          {children}
+        </main>
       </Suspense>
-      <main className="ml-64 flex-1 overflow-y-auto px-10 py-12 text-slate-900 transition-all duration-300 ease-in-out group-has-[aside.w-20]/layout:ml-20 selection:bg-emerald-100">
-        {children}
-      </main>
     </div>
   );
 }

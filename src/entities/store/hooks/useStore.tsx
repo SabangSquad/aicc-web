@@ -14,6 +14,18 @@ export function useManuals(store_id: number) {
   return useSuspenseQuery(queryOptions.getManuals(store_id));
 }
 
+export function useCases(store_id: number) {
+  return useSuspenseQuery(queryOptions.getCases(store_id));
+}
+
+export function useReservations(store_id: number) {
+  return useSuspenseQuery(queryOptions.getReservations(store_id));
+}
+
+export function useSatisfactions(store_id: number) {
+  return useSuspenseQuery(queryOptions.getSatisfactions(store_id));
+}
+
 export function useStoreAction(store_id: number) {
   const queryClient = useQueryClient();
 

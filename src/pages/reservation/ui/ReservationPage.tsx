@@ -1,19 +1,12 @@
-import { storeAPI } from '@/entities/store';
+'use client';
+import { useReservations } from '@/entities/store';
+import { ReservationType } from '@/shared/types/reservation';
 import { Calendar, Users, Clock, User } from 'lucide-react';
 
-export interface ReservationType {
-  readonly reservation_id: number;
-  store_id: number;
-  customer_id: number | null;
-  reserved_at: string;
-  status: '완료' | '취소';
-  headcount: number | null;
-}
+export function ReservationPage() {
+  const { data } = useReservations(2);
 
-export async function ReservationPage() {
-  const { data } = await storeAPI.getReservations(2);
-
-  const sortedData = data ? [...data].sort((a, b) => new Date(a.reserved_at).getTime() - new Date(b.reserved_at).getTime()) : [];
+  const sortedData = data ? [...data.data].sort((a, b) => new Date(a.reserved_at).getTime() - new Date(b.reserved_at).getTime()) : [];
 
   const groupedData = sortedData.reduce(
     (acc, reservation) => {

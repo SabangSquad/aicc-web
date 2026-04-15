@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useState, useEffect, Fragment } from 'react';
+import { useState, Fragment } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -12,21 +12,6 @@ import { toast } from 'sonner';
 import { CategorySelector } from './CategorySelector';
 
 export function PoliciesPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-6">
-          <Loader2 className="h-10 w-10 animate-spin text-zinc-200" />
-          <span className="text-ai ml-3 text-lg font-medium">업장 정보를 불러오는 중...</span>
-        </div>
-      }
-    >
-      <Policies />
-    </Suspense>
-  );
-}
-
-function Policies() {
   const store_id = 2;
   const { data: storeData } = useStoreInformation(store_id);
   const { data: responseData } = useManuals(store_id);
