@@ -9,17 +9,41 @@ import { CaseStatus, CaseType } from '@/shared/types/case';
 const getCardStyle = (emotion: EmotionType) => {
   switch (emotion) {
     case '기쁨':
-      return { bg: 'bg-[var(--laugh-color,#22a37a)]', character: '😆' };
+      return {
+        gradient: 'from-[#34d399] to-[#059669]', // Emerald
+        shadow: 'shadow-emerald-500/25',
+        character: '😆',
+      };
     case '평온':
-      return { bg: 'bg-[var(--smile-color,#48c9b0)]', character: '😌' };
+      return {
+        gradient: 'from-[#38bdf8] to-[#0284c7]', // Sky
+        shadow: 'shadow-sky-500/25',
+        character: '😌',
+      };
     case '화남':
-      return { bg: 'bg-[var(--angry-color,#ec4b68)]', character: '😡' };
+      return {
+        gradient: 'from-[#fb7185] to-[#e11d48]', // Rose
+        shadow: 'shadow-rose-500/25',
+        character: '😡',
+      };
     case '슬픔':
-      return { bg: 'bg-[var(--frown-color,#4a90e2)]', character: '😢' };
+      return {
+        gradient: 'from-[#818cf8] to-[#4f46e5]', // Indigo
+        shadow: 'shadow-indigo-500/25',
+        character: '😢',
+      };
     case '짜증':
-      return { bg: 'bg-[var(--annoyed-color,#f5a623)]', character: '😤' };
+      return {
+        gradient: 'from-[#fb923c] to-[#ea580c]', // Orange
+        shadow: 'shadow-orange-500/25',
+        character: '😤',
+      };
     default:
-      return { bg: 'bg-[var(--smile-color,#48c9b0)]', character: '😌' };
+      return {
+        gradient: 'from-[#9ca3af] to-[#4b5563]', // Gray
+        shadow: 'shadow-gray-500/25',
+        character: '💬',
+      };
   }
 };
 
@@ -35,11 +59,10 @@ const formatCardDate = (dateString: string) => {
 interface InquiryGraphicBoardProps {
   items: CaseType[];
 }
+
 export function InquiryTable({ items }: InquiryGraphicBoardProps) {
   const router = useRouter();
-
-  const [activeFilter, setActiveFilter] = useState<CaseStatus>('대기');
-
+  const [activeFilter, setActiveFilter] = useState<CaseStatus | '전체'>('대기');
   const [api, setApi] = useState<CarouselApi>();
 
   const counts = useMemo(() => {
@@ -57,88 +80,82 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
-      if (activeFilter === '대기') return item.status === '대기';
-      if (activeFilter === '상담') return item.status === '상담';
-      if (activeFilter === 'AI자동해결') return item.status === 'AI자동해결';
-      if (activeFilter === '종료') return item.status === '종료';
-      return true;
+      if (activeFilter === '전체') return true;
+      return item.status === activeFilter;
     });
   }, [items, activeFilter]);
 
-  const toggleFilter = (filter: CaseStatus) => {
-    setActiveFilter(prev => (prev === filter ? '대기' : filter));
+  const handleFilterClick = (filter: CaseStatus | '전체') => {
+    setActiveFilter(filter);
     api?.scrollTo(0);
+  };
+
+  const renderTab = (label: string, value: CaseStatus | '전체', count?: number) => {
+    const isActive = activeFilter === value;
+    return (
+      <button
+        onClick={() => handleFilterClick(value)}
+        className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+          isActive
+            ? 'bg-zinc-800 text-white shadow-md' // 활성 상태
+            : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700' // 비활성 상태
+        }`}
+      >
+        {label}
+        {count !== undefined && <span className={`rounded-full px-1.5 py-0.5 text-xs ${isActive ? 'bg-white/20' : 'bg-zinc-200/50'}`}>{count}</span>}
+      </button>
+    );
   };
 
   return (
     <div className="min-w-0 flex-1">
-      <div className="flex items-end justify-between">
+      <div className="mb-5 flex items-end justify-between">
         <div className="flex-1">
-          <h2 className="text-2xl font-semibold tracking-tight">금주의 상담 현황</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-900">금주의 상담 현황</h2>
           <p className="text-muted-foreground mt-1">
-            답변을 기다리는 고객의 질문이 <span className="text-xl font-bold text-red-400 underline">{counts.pending}건</span> 있습니다.
+            답변을 기다리는 고객의 질문이 <span className="font-bold text-rose-500">{counts.pending}건</span> 있습니다.
           </p>
         </div>
-        <Link href="/inquiry" className="text-muted-foreground hover:text-foreground pb-3 text-sm font-medium underline transition-colors">
-          더보기
+        <Link href="/inquiry" className="text-sm font-semibold text-zinc-400 transition-colors hover:text-zinc-900">
+          더보기 &rarr;
         </Link>
       </div>
 
-      <div className="flex gap-4 py-4 text-sm font-medium">
-        <button
-          onClick={() => toggleFilter('대기')}
-          className={`flex items-center transition-colors ${activeFilter === '대기' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          상담대기 <span className="ml-1 text-base font-bold">{counts.pending}</span>
-        </button>
-        <button
-          onClick={() => toggleFilter('상담')}
-          className={`flex items-center transition-colors ${activeFilter === '상담' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          상담중 <span className="ml-1 text-base font-bold">{counts.inProgress}</span>
-        </button>
-        <button
-          onClick={() => toggleFilter('AI자동해결')}
-          className={`flex items-center transition-colors ${activeFilter === 'AI자동해결' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          AI자동해결 <span className="ml-1 text-base font-bold">{counts.aiResolved}</span>
-        </button>
-        <button
-          onClick={() => toggleFilter('종료')}
-          className={`flex items-center transition-colors ${activeFilter === '종료' ? 'text-[var(--laugh-color,#22a37a)]' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          상담종료 <span className="ml-1 text-base font-bold">{counts.closed}</span>
-        </button>
+      {/* 필터 영역 */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {renderTab('전체', '전체', items.length)}
+        {renderTab('상담대기', '대기', counts.pending)}
+        {renderTab('상담중', '상담', counts.inProgress)}
+        {renderTab('AI자동해결', 'AI자동해결', counts.aiResolved)}
+        {renderTab('상담종료', '종료', counts.closed)}
       </div>
 
+      {/* 카드 캐러셀 영역 */}
       <div className="group relative">
         {filteredItems.length > 0 ? (
-          <Carousel
-            setApi={setApi}
-            opts={{
-              align: 'start',
-              slidesToScroll: 1,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4 pt-4">
+          <Carousel setApi={setApi} opts={{ align: 'start', slidesToScroll: 1 }} className="w-full">
+            <CarouselContent className="-ml-4 py-4">
               {filteredItems.map(item => {
                 const style = getCardStyle(item.emotion);
                 return (
-                  <CarouselItem key={item.case_id} className="basis-1/3 pl-4 md:basis-1/4">
+                  <CarouselItem key={item.case_id} className="basis-[85%] pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                     <div
                       onClick={() => router.push(`/inquiry/${item.case_id}`)}
-                      className={`relative h-[240px] w-full cursor-pointer overflow-hidden rounded-xl p-5 transition-transform hover:-translate-y-1 hover:shadow-lg ${style.bg}`}
+                      className={`group/card relative flex h-[240px] w-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-gradient-to-br ${style.gradient} border border-white/20 p-5 shadow-lg ${style.shadow} transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl`}
                     >
-                      <div className="flex justify-between text-[13px] font-medium text-white/90">
-                        <span>{item.category}</span>
-                        <span>{item.status}</span>
-                      </div>
-                      <h3 className="mt-4 line-clamp-3 text-[16px] leading-tight font-bold text-white">{item.summary}</h3>
-                      <p className="mt-2 text-[11px] font-medium text-white/80">{formatCardDate(item.created_at)}</p>
+                      <div className="relative z-10 flex h-full flex-col">
+                        <div className="mb-3 flex items-center justify-between text-[12px] font-bold tracking-wide text-white/80">
+                          <span className="rounded-md bg-white/20 px-2 py-1 backdrop-blur-sm">{item.category}</span>
+                          <span className="rounded-md bg-black/20 px-2 py-1 backdrop-blur-sm">{item.status}</span>
+                        </div>
 
-                      <div className="absolute right-0 bottom-0 flex h-24 w-24 items-end justify-end p-2 select-none">
-                        <span className="text-6xl">{style.character}</span>
+                        <h3 className="mt-2 line-clamp-3 text-lg leading-snug font-bold text-white drop-shadow-sm">{item.summary}</h3>
+
+                        <p className="mt-auto text-[12px] font-medium text-white/70">{formatCardDate(item.created_at)}</p>
+                      </div>
+
+                      <div className="absolute -right-6 -bottom-8 z-0 opacity-[0.25] transition-transform duration-500 select-none group-hover/card:scale-105">
+                        <span className="text-[140px] leading-none mix-blend-overlay">{style.character}</span>
                       </div>
                     </div>
                   </CarouselItem>
@@ -146,12 +163,13 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
               })}
             </CarouselContent>
 
-            <CarouselPrevious className="absolute left-2 z-20 hidden border-gray-200 bg-white/90 text-gray-500 opacity-0 shadow-md backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white hover:text-gray-800 md:flex" />
-            <CarouselNext className="absolute right-2 z-20 hidden border-gray-200 bg-white/90 text-gray-500 opacity-0 shadow-md backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white hover:text-gray-800 md:flex" />
+            <CarouselPrevious className="absolute -left-4 z-20 hidden h-10 w-10 border-zinc-200 bg-white/90 text-zinc-600 shadow-md backdrop-blur-sm transition-all hover:bg-white disabled:opacity-0 md:flex" />
+            <CarouselNext className="absolute -right-4 z-20 hidden h-10 w-10 border-zinc-200 bg-white/90 text-zinc-600 shadow-md backdrop-blur-sm transition-all hover:bg-white disabled:opacity-0 md:flex" />
           </Carousel>
         ) : (
-          <div className="bg-muted/30 text-muted-foreground my-2 flex h-[240px] w-full items-center justify-center rounded-[24px] font-medium">
-            해당 상태의 문의 내역이 없습니다.
+          <div className="flex h-[240px] w-full flex-col items-center justify-center rounded-2xl text-zinc-500">
+            <span className="mb-3 text-3xl opacity-50">📭</span>
+            <span className="text-sm font-semibold">해당 상태의 문의 내역이 없습니다.</span>
           </div>
         )}
       </div>

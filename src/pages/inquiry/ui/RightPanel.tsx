@@ -10,10 +10,22 @@ import { motion } from 'motion/react';
 export function RightPanel({ selectedInquiry }: { selectedInquiry: CaseType | null }) {
   if (!selectedInquiry) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-muted-foreground text-center">
-          <p>왼쪽 목록에서 문의를 선택하세요.</p>
-        </div>
+      <div className="bg-muted/10 flex h-full items-center justify-center">
+        <motion.div
+          className="flex flex-col items-center gap-4 text-center"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="space-y-1">
+            <h3 className="text-lg font-medium tracking-tight">선택된 문의가 없습니다</h3>
+            <p className="text-muted-foreground text-sm">
+              왼쪽 목록에서 문의를 선택하면
+              <br />
+              상세 정보와 상담 내역을 확인할 수 있습니다.
+            </p>
+          </div>
+        </motion.div>
       </div>
     );
   }
