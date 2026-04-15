@@ -25,6 +25,8 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
     }
   }
 
+  console.log(`HTTP ${options?.method || 'GET'} 요청: ${API_BASE_URL}${path}`);
+
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,

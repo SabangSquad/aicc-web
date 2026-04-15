@@ -18,8 +18,7 @@ export function AISolution() {
 
       <div className="mt-6 flex flex-col gap-6">
         <h3 className="text-[24px] font-bold tracking-tighter text-zinc-700">{analysis.headline}</h3>
-        {/* 새 JSON에 score 데이터가 없으므로 임시 값 50 유지 */}
-        <InsightGauge score={50} />
+        <InsightGauge score={data.score} />
       </div>
 
       <div className="grid grid-cols-1 gap-8 pt-8 lg:grid-cols-2">

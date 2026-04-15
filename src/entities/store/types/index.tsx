@@ -42,6 +42,7 @@ export interface AISolutionType {
   readonly store_id: number;
   readonly hours: number;
   readonly total_cases: number;
+  score: number;
   stats: {
     by_category: {
       category: string;
