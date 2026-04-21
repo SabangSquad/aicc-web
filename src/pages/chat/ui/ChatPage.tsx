@@ -3,10 +3,10 @@ import { ChatInterface } from './ChatInterface';
 import { ChatNotice } from './Components';
 import { AlertCircle } from 'lucide-react';
 
-export async function ChatPage({ params }: { params: Promise<{ id?: string }> }) {
+export async function ChatPage({ params }: { params: Promise<{ id?: number }> }) {
   const { id } = await params;
 
-  if (!id || id.length === 0) {
+  if (!id) {
     return (
       <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-50 p-6 text-zinc-800">
         <div className="absolute top-[5%] left-[15%] h-[40vw] w-[40vw] rounded-full bg-white blur-[100px]" />

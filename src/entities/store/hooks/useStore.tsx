@@ -26,6 +26,14 @@ export function useSatisfactions(store_id: number) {
   return useSuspenseQuery(queryOptions.getSatisfactions(store_id));
 }
 
+export function useProducts(store_id: number) {
+  return useSuspenseQuery(queryOptions.getProducts(store_id));
+}
+
+export function useOrders(store_id: number) {
+  return useSuspenseQuery(queryOptions.getOrders(store_id));
+}
+
 export function useStoreAction(store_id: number) {
   const queryClient = useQueryClient();
 
@@ -59,4 +67,19 @@ export function useManualsAction() {
   });
 
   return { addMutation, editMutation };
+}
+
+export function useProductsAction() {
+  const queryClient = useQueryClient();
+
+  const invalidateQuery = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.products() });
+  };
+
+  const addMutation = useMutation({
+    mutationFn: storeAPI.postProducts,
+    onSuccess: () => invalidateQuery(),
+  });
+
+  return { addMutation };
 }

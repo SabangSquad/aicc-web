@@ -24,6 +24,8 @@ export const storeAPI = {
     http.patch(`/stores/${store_id}/manuals/${manual_id}`, data),
 
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
+  postProducts: ({ store_id, data }: { store_id: number; data: Omit<ProductType, 'product_id' | 'store_id'> }) =>
+    http.post(`/stores/${store_id}/products`, data),
 
   getSolution: (store_id: number) =>
     http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`, {

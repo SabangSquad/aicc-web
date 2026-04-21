@@ -4,10 +4,11 @@ export const queryKeys = {
   storeInfomation: (store_id: number) => ['storeInfomation', store_id],
   cases: (store_id: number) => ['cases', store_id],
   satisfactions: (store_id: number) => ['satisfactions', store_id],
-  reservations: (store_id: number) => ['reservations', store_id],
-  products: (store_id: number) => ['products', store_id],
+  reservations: () => ['reservations'],
+  products: () => ['products'],
   solution: (store_id: number) => ['solution', store_id],
   manuals: () => ['manuals'],
+  orders: () => ['orders'],
 };
 
 export const queryOptions = {
@@ -24,11 +25,11 @@ export const queryOptions = {
     queryFn: () => storeAPI.getSatisfactions(store_id),
   }),
   getReservations: (store_id: number) => ({
-    queryKey: queryKeys.reservations(store_id),
+    queryKey: queryKeys.reservations(),
     queryFn: () => storeAPI.getReservations(store_id),
   }),
   getProducts: (store_id: number) => ({
-    queryKey: queryKeys.products(store_id),
+    queryKey: queryKeys.products(),
     queryFn: () => storeAPI.getProducts(store_id),
   }),
   getSolution: (store_id: number) => ({
@@ -38,5 +39,9 @@ export const queryOptions = {
   getManuals: (store_id: number) => ({
     queryKey: queryKeys.manuals(),
     queryFn: () => storeAPI.getManuals(store_id),
+  }),
+  getOrders: (store_id: number) => ({
+    queryKey: queryKeys.orders(),
+    queryFn: () => storeAPI.getOrders(store_id),
   }),
 };

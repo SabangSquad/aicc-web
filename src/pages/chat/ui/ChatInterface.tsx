@@ -8,8 +8,9 @@ import { GoogleLoginButton } from '@/features/login';
 import { ChatCloseButton, ReservationForm, StarRatingUI } from './Components';
 import { ChatMessage } from '../types/chat';
 import { QuickPrompts } from './QuickPrompts';
+import { useAuth } from '@/entities/auth';
 
-export const ChatInterface = ({ store_id, storeData }: { store_id: string; storeData: StoreType }) => {
+export const ChatInterface = ({ store_id, storeData }: { store_id: number; storeData: StoreType }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: 1, text: `안녕하세요! ${storeData.name} 챗봇 입니다. 문의사항이 있으신가요?`, isAi: true, isLoginRequired: false },
   ]);
@@ -56,8 +57,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
           if (response.caseId) setCurrentCaseId(response.caseId);
         }
       });
-    } catch (error) {
-      console.error('API Error:', error);
+    } catch {
       setMessages(prev => [...prev, { id: Date.now(), text: '응답 처리 중 오류가 발생했습니다.', isAi: true }]);
       setIsTyping(false);
       setThinkingStep('');
@@ -112,7 +112,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
               >
                 <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
 
-                {msg.showReservationForm && <ReservationForm />}
+                {msg.showReservationForm && <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={2} />}
                 {msg.isLoginRequired && (
                   <div className="mt-4 w-full">
                     <GoogleLoginButton />

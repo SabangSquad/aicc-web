@@ -4,13 +4,13 @@ import { ChatResponse, ChatSummary } from '../types';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export const chatAPI = {
-  postChatStream: async ({ message, store_id, caseId }: { message: string; store_id: string; caseId?: number }, onData: (data: ChatResponse) => void) => {
+  postChatStream: async ({ message, store_id, caseId }: { message: string; store_id: number; caseId?: number }, onData: (data: ChatResponse) => void) => {
     const response = await fetch(`${API_BASE_URL}/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, store_id: String(store_id), caseId }),
+      body: JSON.stringify({ message, store_id: store_id, caseId }),
       credentials: 'include',
     });
 

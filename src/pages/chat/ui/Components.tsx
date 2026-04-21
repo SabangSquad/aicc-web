@@ -48,7 +48,7 @@ export const ChatCloseButton = ({ currentCaseId, setMessages }: ChatCloseButtonP
   );
 };
 
-export const StarRatingUI = ({ store_id, case_id }: { store_id: string; case_id: number }) => {
+export const StarRatingUI = ({ store_id, case_id }: { store_id: number; case_id: number }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -127,64 +127,147 @@ export const ChatNotice = ({ notice }: { notice: string | null }) => {
   return <></>;
 };
 
-interface ReservationFormProps {
-  availableTimes?: string[];
-}
-export const ReservationForm = ({
-  availableTimes = ['04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'],
-}: ReservationFormProps) => {
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+import { Loader2, Users, Minus, Plus } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { useReservationAction } from '@/entities/reservation';
 
-  const handleSelect = (time: string) => {
-    setSelectedTime(time);
+export interface AvailableSlot {
+  date: string;
+  time: string;
+}
+
+interface ReservationFormProps {
+  availableSlots?: AvailableSlot[];
+  store_id?: number;
+  customer_id?: number;
+}
+export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: '10:00' }], store_id, customer_id }: ReservationFormProps) => {
+  const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
+  const [headcount, setHeadcount] = useState<number>(2);
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const { addMutation } = useReservationAction();
+  const handleSelectTime = (slot: AvailableSlot) => {
+    setSelectedSlot(slot);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedSlot) return;
+    addMutation.mutate({
+      store_id: Number(store_id),
+      customer_id: customer_id || null,
+      reserved_at: selectedSlot.time,
+      headcount,
+    });
   };
 
   return (
-    <div className="mt-4 flex w-full flex-col items-center gap-4 border-t border-zinc-100 pt-6">
+    <div className="mt-4 flex w-full flex-col items-center gap-6 border-t border-zinc-100 pt-6">
       <AnimatePresence mode="wait">
-        {!selectedTime ? (
+        {!isCompleted ? (
           <motion.div
             key="selection"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="flex w-full flex-col items-center gap-4"
+            className="flex w-full flex-col gap-6"
           >
-            <div className="flex items-center gap-2">
-              <Calendar size={18} className="text-zinc-500" />
-              <p className="text-[15px] font-semibold text-zinc-700">방문 예정 시간을 선택해 주세요</p>
+            {/* 1. 시간 선택 영역 */}
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Calendar size={18} className="text-zinc-500" />
+                <p className="text-[15px] font-semibold text-zinc-700">방문 예정 시간을 선택해 주세요</p>
+              </div>
+
+              <div className="grid w-full grid-cols-4 gap-2">
+                {availableSlots.map((slot, index) => {
+                  const isSelected = selectedSlot?.time === slot.time;
+
+                  return (
+                    <motion.button
+                      key={index}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => handleSelectTime(slot)}
+                      className={`flex cursor-pointer items-center justify-center rounded-xl border py-3 text-[14px] font-medium transition-all ${
+                        isSelected
+                          ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
+                          : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
+                      }`}
+                    >
+                      {slot.time}
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="grid w-full grid-cols-4 gap-2">
-              {availableTimes.map(time => (
-                <motion.button
-                  key={time}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => handleSelect(time)}
-                  className="flex cursor-pointer items-center justify-center rounded-xl border border-zinc-200 bg-white py-3 text-[14px] font-medium text-zinc-600 transition-all hover:border-zinc-800 hover:bg-zinc-50 hover:text-zinc-900"
+            {/* 2. 인원수 선택 영역 */}
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Users size={18} className="text-zinc-500" />
+                <p className="text-[15px] font-semibold text-zinc-700">방문 인원을 선택해 주세요</p>
+              </div>
+
+              <div className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/50 p-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => setHeadcount(prev => Math.max(1, prev - 1))}
+                  disabled={headcount <= 1}
+                  className="h-10 w-10 shrink-0 rounded-lg text-zinc-500 hover:bg-white hover:text-zinc-900 disabled:opacity-30"
                 >
-                  {time}
-                </motion.button>
-              ))}
+                  <Minus size={18} />
+                </Button>
+
+                <span className="text-[16px] font-bold text-zinc-800">{headcount}명</span>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => setHeadcount(prev => Math.min(20, prev + 1))}
+                  className="h-10 w-10 shrink-0 rounded-lg text-zinc-500 hover:bg-white hover:text-zinc-900"
+                >
+                  <Plus size={18} />
+                </Button>
+              </div>
             </div>
 
-            <div className="flex w-full items-center justify-start pt-1">
-              <p className="text-[11px] font-medium text-zinc-400">* 버튼을 클릭하면 예약이 확정됩니다.</p>
+            <div className="mt-2 w-full space-y-2">
+              <Button
+                onClick={handleSubmit}
+                disabled={!selectedSlot || addMutation.isPending}
+                className={`h-12 w-full rounded-xl text-[15px] font-bold transition-all ${
+                  selectedSlot ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'bg-zinc-100 text-zinc-400'
+                }`}
+              >
+                {addMutation.isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : selectedSlot ? (
+                  `${selectedSlot.time} / ${headcount}명 예약하기`
+                ) : (
+                  '시간을 선택해주세요'
+                )}
+              </Button>
+              <div className="flex w-full items-center justify-center">
+                <p className="text-[12px] font-medium text-zinc-400">선택 후 예약하기를 눌러 확정해주세요.</p>
+              </div>
             </div>
           </motion.div>
         ) : (
+          /* 4. 예약 완료 화면 */
           <motion.div
             key="completed"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center py-2 text-center"
+            className="flex flex-col items-center py-6 text-center"
           >
-            <div className="mb-2 flex h-10 w-10 items-center justify-center text-emerald-500">
-              <Check size={24} />
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
+              <Check size={28} />
             </div>
-            <p className="text-[15px] font-semibold text-zinc-700">{selectedTime} 예약이 완료되었습니다! </p>
-            <p className="mt-1 text-[13px] text-zinc-500">방문 시간에 맞춰 와주세요.</p>
+            {/* 완료 메시지에 시간과 인원수를 함께 표시 */}
+            <p className="text-[16px] font-bold text-zinc-800">
+              {selectedSlot?.date} {selectedSlot?.time} / {headcount}명 예약 확정
+            </p>
+            <p className="mt-1.5 text-[14px] text-zinc-500">방문 시간에 맞춰 방문해주세요. 감사합니다!</p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, ChartNoAxesCombined, ClipboardList, Store, FileText } from 'lucide-react';
+import { Home, ChartNoAxesCombined, ClipboardList, Store, FileText, Van, Package2 } from 'lucide-react';
 
 export type MenuItem = {
   title: string;
@@ -42,11 +42,11 @@ export const sidebarGroups: MenuGroup[] = [
     id: 'items',
     label: '상품',
     items: [
-      { title: '상품 관리', url: '/products', icon: Store },
+      { title: '상품 관리', url: '/products', icon: Package2 },
       {
-        title: '배송 관리',
+        title: '주문 관리',
         url: '/orders',
-        icon: Store,
+        icon: Van,
       },
     ],
   },
