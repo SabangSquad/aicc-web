@@ -1,9 +1,11 @@
 'use client';
+import { useAuth } from '@/entities/auth';
 import { InsightGauge } from '../../../features/statistics/ui/InsightGauge';
 import { useAISolution } from '../hooks/useStore';
 
 export function AISolution() {
-  const { data } = useAISolution(1);
+  const { data: authData } = useAuth();
+  const { data } = useAISolution(authData.user.store_id);
 
   const analysis = data.ai_analysis;
 

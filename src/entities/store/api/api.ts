@@ -25,7 +25,13 @@ export const storeAPI = {
 
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
 
-  getSolution: (store_id: number) => http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`),
+  getSolution: (store_id: number) =>
+    http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`, {
+      next: {
+        revalidate: 3600,
+        tags: [`store-${store_id}-solution`],
+      },
+    }),
 
   patchStoreInformation: ({ store_id, data }: { store_id: number; data: StorePatchRequest }) => http.patch(`/stores/${store_id}`, data),
 };
