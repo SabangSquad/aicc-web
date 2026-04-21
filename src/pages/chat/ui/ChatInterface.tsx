@@ -46,7 +46,10 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
         if (response.type === 'thinking') {
           setThinkingStep(response.message);
         } else if (response.type === 'answer' && response.ok) {
-          setMessages(prev => [...prev, { id: Date.now(), text: response.answer, isAi: true, showReservationForm: response.showReservationForm }]);
+          setMessages(prev => [
+            ...prev,
+            { id: Date.now(), text: response.answer, isAi: true, showReservationForm: response.showReservationForm, availableSlots: response.availableSlots },
+          ]);
           setIsTyping(false);
           setThinkingStep('');
           if (response.caseId) setCurrentCaseId(response.caseId);
