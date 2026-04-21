@@ -5,12 +5,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ChevronsLeft, ChevronsRight, LogOut } from 'lucide-react';
 import { sidebarGroups, MenuItem } from '../model/sidebarItem';
 import { useStoreInformation } from '@/entities/store';
+import { useAuth } from '@/entities/auth';
 
 export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname() ?? '/';
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { data: storeData } = useStoreInformation(2);
+  const { data: authData } = useAuth();
+  const { data: storeData } = useStoreInformation(authData.user.store_id);
 
   const isActive = (url: string) => {
     if (url === '/') {

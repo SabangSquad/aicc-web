@@ -2,10 +2,12 @@
 import { AIEmotionSolution, AIResolutionRate, AIAverageResponseTime, InquiryEmotionChart, SatisfactionRate } from '@/features/statistics';
 import { Separator } from '@/shared/ui/separator';
 import { useCases, useSatisfactions } from '@/entities/store';
+import { useAuth } from '@/entities/auth';
 
 export function Statistics() {
-  const { data } = useCases(1);
-  const { data: satisfactions } = useSatisfactions(2);
+  const { data: authData } = useAuth();
+  const { data } = useCases(authData.user.store_id);
+  const { data: satisfactions } = useSatisfactions(authData.user.store_id);
 
   return (
     <div className="space-y-16">

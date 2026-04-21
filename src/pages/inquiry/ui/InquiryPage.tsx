@@ -7,9 +7,11 @@ import { RightPanel } from './RightPanel';
 import { RightPanelSkeleton } from './Skeleton';
 import { CaseType } from '@/shared/types/case';
 import { useCases } from '@/entities/store';
+import { useAuth } from '@/entities/auth';
 
 export function InquiryPage() {
-  const { data } = useCases(1);
+  const { data: authData } = useAuth();
+  const { data } = useCases(authData.user.store_id);
 
   const items = useMemo(() => {
     if (!data) return [];

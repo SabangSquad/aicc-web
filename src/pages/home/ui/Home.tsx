@@ -3,9 +3,11 @@ import { AISolution, AISolutionSkeleton, useCases } from '@/entities/store';
 import { InquiryTable, InquiryChart, InquiryLineChart } from '@/features/statistics';
 import { Separator } from '@/shared/ui/separator';
 import { AsyncBoundary } from '@/shared/error/AsyncBoundary';
+import { useAuth } from '@/entities/auth';
 
 export function Home() {
-  const { data } = useCases(1);
+  const { data: authData } = useAuth();
+  const { data } = useCases(authData.user.store_id);
   const pending = data?.filter(item => item.status === '대기').length;
 
   return (

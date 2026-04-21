@@ -11,6 +11,7 @@ import { DepartmentSection } from './HospitalInfo';
 import { BusinessHoursSection } from './BusinessHoursSection';
 import { CategorySelector } from './CategorySelector';
 import { toast } from 'sonner';
+import { useAuth } from '@/entities/auth';
 
 const SectionHeader = ({ title, desc }: { title: string; desc: string }) => (
   <div className="shrink-0 xl:w-80">
@@ -19,15 +20,16 @@ const SectionHeader = ({ title, desc }: { title: string; desc: string }) => (
   </div>
 );
 export function StoreInfoPage() {
-  const { data: initialData } = useStoreInformation(2);
-  const { editMutation } = useStoreAction(2);
+  const { data: authData } = useAuth();
+  const { data: initialData } = useStoreInformation(authData.user.store_id);
+  const { editMutation } = useStoreAction(authData.user.store_id);
 
   const [formData, setFormData] = useState<StoreType>(initialData);
 
   const handleSave = async () => {
     try {
       const { store_id, _links, category, ...rest } = formData;
-      await editMutation.mutateAsync({ store_id: 2, data: rest });
+      await editMutation.mutateAsync({ store_id: authData.user.store_id, data: rest });
       toast.success('업장 정보가 성공적으로 업데이트되었습니다.');
     } catch {
       toast.error('업장 정보 업데이트에 실패했습니다.');

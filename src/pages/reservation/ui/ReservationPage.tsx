@@ -1,10 +1,12 @@
 'use client';
+import { useAuth } from '@/entities/auth';
 import { useReservations } from '@/entities/store';
 import { ReservationType } from '@/shared/types/reservation';
 import { Calendar, Users, Clock, User } from 'lucide-react';
 
 export function ReservationPage() {
-  const { data } = useReservations(2);
+  const { data: authData } = useAuth();
+  const { data } = useReservations(authData.user.store_id);
 
   const sortedData = data ? [...data.data].sort((a, b) => new Date(a.reserved_at).getTime() - new Date(b.reserved_at).getTime()) : [];
 

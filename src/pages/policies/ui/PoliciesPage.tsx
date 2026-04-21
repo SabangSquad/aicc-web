@@ -10,11 +10,12 @@ import { useManualsAction } from '@/entities/store';
 import { MarkdownEditor } from '@/shared/ui/markdown-editor';
 import { toast } from 'sonner';
 import { CategorySelector } from './CategorySelector';
+import { useAuth } from '@/entities/auth';
 
 export function PoliciesPage() {
-  const store_id = 2;
-  const { data: storeData } = useStoreInformation(store_id);
-  const { data: responseData } = useManuals(store_id);
+  const { data: authData } = useAuth();
+  const { data: storeData } = useStoreInformation(authData.user.store_id);
+  const { data: responseData } = useManuals(authData.user.store_id);
   const sortedManuals = responseData?.data ? [...responseData.data].sort((a, b) => b.manual_id - a.manual_id) : [];
   const { addMutation, editMutation } = useManualsAction();
 
@@ -27,7 +28,7 @@ export function PoliciesPage() {
   const handleAddManual = () => {
     const newManual = {
       manual_id: -Date.now(),
-      store_id: store_id,
+      store_id: authData.user.store_id,
       title: '',
       category: '',
       content: '',
@@ -67,7 +68,7 @@ export function PoliciesPage() {
       toast.success('정책 정보가 성공적으로 저장되었습니다.');
     } catch (error) {
       console.error('저장 중 오류 발생:', error);
-      toast.error('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      toast.error('저장 중 오류가 발생했습니다. ', { description: '잠시 후 다시 시도해주세요.' });
     }
   };
 
