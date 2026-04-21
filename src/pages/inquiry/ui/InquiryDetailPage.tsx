@@ -18,7 +18,7 @@ export async function InquiryDetailPage({ params }: { params: Promise<{ id: numb
     <div className="flex h-full w-full flex-col">
       <div className="px-6 pt-6">
         <Button size="sm" variant="outline" className="text-muted-foreground text-sm">
-          <Link href="/inquiry">
+          <Link href="/inquiry" className="flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" />
             목록으로 돌아가기
           </Link>

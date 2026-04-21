@@ -130,7 +130,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: string; store
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex justify-start px-2 py-3">
             <div className="flex items-center gap-2.5 py-2">
               <Loader2 size={16} className="animate-spin text-zinc-400" />
-              <div className="relative flex h-5 items-center overflow-hidden">
+              <div className="relative flex items-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={thinkingStep}

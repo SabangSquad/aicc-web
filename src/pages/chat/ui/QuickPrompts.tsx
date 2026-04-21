@@ -54,7 +54,6 @@ interface QuickPromptsProps {
 }
 
 export const QuickPrompts = ({ storeData, onAction }: QuickPromptsProps) => {
-  console.log('Store Data in QuickPrompts:', storeData);
   const handleClick = (prompt: QuickPromptType) => {
     let answer = '';
 

@@ -18,7 +18,6 @@ export async function ChatPage({ params }: { params: Promise<{ id?: string }> })
             <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-zinc-300" />
           </div>
 
-          {/* 메인 메시지 */}
           <h2 className="mb-3 text-2xl font-bold tracking-tight text-zinc-900">가게 정보를 찾을 수 없습니다</h2>
           <p className="mb-8 leading-relaxed text-zinc-500">
             채팅을 시작할 가게 정보가 올바르지 않습니다
