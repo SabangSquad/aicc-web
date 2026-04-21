@@ -10,7 +10,7 @@ export const chatAPI = {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, store_id: store_id, caseId }),
+      body: JSON.stringify({ message, store_id: String(store_id), caseId }),
       credentials: 'include',
     });
 
