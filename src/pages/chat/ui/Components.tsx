@@ -1,7 +1,9 @@
 'use client';
 import { chatAPI } from '@/entities/chat';
-import { Calendar, Check, Star, XCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Calendar, Check, Star, XCircle, Loader2, Users, Minus, Plus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Button } from '@/shared/ui/button';
+import { useReservationAction } from '@/entities/reservation';
 import { toast } from 'sonner';
 import { ChatMessage } from '../types/chat';
 import { AnimatePresence, motion } from 'motion/react';
@@ -127,39 +129,73 @@ export const ChatNotice = ({ notice }: { notice: string | null }) => {
   return <></>;
 };
 
-import { Loader2, Users, Minus, Plus } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { useReservationAction } from '@/entities/reservation';
-
-export interface AvailableSlot {
+interface AvailableSlot {
   date: string;
   time: string;
 }
-
 interface ReservationFormProps {
   availableSlots?: AvailableSlot[];
   store_id?: number;
   customer_id?: number;
 }
 export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: '10:00' }], store_id, customer_id }: ReservationFormProps) => {
+  const groupedSlots = useMemo(() => {
+    return availableSlots.reduce(
+      (acc, slot) => {
+        if (!acc[slot.date]) {
+          acc[slot.date] = [];
+        }
+        acc[slot.date].push(slot);
+        return acc;
+      },
+      {} as Record<string, AvailableSlot[]>
+    );
+  }, [availableSlots]);
+
+  const availableDates = Object.keys(groupedSlots).sort();
+
+  const [selectedDate, setSelectedDate] = useState<string>(availableDates[0] || '');
   const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
   const [headcount, setHeadcount] = useState<number>(2);
   const [isCompleted, setIsCompleted] = useState(false);
 
   const { addMutation } = useReservationAction();
+
+  // availableDates가 변경될 경우 초기 선택 날짜 설정
+  useEffect(() => {
+    if (availableDates.length > 0 && !availableDates.includes(selectedDate)) {
+      setSelectedDate(availableDates[0]);
+    }
+  }, [availableDates, selectedDate]);
+
+  const handleSelectDate = (date: string) => {
+    setSelectedDate(date);
+    setSelectedSlot(null); // 날짜가 바뀌면 선택된 시간 초기화
+  };
+
   const handleSelectTime = (slot: AvailableSlot) => {
     setSelectedSlot(slot);
   };
 
   const handleSubmit = async () => {
     if (!selectedSlot) return;
-    addMutation.mutate({
-      store_id: Number(store_id),
-      customer_id: customer_id || null,
-      reserved_at: selectedSlot.time,
-      headcount,
-    });
+    addMutation.mutate(
+      {
+        store_id: Number(store_id),
+        customer_id: customer_id || null,
+        reserved_at: `${selectedSlot.date}T${selectedSlot.time}:00`,
+        headcount,
+      },
+      {
+        onSuccess: () => {
+          setIsCompleted(true);
+        },
+      }
+    );
   };
+
+  // 선택된 날짜에 해당하는 시간 배열
+  const timesForSelectedDate = groupedSlots[selectedDate] || [];
 
   return (
     <div className="mt-4 flex w-full flex-col items-center gap-6 border-t border-zinc-100 pt-6">
@@ -172,37 +208,76 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
             exit={{ opacity: 0, scale: 0.95 }}
             className="flex w-full flex-col gap-6"
           >
-            {/* 1. 시간 선택 영역 */}
+            {/* 1. 날짜 선택 영역 (새로 추가됨) */}
             <div className="flex w-full flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Calendar size={18} className="text-zinc-500" />
-                <p className="text-[15px] font-semibold text-zinc-700">방문 예정 시간을 선택해 주세요</p>
+                <p className="text-[15px] font-semibold text-zinc-700">방문 예정 날짜를 선택해 주세요</p>
               </div>
 
-              <div className="grid w-full grid-cols-4 gap-2">
-                {availableSlots.map((slot, index) => {
-                  const isSelected = selectedSlot?.time === slot.time;
+              <div className="scrollbar-hide flex w-full gap-2 overflow-x-auto pb-2">
+                {availableDates.map(date => {
+                  const isSelected = selectedDate === date;
+                  // 필요시 날짜 포맷팅 (예: '2026-04-21' -> '04.21')
+                  const formattedDate = new Date(date)
+                    .toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
+                    .replace(/\./g, '/')
+                    .replace(/ /g, '')
+                    .slice(0, -1);
 
                   return (
                     <motion.button
-                      key={index}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => handleSelectTime(slot)}
-                      className={`flex cursor-pointer items-center justify-center rounded-xl border py-3 text-[14px] font-medium transition-all ${
+                      key={date}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleSelectDate(date)}
+                      className={`min-w-[80px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
                         isSelected
                           ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
                       }`}
                     >
-                      {slot.time}
+                      {formattedDate}
                     </motion.button>
                   );
                 })}
               </div>
             </div>
 
-            {/* 2. 인원수 선택 영역 */}
+            {/* 2. 시간 선택 영역 */}
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <p className="text-[15px] font-semibold text-zinc-700">시간을 선택해 주세요</p>
+              </div>
+
+              {timesForSelectedDate.length > 0 ? (
+                <div className="grid w-full grid-cols-4 gap-2">
+                  {timesForSelectedDate.map((slot, index) => {
+                    const isSelected = selectedSlot?.time === slot.time && selectedSlot?.date === slot.date;
+
+                    return (
+                      <motion.button
+                        key={index}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => handleSelectTime(slot)}
+                        className={`flex cursor-pointer items-center justify-center rounded-xl border py-3 text-[14px] font-medium transition-all ${
+                          isSelected
+                            ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
+                            : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
+                        }`}
+                      >
+                        {slot.time}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex w-full items-center justify-center rounded-xl bg-zinc-50 py-8 text-[14px] text-zinc-500">선택 가능한 시간이 없습니다.</div>
+              )}
+            </div>
+
+            {/* 3. 인원수 선택 영역 (기존과 동일) */}
             <div className="flex w-full flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Users size={18} className="text-zinc-500" />
@@ -263,7 +338,6 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
               <Check size={28} />
             </div>
-            {/* 완료 메시지에 시간과 인원수를 함께 표시 */}
             <p className="text-[16px] font-bold text-zinc-800">
               {selectedSlot?.date} {selectedSlot?.time} / {headcount}명 예약 확정
             </p>
