@@ -31,7 +31,7 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
     credentials: 'include',
   });
 
-  if (!res.ok) {
+  if (!res.ok && res.status !== 401) {
     const errorData = await res.json().catch(() => ({}));
     throw errorData;
   }

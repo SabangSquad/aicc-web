@@ -2,6 +2,7 @@ import { storeAPI } from '@/entities/store';
 import { ChatInterface } from './ChatInterface';
 import { ChatNotice } from './Components';
 import { AlertCircle } from 'lucide-react';
+import { Suspense } from 'react';
 
 export async function ChatPage({ params }: { params: Promise<{ id?: number }> }) {
   const { id } = await params;
@@ -42,7 +43,9 @@ export async function ChatPage({ params }: { params: Promise<{ id?: number }> })
               <h2 className="font-medium text-zinc-700">{storeData.name}</h2>
             </div>
           </header>
-          <ChatInterface store_id={id} storeData={storeData} />
+          <Suspense>
+            <ChatInterface store_id={id} storeData={storeData} />
+          </Suspense>
         </main>
       </div>
     </div>

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
 import { GoogleLoginButton } from '@/features/login';
@@ -14,7 +14,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: 1, text: `안녕하세요! ${storeData.name} 챗봇 입니다. 문의사항이 있으신가요?`, isAi: true, isLoginRequired: false },
   ]);
-
+  const { data: authData } = useAuth();
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
@@ -70,7 +70,6 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
     setMessages(prev => [...prev, { id: Date.now(), text: userText, isAi: false }]);
     setIsTyping(true);
     setThinkingStep('정보를 확인하는 중...');
-
     setTimeout(() => {
       setMessages(prev => [...prev, { id: Date.now() + 1, text: aiText, isAi: true }]);
       setIsTyping(false);
@@ -112,7 +111,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
               >
                 <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
 
-                {msg.showReservationForm && <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={2} />}
+                {msg.showReservationForm && <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={authData.user.customer_id} />}
                 {msg.isLoginRequired && (
                   <div className="mt-4 w-full">
                     <GoogleLoginButton />
