@@ -16,16 +16,14 @@ export function OrderPage() {
   return (
     <div className="-my-12 h-screen w-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px]">
-        {/* 왼쪽 패널 (주문 리스트) */}
         <ResizablePanel defaultSize={30} minSize={25}>
           <OrderLeftPanel items={orders} selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
-        {/* 오른쪽 패널 (상세 정보 및 배송 API) */}
         <ResizablePanel defaultSize={70}>
-          <Suspense fallback={<div className="flex h-full items-center justify-center">불러오는 중...</div>}>
+          <Suspense>
             <OrderRightPanel selectedOrder={selectedOrder} />
           </Suspense>
         </ResizablePanel>

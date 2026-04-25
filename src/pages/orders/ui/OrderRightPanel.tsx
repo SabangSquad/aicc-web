@@ -2,7 +2,8 @@
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { motion } from 'motion/react';
 import { OrderType } from '@/shared/types/order';
-import { ShipmentItem } from './ShipmentItem';
+import { ShipmentItem } from '@/features/shipments';
+import { CustomerInformation } from '@/features/cases';
 
 export function OrderRightPanel({ selectedOrder }: { selectedOrder: OrderType | null }) {
   if (!selectedOrder) {
@@ -46,6 +47,7 @@ export function OrderRightPanel({ selectedOrder }: { selectedOrder: OrderType | 
             transition={{ duration: 0.3 }}
             key={selectedOrder.order_id}
           >
+            {selectedOrder.customer_id && <CustomerInformation customerId={selectedOrder.customer_id} />}
             <ShipmentItem order_id={selectedOrder.order_id} />
           </motion.div>
         </ScrollArea>

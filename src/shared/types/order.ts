@@ -24,3 +24,11 @@ export interface OrderItemType {
   quantity: number;
   total_price: number;
 }
+
+export interface TrackType {
+  readonly track_id: number;
+  readonly shipment_id: number;
+  readonly event_at: string;
+  readonly event_type: string;
+  readonly location: string;
+}
