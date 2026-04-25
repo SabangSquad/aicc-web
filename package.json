@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx playwright test --ui ",
+    "test": "npx playwright test --ui",
     "codegen": "npx playwright codegen http://localhost:3000"
   },
   "dependencies": {
@@ -57,6 +57,7 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
+    "dotenv": "^17.4.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-import": "^2.31.0",

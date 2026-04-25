@@ -14,7 +14,7 @@ export const storeAPI = {
 
   getSatisfactions: (store_id: number) => http.get<{ data: SatisfactionType[] }>(`/stores/${store_id}/satisfactions`),
 
-  getOrders: (store_id: number) => http.get<{ data: OrderType[] }>(`/stores/${store_id}/orders`),
+  getOrders: (store_id: number) => http.get<{ data: OrderType[] }>(`/stores/${store_id}/orders`).then(res => res.data || []),
 
   getReservations: (store_id: number) => http.get<{ data: ReservationType[] }>(`/stores/${store_id}/reservations`),
 
