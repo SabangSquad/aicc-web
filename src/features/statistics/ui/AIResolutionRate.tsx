@@ -33,9 +33,9 @@ export const AIResolutionRate = React.memo(({ items }: { items: CaseType[] }) =>
           <RadialBarChart data={chartData} startAngle={90} endAngle={90 + resolutionRate * 3.6} innerRadius={80} outerRadius={110}>
             <defs>
               <linearGradient id="aiGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#ac55f2" />
-                <stop offset="40%" stopColor="#e8499f" />
-                <stop offset="100%" stopColor="#ff6b6b" />
+                <stop offset="0%" stopColor="#c58cf2" />
+                <stop offset="40%" stopColor="#f28ac5" />
+                <stop offset="100%" stopColor="#ffa1a1" />
               </linearGradient>
             </defs>
 

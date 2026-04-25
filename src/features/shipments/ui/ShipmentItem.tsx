@@ -34,7 +34,7 @@ export const ShipmentItem = ({ order_id }: { order_id: number }) => {
     return (
       <div className="flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-[14px] text-zinc-500 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)]">
         <Package size={16} className="text-zinc-400" />
-        조회된 배송 정보가 없습니다.
+        아직 배송 정보가 없습니다.
       </div>
     );
   }

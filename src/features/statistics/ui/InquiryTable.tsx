@@ -62,7 +62,7 @@ interface InquiryGraphicBoardProps {
 
 export function InquiryTable({ items }: InquiryGraphicBoardProps) {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState<CaseStatus | '전체'>('대기');
+  const [activeFilter, setActiveFilter] = useState<CaseStatus | '전체'>('전체');
   const [api, setApi] = useState<CarouselApi>();
 
   const counts = useMemo(() => {
@@ -95,10 +95,8 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
     return (
       <button
         onClick={() => handleFilterClick(value)}
-        className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-          isActive
-            ? 'bg-zinc-800 text-white shadow-md' // 활성 상태
-            : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700' // 비활성 상태
+        className={`flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+          isActive ? 'bg-zinc-800 text-white shadow-md' : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700'
         }`}
       >
         {label}
@@ -121,7 +119,6 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
         </Link>
       </div>
 
-      {/* 필터 영역 */}
       <div className="mb-6 flex flex-wrap gap-2">
         {renderTab('전체', '전체', items.length)}
         {renderTab('상담대기', '대기', counts.pending)}
@@ -130,7 +127,6 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
         {renderTab('상담종료', '종료', counts.closed)}
       </div>
 
-      {/* 카드 캐러셀 영역 */}
       <div className="group relative">
         {filteredItems.length > 0 ? (
           <Carousel setApi={setApi} opts={{ align: 'start', slidesToScroll: 1 }} className="w-full">
@@ -145,7 +141,7 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
                     >
                       <div className="relative z-10 flex h-full flex-col">
                         <div className="mb-3 flex items-center justify-between text-[12px] font-bold tracking-wide text-white/80">
-                          <span className="rounded-md bg-white/20 px-2 py-1 backdrop-blur-sm">{item.category}</span>
+                          <span className="rounded-md bg-white/20 px-2 py-1 backdrop-blur-sm">{item.category || '미분류'}</span>
                           <span className="rounded-md bg-black/20 px-2 py-1 backdrop-blur-sm">{item.status}</span>
                         </div>
 
@@ -168,8 +164,8 @@ export function InquiryTable({ items }: InquiryGraphicBoardProps) {
           </Carousel>
         ) : (
           <div className="flex h-[240px] w-full flex-col items-center justify-center rounded-2xl text-zinc-500">
-            <span className="mb-3 text-3xl opacity-50">📭</span>
             <span className="text-sm font-semibold">해당 상태의 문의 내역이 없습니다.</span>
+            <span className="text-sm font-semibold">다른 상태를 선택해주세요.</span>
           </div>
         )}
       </div>

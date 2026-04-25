@@ -2,8 +2,9 @@
 import { ScrollArea } from '@/shared/ui/scroll-area';
 import { motion } from 'motion/react';
 import { OrderType } from '@/shared/types/order';
-import { ShipmentItem } from '@/features/shipments';
+import { OrderItem, ShipmentItem } from '@/features/shipments';
 import { CustomerInformation } from '@/features/cases';
+import { OrderStatusBadge } from '@/entities/shipment';
 
 export function OrderRightPanel({ selectedOrder }: { selectedOrder: OrderType | null }) {
   if (!selectedOrder) {
@@ -33,9 +34,7 @@ export function OrderRightPanel({ selectedOrder }: { selectedOrder: OrderType | 
         <div className="border-b p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold tracking-tight">주문 번호: {selectedOrder.order_id}</h2>
-            <div className="flex items-center gap-2">
-              <span className="rounded-md bg-gray-100 px-3 py-1 text-sm font-medium">{selectedOrder.status}</span>
-            </div>
+            <OrderStatusBadge status={selectedOrder.status} />
           </div>
         </div>
 
@@ -49,6 +48,7 @@ export function OrderRightPanel({ selectedOrder }: { selectedOrder: OrderType | 
           >
             {selectedOrder.customer_id && <CustomerInformation customerId={selectedOrder.customer_id} />}
             <ShipmentItem order_id={selectedOrder.order_id} />
+            <OrderItem order_id={selectedOrder.order_id} />
           </motion.div>
         </ScrollArea>
       </div>

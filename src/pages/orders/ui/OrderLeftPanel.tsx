@@ -4,12 +4,14 @@ import { Input } from '@/shared/ui/input';
 import { useState } from 'react';
 import { OrderType } from '@/shared/types/order';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
+import { OrderStatusBadge } from '@/entities/shipment';
 
 interface OrderLeftPanelProps {
   items: OrderType[];
   selectedOrder: OrderType | null;
   setSelectedOrder: (order: OrderType) => void;
 }
+
 export function OrderLeftPanel({ items, selectedOrder, setSelectedOrder }: OrderLeftPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -26,12 +28,12 @@ export function OrderLeftPanel({ items, selectedOrder, setSelectedOrder }: Order
       key={order.order_id}
       onMouseEnter={() => setSelectedOrder(order)}
       className={`hover:bg-accent flex w-full cursor-pointer flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all ${
-        selectedOrder?.order_id === order.order_id ? 'bg-muted' : ''
+        selectedOrder?.order_id === order.order_id ? 'bg-muted border-zinc-300' : ''
       }`}
     >
       <div className="flex w-full items-center justify-between gap-1">
         <span className="text-base font-semibold">주문 번호: {order.order_id}</span>
-        <span className="bg-secondary/50 rounded-md px-2 py-1 text-xs font-medium">{order.status}</span>
+        <OrderStatusBadge status={order.status} />
       </div>
       <div className="text-muted-foreground text-xs font-medium">결제 금액: {order.total_price.toLocaleString('ko-KR')}원</div>
     </div>
@@ -47,7 +49,7 @@ export function OrderLeftPanel({ items, selectedOrder, setSelectedOrder }: Order
   return (
     <div className="flex h-full flex-col pt-3">
       <Tabs defaultValue="전체" className="flex flex-1 flex-col overflow-hidden">
-        <div className="px-4 py-4">
+        <div className="py-4 pr-3">
           <Input type="search" placeholder="주문 번호로 검색..." className="mb-4" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="전체">전체</TabsTrigger>
@@ -59,7 +61,7 @@ export function OrderLeftPanel({ items, selectedOrder, setSelectedOrder }: Order
           </TabsList>
         </div>
 
-        <ScrollArea className="h-0 flex-1 px-4 pb-4">
+        <ScrollArea className="h-0 flex-1 pr-3 pb-4">
           <div className="flex flex-col gap-2">
             <TabsContent value="전체" className="mt-0">
               {renderOrderList(filteredItems)}
