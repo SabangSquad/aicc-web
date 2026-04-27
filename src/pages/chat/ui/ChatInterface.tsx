@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
@@ -9,6 +9,7 @@ import { ChatCloseButton, ReservationForm, StarRatingUI } from './Components';
 import { ChatMessage } from '../types/chat';
 import { QuickPrompts } from './QuickPrompts';
 import { useAuth } from '@/entities/auth';
+import { ChatInput } from './ChatInput';
 
 export const ChatInterface = ({ store_id, storeData }: { store_id: number; storeData: StoreType }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -80,13 +81,6 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
     }, 600);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
   return (
     <>
       {!isChatEnded && <ChatCloseButton currentCaseId={currentCaseId} setMessages={setMessages} />}
@@ -149,28 +143,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
           </motion.div>
         )}
       </section>
-
-      <footer className="p-6">
-        <div className="relative flex items-center rounded-2xl border border-white/80 bg-white/50 p-2 shadow-sm backdrop-blur-xl transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isChatEnded}
-            placeholder={isChatEnded ? '상담이 종료되었습니다.' : '메시지를 입력하세요...'}
-            className="flex-1 border-none bg-transparent px-3 py-2 text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => handleSendMessage()}
-            disabled={!inputValue.trim() || isTyping || isChatEnded}
-            className="rounded-xl bg-zinc-800 p-2.5 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-400"
-          >
-            <Send size={18} />
-          </motion.button>
-        </div>
-      </footer>
+      <ChatInput inputValue={inputValue} setInputValue={setInputValue} handleSendMessage={handleSendMessage} isChatEnded={isChatEnded} />
     </>
   );
 };

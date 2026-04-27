@@ -1,8 +1,8 @@
+import { Suspense } from 'react';
 import { storeAPI } from '@/entities/store';
 import { ChatInterface } from './ChatInterface';
 import { ChatNotice } from './Components';
 import { AlertCircle } from 'lucide-react';
-import { Suspense } from 'react';
 
 export async function ChatPage({ params }: { params: Promise<{ id?: number }> }) {
   const { id } = await params;
@@ -13,7 +13,7 @@ export async function ChatPage({ params }: { params: Promise<{ id?: number }> })
         <div className="absolute top-[5%] left-[15%] h-[40vw] w-[40vw] rounded-full bg-white blur-[100px]" />
         <div className="absolute right-[15%] bottom-[5%] h-[45vw] w-[45vw] rounded-full bg-zinc-200/50 blur-[120px]" />
 
-        <div className="z-10 flex w-full max-w-md flex-col items-center rounded-3xl border border-white/20 bg-white/40 p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl">
+        <div className="z-10 flex w-full max-w-md flex-col items-center border border-white/20 bg-white/40 p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:rounded-3xl">
           <div className="relative mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100 shadow-inner">
             <AlertCircle className="h-10 w-10 text-zinc-400" />
             <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-zinc-300" />
@@ -32,11 +32,11 @@ export async function ChatPage({ params }: { params: Promise<{ id?: number }> })
   const storeData = await storeAPI.getStoreInfomation(Number(id));
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-50 text-zinc-800 md:p-8">
+    <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-zinc-50 text-zinc-800 md:p-8">
       <ChatNotice notice={storeData.notice} />
       <div className="absolute top-[5%] left-[15%] h-[40vw] w-[40vw] rounded-full bg-white blur-[100px]" />
       <div className="absolute right-[15%] bottom-[5%] h-[45vw] w-[45vw] rounded-full bg-zinc-200/50 blur-[120px]" />
-      <div className="z-10 flex h-[100vh] w-full max-w-5xl overflow-hidden rounded-3xl bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl md:h-[85vh]">
+      <div className="z-10 flex h-[100dvh] w-full max-w-5xl overflow-hidden bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:rounded-3xl md:h-[85vh]">
         <main className="relative flex flex-1 flex-col">
           <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white/30 px-6 shadow-sm">
             <div className="flex items-center gap-3">
