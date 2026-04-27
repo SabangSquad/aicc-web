@@ -213,7 +213,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                 <p className="text-[12px] font-semibold text-zinc-700 sm:text-[15px]">방문 예정 날짜를 선택해 주세요</p>
               </div>
 
-              <div className="scrollbar-hide flex w-full gap-2 overflow-x-auto pb-2">
+              <div className="flex w-full flex-wrap gap-2 pb-2">
                 {availableDates.map(date => {
                   const isSelected = selectedDate === date;
                   const formattedDate = new Date(date)
@@ -248,7 +248,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
               </div>
 
               {timesForSelectedDate.length > 0 ? (
-                <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="flex w-full flex-wrap gap-2 sm:grid sm:grid-cols-4">
                   {timesForSelectedDate.map((slot, index) => {
                     const isSelected = selectedSlot?.time === slot.time && selectedSlot?.date === slot.date;
 
@@ -258,7 +258,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => handleSelectTime(slot)}
-                        className={`flex cursor-pointer items-center justify-center rounded-xl border py-3 text-[14px] font-medium transition-all ${
+                        className={`flex min-w-[80px] cursor-pointer items-center justify-center rounded-xl border py-3 text-[14px] font-medium transition-all ${
                           isSelected
                             ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
                             : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
