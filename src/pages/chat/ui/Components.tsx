@@ -213,7 +213,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                 <p className="text-[12px] font-semibold text-zinc-700 sm:text-[15px]">방문 예정 날짜를 선택해 주세요</p>
               </div>
 
-              <div className="flex w-full flex-wrap gap-2 pb-2">
+              <div className="grid w-full grid-cols-2 gap-2 pb-2 sm:flex sm:flex-wrap">
                 {availableDates.map(date => {
                   const isSelected = selectedDate === date;
                   const formattedDate = new Date(date)
@@ -248,7 +248,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
               </div>
 
               {timesForSelectedDate.length > 0 ? (
-                <div className="flex w-full flex-wrap gap-2 sm:grid sm:grid-cols-4">
+                <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
                   {timesForSelectedDate.map((slot, index) => {
                     const isSelected = selectedSlot?.time === slot.time && selectedSlot?.date === slot.date;
 

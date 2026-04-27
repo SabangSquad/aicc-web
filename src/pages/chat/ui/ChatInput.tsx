@@ -43,7 +43,7 @@ export function ChatInput({
 
   return (
     <footer
-      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 backdrop-blur-lg transition-[bottom] duration-200 ease-out"
+      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 transition-[bottom] duration-200 ease-out"
       style={{
         bottom: `${keyboardHeight}px`,
         paddingBottom: keyboardHeight > 0 ? '1rem' : 'calc(1rem + env(safe-area-inset-bottom))',
