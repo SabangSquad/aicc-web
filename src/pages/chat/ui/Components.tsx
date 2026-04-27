@@ -120,7 +120,7 @@ export const StarRatingUI = ({ store_id, case_id }: { store_id: number; case_id:
 export const ChatNotice = ({ notice }: { notice: string | null }) => {
   useEffect(() => {
     if (notice) {
-      toast.success(notice, {
+      toast.message(notice, {
         duration: 5000,
       });
     }

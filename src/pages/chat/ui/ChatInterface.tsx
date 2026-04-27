@@ -85,7 +85,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
     <>
       {!isChatEnded && <ChatCloseButton currentCaseId={currentCaseId} setMessages={setMessages} />}
 
-      <section className="flex-1 space-y-8 overflow-y-auto p-6 pb-[50vh] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <section className="flex-1 space-y-8 overflow-y-auto p-6 pb-[60vh] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {messages.map(msg => {
           const isLatestUser = msg.id === latestUserMsgId;
 
