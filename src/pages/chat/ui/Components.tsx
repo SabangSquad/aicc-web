@@ -228,7 +228,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectDate(date)}
-                      className={`min-w-[40px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
+                      className={`min-w-[80px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
                         isSelected
                           ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
@@ -324,20 +324,19 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
             </div>
           </motion.div>
         ) : (
-          /* 4. 예약 완료 화면 */
           <motion.div
             key="completed"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center py-6 text-center"
           >
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full text-emerald-500">
               <Check size={28} />
             </div>
             <p className="text-[16px] font-bold text-zinc-800">
               {selectedSlot?.date} {selectedSlot?.time} / {headcount}명 예약 확정
             </p>
-            <p className="mt-1.5 text-[14px] text-zinc-500">방문 시간에 맞춰 방문해주세요. 감사합니다!</p>
+            <p className="mt-1.5 text-[14px] text-zinc-500">방문 시간에 맞춰 방문해주세요.</p>
           </motion.div>
         )}
       </AnimatePresence>
