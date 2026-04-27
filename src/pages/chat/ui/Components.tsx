@@ -1,6 +1,6 @@
 'use client';
 import { chatAPI } from '@/entities/chat';
-import { Calendar, Check, Star, XCircle, Loader2, Users, Minus, Plus } from 'lucide-react';
+import { Calendar, Check, Star, XCircle, Loader2, Users, Minus, Plus, Clock } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { useReservationAction } from '@/entities/reservation';
@@ -194,7 +194,6 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
     );
   };
 
-  // 선택된 날짜에 해당하는 시간 배열
   const timesForSelectedDate = groupedSlots[selectedDate] || [];
 
   return (
@@ -208,17 +207,15 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
             exit={{ opacity: 0, scale: 0.95 }}
             className="flex w-full flex-col gap-6"
           >
-            {/* 1. 날짜 선택 영역 (새로 추가됨) */}
             <div className="flex w-full flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Calendar size={18} className="text-zinc-500" />
-                <p className="text-[15px] font-semibold text-zinc-700">방문 예정 날짜를 선택해 주세요</p>
+                <p className="text-[12px] font-semibold text-zinc-700 sm:text-[15px]">방문 예정 날짜를 선택해 주세요</p>
               </div>
 
               <div className="scrollbar-hide flex w-full gap-2 overflow-x-auto pb-2">
                 {availableDates.map(date => {
                   const isSelected = selectedDate === date;
-                  // 필요시 날짜 포맷팅 (예: '2026-04-21' -> '04.21')
                   const formattedDate = new Date(date)
                     .toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
                     .replace(/\./g, '/')
@@ -231,7 +228,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectDate(date)}
-                      className={`min-w-[80px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
+                      className={`min-w-[40px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
                         isSelected
                           ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
@@ -244,14 +241,14 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
               </div>
             </div>
 
-            {/* 2. 시간 선택 영역 */}
             <div className="flex w-full flex-col gap-3">
               <div className="flex items-center gap-2">
-                <p className="text-[15px] font-semibold text-zinc-700">시간을 선택해 주세요</p>
+                <Clock size={18} className="text-zinc-500" />
+                <p className="text-[12px] font-semibold text-zinc-700 sm:text-[15px]">시간을 선택해 주세요</p>
               </div>
 
               {timesForSelectedDate.length > 0 ? (
-                <div className="grid w-full grid-cols-4 gap-2">
+                <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
                   {timesForSelectedDate.map((slot, index) => {
                     const isSelected = selectedSlot?.time === slot.time && selectedSlot?.date === slot.date;
 
@@ -277,11 +274,10 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
               )}
             </div>
 
-            {/* 3. 인원수 선택 영역 (기존과 동일) */}
             <div className="flex w-full flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Users size={18} className="text-zinc-500" />
-                <p className="text-[15px] font-semibold text-zinc-700">방문 인원을 선택해 주세요</p>
+                <p className="text-[12px] font-semibold text-zinc-700 sm:text-[15px]">방문 인원을 선택해 주세요</p>
               </div>
 
               <div className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/50 p-2">

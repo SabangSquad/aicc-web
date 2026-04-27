@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Clock, MapPin, Star, ArrowUpRight, Megaphone, Accessibility } from 'lucide-react';
+import { Clock, MapPin, Star, ArrowUpRight, Megaphone, Accessibility, Car } from 'lucide-react';
 import { StoreType } from '@/entities/store';
 
 export const QUICK_PROMPTS = [
@@ -8,7 +8,7 @@ export const QUICK_PROMPTS = [
   { id: 3, type: 'wifi', icon: <Star size={18} />, text: '와이파이 사용 가능해?' },
   { id: 4, type: 'wheelchair', icon: <Accessibility size={18} />, text: '휠체어 사용할 수 있어?' },
   { id: 5, type: 'notice', icon: <Megaphone size={18} />, text: '공지사항 다시 보여줘' },
-  { id: 6, type: 'parking', icon: <Star size={18} />, text: '주차 공간 있어?' },
+  { id: 6, type: 'parking', icon: <Car size={18} />, text: '주차 공간 있어?' },
 ] as const;
 
 export type QuickPromptType = (typeof QUICK_PROMPTS)[number];
@@ -52,7 +52,6 @@ interface QuickPromptsProps {
   storeData: StoreType;
   onAction: (userText: string, aiText: string) => void;
 }
-
 export const QuickPrompts = ({ storeData, onAction }: QuickPromptsProps) => {
   const handleClick = (prompt: QuickPromptType) => {
     let answer = '';
@@ -93,7 +92,7 @@ export const QuickPrompts = ({ storeData, onAction }: QuickPromptsProps) => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 w-full max-w-[340px]">
-      <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">클릭하면 바로 물어볼 수 있어요</p>
+      <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">바로 물어볼 수 있어요</p>
 
       <div className="flex w-full flex-col gap-2">
         {QUICK_PROMPTS.map(prompt => (
