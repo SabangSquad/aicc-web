@@ -228,7 +228,7 @@ export const ReservationForm = ({ availableSlots = [{ date: '2026-04-21', time: 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectDate(date)}
-                      className={`min-w-[80px] shrink-0 rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
+                      className={`min-w-[80px] shrink-0 cursor-pointer rounded-xl border py-2.5 text-[14px] font-medium transition-all ${
                         isSelected
                           ? 'border-zinc-900 bg-zinc-900 text-white shadow-md'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50'
