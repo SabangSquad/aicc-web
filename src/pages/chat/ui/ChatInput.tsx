@@ -43,13 +43,13 @@ export function ChatInput({
 
   return (
     <footer
-      className="fixed right-0 bottom-0 left-0 z-9999 w-full p-4 transition-[bottom] duration-200 ease-out"
+      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 transition-[bottom] duration-200 ease-out"
       style={{
         bottom: `${keyboardHeight}px`,
         paddingBottom: keyboardHeight > 0 ? '1rem' : 'calc(1rem + env(safe-area-inset-bottom))',
       }}
     >
-      <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
+      <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
         <input
           type="text"
           value={inputValue}
