@@ -80,6 +80,10 @@ export function useProductsAction() {
     mutationFn: storeAPI.postProducts,
     onSuccess: () => invalidateQuery(),
   });
+  const editMutation = useMutation({
+    mutationFn: storeAPI.patchProducts,
+    onSuccess: () => invalidateQuery(),
+  });
 
-  return { addMutation };
+  return { addMutation, editMutation };
 }

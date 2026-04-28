@@ -21,6 +21,7 @@ export interface OrderItemType {
   readonly item_id: number;
   readonly order_id: number;
   readonly product_id: number;
+  product_name: string;
   quantity: number;
   total_price: number;
 }

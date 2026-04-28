@@ -36,4 +36,6 @@ export const storeAPI = {
     }),
 
   patchStoreInformation: ({ store_id, data }: { store_id: number; data: StorePatchRequest }) => http.patch(`/stores/${store_id}`, data),
+  patchProducts: ({ product_id, data }: { product_id: number; data: Omit<ProductType, 'product_id' | 'store_id'> }) =>
+    http.patch(`/products/${product_id}`, data),
 };

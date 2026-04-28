@@ -36,7 +36,7 @@ export const OrderItem = ({ order_id }: { order_id: number }) => {
                 <Package size={18} className="text-zinc-500" />
               </div>
               <div className="flex flex-col pt-0.5">
-                <span className="text-[14px] leading-tight font-bold break-keep text-zinc-900">{`상품 #${item.product_id}`}</span>
+                <span className="text-[14px] leading-tight font-bold break-keep text-zinc-800">{item.product_name}</span>
               </div>
             </div>
 

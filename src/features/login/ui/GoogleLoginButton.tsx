@@ -1,9 +1,18 @@
 'use client';
 import { Button } from '@/shared/ui/button';
+import { usePathname } from 'next/navigation';
 
 export function GoogleLoginButton() {
+  const pathname = usePathname();
   const handleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    if (!pathname) return;
+    const isChatPath = pathname.startsWith('/chat');
+
+    const targetPath = isChatPath ? pathname : '/home';
+
+    const returnTo = encodeURIComponent(targetPath);
+
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?returnTo=${returnTo}`;
   };
 
   return (
