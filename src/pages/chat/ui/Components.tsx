@@ -19,7 +19,6 @@ export const ChatCloseButton = ({ currentCaseId, setMessages }: ChatCloseButtonP
 
     try {
       await chatAPI.postChatClose(currentCaseId);
-
       setMessages(prev => [
         ...prev,
         {
