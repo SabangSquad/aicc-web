@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -12,26 +13,78 @@ import { useAuth } from '@/entities/auth';
 import { ChatInput } from './ChatInput';
 
 export const ChatInterface = ({ store_id, storeData }: { store_id: number; storeData: StoreType }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 1, text: `안녕하세요! ${storeData.name} 챗봇 입니다. 문의사항이 있으신가요?`, isAi: true, isLoginRequired: false },
-  ]);
+  // --- 상수 및 설정 ---
+  const STORAGE_KEY = `chat_session_store_${store_id}`;
+  const EXPIRATION_TIME = 20 * 60 * 1000; // 20분 (밀리초)
+
+  // --- 상태 관리 ---
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const { data: authData } = useAuth();
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
   const [currentCaseId, setCurrentCaseId] = useState<number | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false); // 초기 로드 여부 확인
 
   const latestUserMsgRef = useRef<HTMLDivElement>(null);
   const latestUserMsgId = [...messages].reverse().find(m => !m.isAi)?.id;
-
   const isChatEnded = messages.some(msg => msg.isRating);
 
+  // --- 로컬스토리지 로직 ---
+
+  // 1. 초기 마운트 시 데이터 복구
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        const currentTime = Date.now();
+        const lastUpdated = parsed.lastUpdated || 0;
+
+        // 20분이 지났는지 확인
+        if (currentTime - lastUpdated > EXPIRATION_TIME) {
+          localStorage.removeItem(STORAGE_KEY);
+          resetChat();
+        } else {
+          setMessages(parsed.messages);
+          setCurrentCaseId(parsed.currentCaseId);
+        }
+      } catch (e) {
+        console.error('Failed to parse chat history', e);
+        resetChat();
+      }
+    } else {
+      resetChat();
+    }
+    setIsInitialized(true);
+  }, [store_id]);
+
+  // 2. 메시지나 세션 변경 시 로컬스토리지 저장
+  useEffect(() => {
+    if (isInitialized && messages.length > 0) {
+      const dataToSave = {
+        messages,
+        currentCaseId,
+        lastUpdated: Date.now(), // 저장할 때마다 타임스탬프 갱신
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    }
+  }, [messages, currentCaseId, isInitialized, STORAGE_KEY]);
+
+  const resetChat = () => {
+    setMessages([{ id: 1, text: `안녕하세요! ${storeData.name} 챗봇 입니다. 문의사항이 있으신가요?`, isAi: true, isLoginRequired: false }]);
+    setCurrentCaseId(null);
+  };
+
+  // --- 스크롤 로직 ---
   useEffect(() => {
     if (latestUserMsgRef.current) {
       latestUserMsgRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [messages.length, isTyping]);
 
+  // --- 핸들러 ---
   const handleSendMessage = async (textToSend?: string) => {
     const messageContent = textToSend || inputValue;
     if (!messageContent.trim() || isChatEnded) return;
@@ -49,7 +102,13 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
         } else if (response.type === 'answer' && response.ok) {
           setMessages(prev => [
             ...prev,
-            { id: Date.now(), text: response.answer, isAi: true, showReservationForm: response.showReservationForm, availableSlots: response.availableSlots },
+            {
+              id: Date.now(),
+              text: response.answer,
+              isAi: true,
+              showReservationForm: response.showReservationForm,
+              availableSlots: response.availableSlots,
+            },
           ]);
           setIsTyping(false);
           setThinkingStep('');
@@ -74,12 +133,16 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
     setMessages(prev => [...prev, { id: Date.now(), text: userText, isAi: false }]);
     setIsTyping(true);
     setThinkingStep('정보를 확인하는 중...');
+
     setTimeout(() => {
       setMessages(prev => [...prev, { id: Date.now() + 1, text: aiText, isAi: true }]);
       setIsTyping(false);
       setThinkingStep('');
     }, 600);
   };
+
+  // 초기화 전에는 아무것도 렌더링하지 않거나 로딩바를 보여줌 (Hydration Error 방지)
+  if (!isInitialized) return null;
 
   return (
     <>
@@ -108,7 +171,9 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
               >
                 <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
 
-                {msg.showReservationForm && <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={authData.user.customer_id} />}
+                {msg.showReservationForm && authData?.user && (
+                  <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={authData.user.customer_id} />
+                )}
                 {msg.isLoginRequired && (
                   <div className="mt-4 w-full">
                     <GoogleLoginButton />
@@ -143,6 +208,7 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
           </motion.div>
         )}
       </section>
+
       <ChatInput inputValue={inputValue} setInputValue={setInputValue} handleSendMessage={handleSendMessage} isChatEnded={isChatEnded} />
     </>
   );

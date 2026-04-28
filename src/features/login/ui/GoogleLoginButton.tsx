@@ -4,15 +4,11 @@ import { usePathname } from 'next/navigation';
 
 export function GoogleLoginButton() {
   const pathname = usePathname();
+
   const handleLogin = () => {
     if (!pathname) return;
-    const isChatPath = pathname.startsWith('/chat');
-
-    const targetPath = isChatPath ? pathname : '/home';
-
-    const returnTo = encodeURIComponent(targetPath);
-
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?returnTo=${returnTo}`;
+    const targetPath = pathname.startsWith('/chat') ? pathname : '/home';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?returnTo=${targetPath}`;
   };
 
   return (
