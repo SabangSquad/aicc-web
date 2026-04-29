@@ -51,7 +51,7 @@ export function ChatInput({
     >
       <div
         style={{ paddingBottom: 'var(--keyboard-height, 4px)' }}
-        className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80"
+        className="sticky bottom-0 flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80"
       >
         <input
           type="text"
