@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -16,6 +16,14 @@ export function ChatInput({
   isChatEnded: boolean;
 }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFocus = () => {
+    // 키보드 올라오는 애니메이션 대기 후 강제 스크롤
+    setTimeout(() => {
+      inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 350);
+  };
 
   useEffect(() => {
     if (!window.visualViewport) return;
@@ -54,6 +62,8 @@ export function ChatInput({
         className="sticky bottom-0 flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80"
       >
         <input
+          ref={inputRef}
+          onFocus={handleFocus}
           type="text"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
