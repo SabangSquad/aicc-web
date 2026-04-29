@@ -25,10 +25,7 @@ export function ChatInput({
   };
 
   return (
-    <footer
-      // bottom-0과 env(safe-area-inset-bottom)만 사용합니다.
-      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] transition-all duration-200 ease-out"
-    >
+    <footer className="w-full shrink-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
       <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
         <input
           type="text"
