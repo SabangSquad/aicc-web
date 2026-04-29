@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -15,24 +15,7 @@ export function ChatInput({
   handleSendMessage: (textToSend?: string) => Promise<void>;
   isChatEnded: boolean;
 }) {
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  useEffect(() => {
-    if (!window.visualViewport) return;
-
-    const handleResize = () => {
-      const offset = window.innerHeight - window.visualViewport!.height;
-      setKeyboardHeight(offset > 0 ? offset : 0);
-    };
-
-    window.visualViewport.addEventListener('resize', handleResize);
-    window.visualViewport.addEventListener('scroll', handleResize);
-
-    return () => {
-      window.visualViewport?.removeEventListener('resize', handleResize);
-      window.visualViewport?.removeEventListener('scroll', handleResize);
-    };
-  }, []);
+  // ❌ 원인이었던 visualViewport 높이 계산 로직을 모두 제거합니다.
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
@@ -43,11 +26,8 @@ export function ChatInput({
 
   return (
     <footer
-      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 transition-[bottom] duration-200 ease-out"
-      style={{
-        bottom: `${keyboardHeight}px`,
-        paddingBottom: keyboardHeight > 0 ? '1rem' : 'calc(1rem + env(safe-area-inset-bottom))',
-      }}
+      // bottom-0과 env(safe-area-inset-bottom)만 사용합니다.
+      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] transition-all duration-200 ease-out"
     >
       <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
         <input
