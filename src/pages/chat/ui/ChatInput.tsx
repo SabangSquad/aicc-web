@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -16,14 +16,6 @@ export function ChatInput({
   isChatEnded: boolean;
 }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFocus = () => {
-    // 키보드 올라오는 애니메이션 대기 후 강제 스크롤
-    setTimeout(() => {
-      inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 350);
-  };
 
   useEffect(() => {
     if (!window.visualViewport) return;
@@ -51,19 +43,14 @@ export function ChatInput({
 
   return (
     <footer
-      className="z-50 w-full p-4 duration-200 ease-out"
+      className="fixed right-0 bottom-0 left-0 z-50 w-full p-4 transition-[bottom] duration-200 ease-out"
       style={{
         bottom: `${keyboardHeight}px`,
         paddingBottom: keyboardHeight > 0 ? '1rem' : 'calc(1rem + env(safe-area-inset-bottom))',
       }}
     >
-      <div
-        style={{ paddingBottom: 'var(--keyboard-height, 4px)' }}
-        className="sticky bottom-0 flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80"
-      >
+      <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
         <input
-          ref={inputRef}
-          onFocus={handleFocus}
           type="text"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
