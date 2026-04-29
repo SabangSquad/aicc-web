@@ -16,7 +16,19 @@ export function ChatInput({
   isChatEnded: boolean;
 }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const handleFocus = () => {
+    // 약간의 지연 시간을 주어 키보드가 완전히 올라온 후 계산하게 합니다.
+    setTimeout(() => {
+      if (window.visualViewport) {
+        const offset = window.innerHeight - window.visualViewport.height;
+        setKeyboardHeight(offset > 0 ? offset : 0);
 
+        // 인앱 브라우저에서 가끔 발생하는 '잘림' 현상을 방지하기 위해
+        // 현재 포커스된 요소를 뷰포트 안으로 강제 이동
+        window.scrollTo(0, 0);
+      }
+    }, 300);
+  };
   useEffect(() => {
     if (!window.visualViewport) return;
 
@@ -51,6 +63,7 @@ export function ChatInput({
     >
       <div className="relative flex w-full items-center gap-2 rounded-2xl border border-white/80 bg-zinc-50 p-2 shadow-sm transition-all focus-within:border-zinc-300 focus-within:bg-white/80">
         <input
+          onFocus={handleFocus}
           type="text"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}

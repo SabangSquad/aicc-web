@@ -104,6 +104,26 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
     }
   }, [messages, currentCaseId, isInitialized, STORAGE_KEY, isChatEnded]);
 
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    // 상담이 종료되었다면 로컬스토리지 데이터를 삭제합니다.
+    if (isChatEnded) {
+      localStorage.removeItem(STORAGE_KEY);
+      return; // 저장 로직을 실행하지 않고 종료
+    }
+
+    // 상담 중일 때만 메시지를 저장합니다.
+    if (messages.length > 0) {
+      const dataToSave = {
+        messages,
+        currentCaseId,
+        lastUpdated: Date.now(),
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    }
+  }, [messages, currentCaseId, isInitialized, STORAGE_KEY, isChatEnded]);
+
   // --- 핸들러 ---
   const handleSendMessage = async (textToSend?: string) => {
     const messageContent = textToSend || inputValue;
