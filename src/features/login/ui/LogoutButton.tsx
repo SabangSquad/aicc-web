@@ -1,32 +1,38 @@
 'use client';
-import { useTransition } from 'react';
-import { logout } from '@/entities/auth';
+
+import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Loader2 } from 'lucide-react';
 
 export function LogoutButton({ returnTo }: { returnTo?: string }) {
-  const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = () => {
-    startTransition(async () => {
-      const result = await logout();
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/logout', { method: 'GET', cache: 'no-store' });
 
-      if (result.success) {
+      if (res.ok) {
         const destination = returnTo || window.location.origin;
-        window.location.href = destination;
+        window.location.replace(destination);
       }
-    });
+    } catch (error) {
+      console.error('Logout failed', error);
+      window.location.href = '/';
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Button
       variant="ghost"
-      disabled={isPending}
+      disabled={isLoading}
       onClick={handleLogout}
-      className={`w-full justify-start gap-2 rounded-xl px-3 py-2 transition-colors ${isPending ? 'opacity-50' : 'text-zinc-500 hover:bg-red-50 hover:text-red-500'}`}
+      className="w-full justify-start gap-2 rounded-xl px-3 py-2 text-zinc-500 transition-colors hover:bg-red-50 hover:text-red-500"
     >
-      <LogOut size={16} className={isPending ? 'animate-pulse' : ''} />
-      <span className="text-sm font-semibold">{isPending ? '로그아웃 중...' : '로그아웃'}</span>
+      {isLoading ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
+      <span className="text-sm font-semibold">{isLoading ? '처리 중...' : '로그아웃'}</span>
     </Button>
   );
 }
