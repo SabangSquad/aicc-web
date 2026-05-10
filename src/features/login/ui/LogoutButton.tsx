@@ -10,7 +10,7 @@ export function LogoutButton({ returnTo }: { returnTo?: string }) {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/logout', { method: 'GET', cache: 'no-store' });
+      const res = await fetch('/action/logout', { method: 'GET', cache: 'no-store' });
 
       if (res.ok) {
         const destination = returnTo || window.location.origin;
