@@ -8,7 +8,7 @@ export function LogoutButton({ returnTo }: { returnTo?: string }) {
     <Button
       variant="ghost"
       onClick={async () => {
-        await logout(returnTo);
+        await logout();
         window.location.href = returnTo || '/';
       }}
       className="w-full justify-start gap-2 rounded-xl px-3 py-2 text-zinc-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
