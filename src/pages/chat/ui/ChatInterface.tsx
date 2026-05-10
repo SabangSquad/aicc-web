@@ -1,23 +1,22 @@
 'use client';
-
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { chatAPI } from '@/entities/chat';
 import { StoreType } from '@/entities/store';
-import { GoogleLoginButton } from '@/features/login';
+import { GoogleLoginButton, LogoutButton } from '@/features/login';
 import { ChatCloseButton, ReservationForm, StarRatingUI } from './Components';
 import { ChatMessage } from '../types/chat';
 import { QuickPrompts } from './QuickPrompts';
 import { useAuth } from '@/entities/auth';
 import { ChatInput } from './ChatInput';
+import { UserProfile } from './UserProfile';
 
 export const ChatInterface = ({ store_id, storeData }: { store_id: number; storeData: StoreType }) => {
   // --- 상수 및 설정 ---
   const STORAGE_KEY = `chat_session_store_${store_id}`;
   const EXPIRATION_TIME = 20 * 60 * 1000; // 20분 (밀리초)
 
-  // --- 상태 관리 ---
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const { data: authData } = useAuth();
   const [inputValue, setInputValue] = useState('');
@@ -186,8 +185,10 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
 
   return (
     <>
-      {!isChatEnded && <ChatCloseButton currentCaseId={currentCaseId} setMessages={setMessages} />}
-
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-4">
+        {authData?.user && <UserProfile />}
+        {!isChatEnded && <ChatCloseButton currentCaseId={currentCaseId} setMessages={setMessages} />}
+      </div>
       <section className="flex-1 space-y-8 overflow-y-auto p-6 pb-[52vh] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {messages.map(msg => {
           const isLatestUser = msg.id === latestUserMsgId;
@@ -214,11 +215,11 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
                 {msg.showReservationForm && authData?.user && (
                   <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={authData.user.customer_id} />
                 )}
-                {msg.isLoginRequired && (
-                  <div className="mt-4 w-full">
-                    <GoogleLoginButton />
-                  </div>
-                )}
+                {/* {msg.isLoginRequired && ( */}
+                <div className="mt-4 w-full">
+                  <GoogleLoginButton />
+                </div>
+                {/* )} */}
                 {msg.isRating && <StarRatingUI store_id={store_id} case_id={currentCaseId!} />}
               </div>
             </motion.div>
@@ -248,7 +249,6 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
           </motion.div>
         )}
       </section>
-
       <ChatInput inputValue={inputValue} setInputValue={setInputValue} handleSendMessage={handleSendMessage} isChatEnded={isChatEnded} />
     </>
   );

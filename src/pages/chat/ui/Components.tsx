@@ -1,6 +1,6 @@
 'use client';
 import { chatAPI } from '@/entities/chat';
-import { Calendar, Check, Star, XCircle, Loader2, Users, Minus, Plus, Clock } from 'lucide-react';
+import { Calendar, Check, Star, Loader2, Users, Minus, Plus, Clock, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { useReservationAction } from '@/entities/reservation';
@@ -39,9 +39,9 @@ export const ChatCloseButton = ({ currentCaseId, setMessages }: ChatCloseButtonP
       {currentCaseId && (
         <button
           onClick={handleCloseChat}
-          className="absolute top-4 right-4 z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-200"
+          className="z-10 flex cursor-pointer items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-200"
         >
-          <XCircle size={16} />
+          <X size={16} />
           상담 종료
         </button>
       )}

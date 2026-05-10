@@ -4,6 +4,7 @@ export interface AuthResponse {
     readonly store_id: number;
     readonly customer_id: number;
     readonly email: string;
+    readonly name: string;
     readonly role: 'ADMIN' | 'OWNER';
   };
 }
