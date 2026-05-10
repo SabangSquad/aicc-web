@@ -215,11 +215,11 @@ export const ChatInterface = ({ store_id, storeData }: { store_id: number; store
                 {msg.showReservationForm && authData?.user && (
                   <ReservationForm availableSlots={msg.availableSlots} store_id={store_id} customer_id={authData.user.customer_id} />
                 )}
-                {/* {msg.isLoginRequired && ( */}
-                <div className="mt-4 w-full">
-                  <GoogleLoginButton />
-                </div>
-                {/* )} */}
+                {msg.isLoginRequired && (
+                  <div className="mt-4 w-full">
+                    <GoogleLoginButton />
+                  </div>
+                )}
                 {msg.isRating && <StarRatingUI store_id={store_id} case_id={currentCaseId!} />}
               </div>
             </motion.div>
