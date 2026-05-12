@@ -52,7 +52,15 @@ interface QuickPromptsProps {
   storeData: StoreType;
   onAction: (userText: string, aiText: string) => void;
 }
+
 export const QuickPrompts = ({ storeData, onAction }: QuickPromptsProps) => {
+  const displayedPrompts = QUICK_PROMPTS.filter(prompt => {
+    if (storeData.category === '이커머스') {
+      return prompt.type === 'location' || prompt.type === 'notice';
+    }
+    return true;
+  });
+
   const handleClick = (prompt: QuickPromptType) => {
     let answer = '';
 
@@ -95,7 +103,7 @@ export const QuickPrompts = ({ storeData, onAction }: QuickPromptsProps) => {
       <p className="mb-3 px-2 text-[13px] font-medium text-zinc-500">바로 물어볼 수 있어요</p>
 
       <div className="flex w-full flex-col gap-2">
-        {QUICK_PROMPTS.map(prompt => (
+        {displayedPrompts.map(prompt => (
           <motion.button
             key={prompt.id}
             whileHover={{ scale: 1.01, backgroundColor: '#fafafa' }}
