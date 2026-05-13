@@ -88,6 +88,14 @@ export function ProductsPage() {
     setProducts(prev => prev.filter(p => p.product_id !== productId));
   };
 
+  const handleDeleteProduct = (productId: number) => {
+    if (!confirm('정말 이 상품을 삭제하시겠습니까?')) return;
+    deleteMutation.mutate(productId, {
+      onSuccess: () => toast.success('상품이 삭제되었습니다.'),
+      onError: () => toast.error('상품 삭제에 실패했습니다', { description: '잠시 후 다시 시도해주세요.' }),
+    });
+  };
+
   return (
     <div className="w-full space-y-8 pb-32">
       <div>
@@ -132,16 +140,26 @@ export function ProductsPage() {
 
                 <div className="flex items-center gap-1">
                   {isExisting ? (
-                    <Button
-                      size="sm"
-                      variant={isDirty ? 'default' : 'outline'}
-                      onClick={() => handleEditMutation(product)}
-                      disabled={!isDirty || editMutation.isPending}
-                      className={`h-8 cursor-pointer px-3 ${isDirty ? 'bg-zinc-800 px-3 text-white hover:bg-zinc-700' : 'text-zinc-400'}`}
-                    >
-                      {isEditing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
-                      수정
-                    </Button>
+                    <>
+                      <Button
+                        size="sm"
+                        variant={isDirty ? 'default' : 'outline'}
+                        onClick={() => handleEditMutation(product)}
+                        disabled={!isDirty || editMutation.isPending}
+                        className={`h-8 cursor-pointer px-3 ${isDirty ? 'bg-zinc-800 px-3 text-white hover:bg-zinc-700' : 'text-zinc-400'}`}
+                      >
+                        {isEditing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+                        수정
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeleteProduct(product.product_id)}
+                        className="h-8 w-8 text-zinc-400 hover:text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
                   ) : (
                     <>
                       <Button
