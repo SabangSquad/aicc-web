@@ -66,7 +66,12 @@ export function useManualsAction() {
     onSuccess: () => invalidateQuery(),
   });
 
-  return { addMutation, editMutation };
+  const deleteMutation = useMutation({
+    mutationFn: storeAPI.deleteManuals,
+    onSuccess: () => invalidateQuery(),
+  });
+
+  return { addMutation, editMutation, deleteMutation };
 }
 
 export function useProductsAction() {
@@ -84,6 +89,10 @@ export function useProductsAction() {
     mutationFn: storeAPI.patchProducts,
     onSuccess: () => invalidateQuery(),
   });
+  const deleteMutation = useMutation({
+    mutationFn: storeAPI.deleteProducts,
+    onSuccess: () => invalidateQuery(),
+  });
 
-  return { addMutation, editMutation };
+  return { addMutation, editMutation, deleteMutation };
 }

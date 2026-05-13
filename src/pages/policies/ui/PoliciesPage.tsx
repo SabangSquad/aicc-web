@@ -16,8 +16,8 @@ export function PoliciesPage() {
   const { data: authData } = useAuth();
   const { data: storeData } = useStoreInformation(authData.user.store_id);
   const { data: responseData } = useManuals(authData.user.store_id);
-  const sortedManuals = responseData?.data ? [...responseData.data].sort((a, b) => b.manual_id - a.manual_id) : [];
-  const { addMutation, editMutation } = useManualsAction();
+  const sortedManuals = responseData.data.sort((a, b) => b.manual_id - a.manual_id);
+  const { addMutation, editMutation, deleteMutation } = useManualsAction();
 
   const [manuals, setManuals] = useState(sortedManuals);
 
@@ -40,6 +40,8 @@ export function PoliciesPage() {
   const handleDeleteManual = (manualId: number) => {
     if (confirm('이 정책을 정말 삭제하시겠습니까?')) {
       setManuals(prev => prev.filter(manual => manual.manual_id !== manualId));
+      deleteMutation.mutate({ store_id: authData.user.store_id, manual_id: manualId });
+      toast.success('정책이 삭제되었습니다');
     }
   };
 

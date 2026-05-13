@@ -21,8 +21,7 @@ export function ProductsPage() {
   const storeId = authData?.user?.store_id;
 
   const { data: responseData } = useProducts(storeId);
-  // editMutation을 추가로 가져옵니다.
-  const { addMutation, editMutation } = useProductsAction();
+  const { addMutation, editMutation, deleteMutation } = useProductsAction();
   const [products, setProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
@@ -140,7 +139,7 @@ export function ProductsPage() {
                       disabled={!isDirty || editMutation.isPending}
                       className={`h-8 cursor-pointer px-3 ${isDirty ? 'bg-zinc-800 px-3 text-white hover:bg-zinc-700' : 'text-zinc-400'}`}
                     >
-                      {isEditing ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Save className="mr-1 h-3 w-3" />}
+                      {isEditing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
                       수정
                     </Button>
                   ) : (

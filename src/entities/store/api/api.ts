@@ -22,10 +22,12 @@ export const storeAPI = {
   postManuals: ({ store_id, data }: { store_id: number; data: ManualRequest }) => http.post(`/stores/${store_id}/manuals`, data),
   patchManuals: ({ store_id, manual_id, data }: { store_id: number; manual_id: number; data: ManualRequest }) =>
     http.patch(`/stores/${store_id}/manuals/${manual_id}`, data),
+  deleteManuals: ({ store_id, manual_id }: { store_id: number; manual_id: number }) => http.delete(`/stores/${store_id}/manuals/${manual_id}`),
 
   getProducts: (store_id: number) => http.get<{ data: ProductType[] }>(`/stores/${store_id}/products`),
   postProducts: ({ store_id, data }: { store_id: number; data: Omit<ProductType, 'product_id' | 'store_id'> }) =>
     http.post(`/stores/${store_id}/products`, data),
+  deleteProducts: (product_id: number) => http.delete(`/products/${product_id}`),
 
   getSolution: (store_id: number) =>
     http.get<AISolutionType>(`/stores/${store_id}/solutions?hours=24`, {
